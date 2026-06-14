@@ -1,0 +1,10 @@
+# Ruff config — inherited from auto_JA / physical-ai-core conventions.
+target-version = "py311"
+line-length = 100
+
+[lint]
+select = ["E4", "E7", "E9", "F", "W6"]
+
+[lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"**/main.py" = ["E402"]
