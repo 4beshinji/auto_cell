@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "iPS自動培養ソフトウェア ドメイン知識マップ",
-    "description": "京都大学iPS細胞研究財団と関連研究を起点に、自動細胞培養ソフトウェアの実装に必要なドメイン知識をナレッジグラフのシードとして構造化したもの。",
+    "description": "京都大学iPS細胞研究財団と関連研究を起点に、自動細胞培養ソフトウェアの実装に必要なドメイン知識をナレッジグラフのシードとして構造化したもの。 [2026-06-14 P1拡張: 浮遊速度論ODEの原典(Galvanauskas et al. 2019)とCPP文献根拠を追加] [2026-06-14 P1続報: plant_model原典をManstein&Zweigerdt 2021と特定(Galvanauskas誤推定を訂正)] [2026-06-14 P3: デバイスIF=OPC-UA/LADS(バイオリアクタ)第一・SiLA2(ラボ自動化)従、閉鎖ターンキーは非制御対象] [2026-06-14 P3拡張: 協業前提の制御権限二層分界と単一デバイスプロファイル(ICD=LADS情報モデル)を追加]",
     "generated": "2026-06-14",
     "node_types": [
       "root",
@@ -11,8 +11,9 @@
       "player",
       "source"
     ],
-    "node_count": 68,
-    "edge_count": 139
+    "node_count": 77,
+    "edge_count": 156,
+    "updated": "2026-06-14"
   },
   "domains": [
     {
@@ -605,7 +606,7 @@
       "label": "OPC-UA / LADS",
       "type": "concept",
       "domain": "d5",
-      "content": "産業で普及するM2M標準OPC-UAと、その研究室向けコンパニオン規格LADS。SiLA2と並ぶデバイス通信の選択肢で、製造ライン連携に強い。",
+      "content": "産業で普及するM2M標準OPC-UAと、その研究室向けコンパニオン規格LADS。SiLA2と並ぶデバイス通信の選択肢で、製造ライン連携に強い。【P3】LADS v1.0.0(2024年1月, OPC Foundation+Spectaris+VDMA)はバイオリアクタを明示的にモデル化—Functional Unit×Function(analogセンサ/controller/program)構成で、auto_cellのchannel_config/tool_schemas/EBRに直接対応。Eppendorf DASware等プロセス制御機はOPC公開。A層バイオリアクタ制御のデバイスIF第一候補。",
       "sources": [
         {
           "title": "Tecan SiLA2 SDK（royalty-free, open-source）",
@@ -876,7 +877,7 @@
       "label": "Terumo BCT / Quantum Flex",
       "type": "system",
       "domain": "d8",
-      "content": "2024年に財団と提携。Quantum Flex Cell Expansion System上で閉鎖・自動・統合プロセスを構築し、デジタル技術で効率と制御を高める。",
+      "content": "2024年に財団と提携。Quantum Flex Cell Expansion System上で閉鎖・自動・統合プロセスを構築し、デジタル技術で効率と制御を高める。【P3】Quantum FlexはCPAソフト(プロトコルビルダ/最大100台フリート/cGMP)の閉鎖ターンキーで、公開デバイスAPIは確認できず＝自前ブレインの閉ループ制御対象ではなく商用/臨床エンドポイント(連携するなら監視のみ)。",
       "sources": [
         {
           "title": "Terumo BCT × CiRA Foundation 自動化提携（Quantum Flex）",
@@ -1082,6 +1083,139 @@
         {
           "title": "iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）",
           "url": "https://stemcells.or.jp/ips-9/"
+        }
+      ]
+    },
+    {
+      "id": "kinetics",
+      "label": "浮遊培養速度論モデル（Tier2 plant 原典）",
+      "type": "concept",
+      "domain": "d1",
+      "content": "iPSC浮遊培養の比増殖速度をMonod型で表すin silicoモデル。auto_cell Tier2 plant_modelの原典はManstein & Zweigerdt 2021（SCTM/STAR Protocols, src_manstein）で、グルコース・乳酸・グルタミン・浸透圧・凝集体径の阻害項を持ち、灌流で7日35×10⁶ cells/mLを達成した過程制御モデル。Table1定数(µ=1.35/d, KGlc=1.5mM, KLac=50mM, KGln=0.01mM, KOsm=500mOsm/kg, KAgg=350/2=175µm径)はplant_modelと完全一致。Galvanauskas 2019(src_galv)は3項のみの近縁別モデル。",
+      "sources": [
+        {
+          "title": "Kinetic modeling of hiPSC expansion in suspension culture（Galvanauskas et al., Regen Therapy 2019;12:88-93）",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6933447/"
+        }
+      ]
+    },
+    {
+      "id": "src_galv",
+      "label": "Galvanauskas et al. 2019 (近縁の3項モデル)",
+      "type": "source",
+      "domain": "d1",
+      "content": "iPSC浮遊培養速度論の近縁モデル(Galvanauskas/Kino-Oka 2019, Regen Therapy 12:88-93)。グルコースMonod＋乳酸阻害＋凝集体体積阻害の3項のみで、グルタミン制限/浸透圧項は持たない(明示的に省略)。定数もplant_modelと異なる(µmax≈2.35/d, KG≈7mM, KAgg=5.6e6µm³体積)。deep-researchが一旦原典と誤推定したが、真の原典はManstein 2021(src_manstein)。",
+      "sources": [
+        {
+          "title": "Kinetic modeling of hiPSC expansion in suspension culture（PMC6933447）",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6933447/"
+        },
+        {
+          "title": "PubMed 31890771",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/31890771/"
+        }
+      ]
+    },
+    {
+      "id": "src_borys",
+      "label": "Borys et al. 2021 (Stem Cell Res Ther)",
+      "type": "source",
+      "domain": "d4",
+      "content": "iPSC Vertical-Wheel(PBS Biotech)撹拌最適化。40rpmが最大増殖(day6で32.3±3.2倍)、day5凝集体径169-275µm、>400µmで壊死予想。撹拌CPPの文献アンカー(最適40-60rpm、auto_cellの50-120rpm上限は高め)。",
+      "sources": [
+        {
+          "title": "Borys et al. 2021, Stem Cell Res Ther 12:55（PMC7805206）",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/"
+        }
+      ]
+    },
+    {
+      "id": "src_kropp",
+      "label": "Kropp/Lipsitz et al. 2015 (BMC Proceedings)",
+      "type": "source",
+      "domain": "d4",
+      "content": "hPSC撹拌懸濁のBox-Behnken DoE。pH7.3/37℃、毎日給餌で高密度、播種2×10⁵が最適、DOは本研究で非有意。注: HES2(ESC)・Micro-24振盪式(400rpm=振盪周波数)でiPSC/インペラ槽への転用に注意。",
+      "sources": [
+        {
+          "title": "Kropp et al. 2015, BMC Proceedings（PMC4685349）",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4685349/"
+        }
+      ]
+    },
+    {
+      "id": "src_traj",
+      "label": "Nogueira 2019 / Olmer 2012（到達密度 実測）",
+      "type": "source",
+      "domain": "d1",
+      "content": "バッチ vs 灌流の到達密度差。標準バッチはNogueira(Vertical-Wheel)=peak 2.3×10⁶、Olmer(撹拌槽)=2.4×10⁶ cells/mL止まり。plant_modelの検証目標35×10⁶はManstein 2021の灌流プロセス(src_manstein)で達成される値で、バッチでは到達しない。",
+      "sources": [
+        {
+          "title": "Nogueira et al. 2019, J Biol Eng（PMC6744632）",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6744632/"
+        },
+        {
+          "title": "Olmer et al. 2012, Tissue Eng Part C（PMC3460618）",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3460618/"
+        }
+      ]
+    },
+    {
+      "id": "src_manstein",
+      "label": "Manstein & Zweigerdt 2021（plant_model 原典）",
+      "type": "source",
+      "domain": "d4",
+      "content": "auto_cell Tier2 plant_modelの真の原典。hPSC灌流撹拌槽培養をpH7.1/DO40%/浸透圧ピーク抑制/灌流で制御し、7日で70倍・35×10⁶ cells/mL(150mLで52.5億細胞)を達成。Monod型in silicoモデル(Table1: µ=1.35/d, KGlc=1.5mM, KLac=50mM, KGln=0.01mM, KOsm=500mOsm/kg, KAgg=350/2=175µm)はplant_modelの6定数と完全一致。撹拌80rpm(150mLスケール)。",
+      "sources": [
+        {
+          "title": "Manstein et al. 2021, Stem Cells Transl Med 10(7):1063-1080（DOI 10.1002/sctm.20-0453, PMID 33660952）",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/33660952/"
+        },
+        {
+          "title": "Manstein et al. 2021, STAR Protocols 2(4):100988 — in silico model Table 1（PMC8666714）",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/"
+        }
+      ]
+    },
+    {
+      "id": "src_lads",
+      "label": "OPC UA LADS v1.0.0 (OPC Foundation)",
+      "type": "source",
+      "domain": "d5",
+      "content": "Laboratory and Analytical Device Standard。OPC-UAコンパニオン規格(2024-01, OPC Foundation+Spectaris+VDMA, OPC 30500-1)。Functional Unit/Function(sensor analog/discrete/multi-state, controller, actuator)＋Program/Result管理＋Asset/保守。バイオリアクタを明示例として槽=Functional Unit(温度センサ+モータ+program)でモデル化。auto_cellのDomainVertical面に直対応。",
+      "sources": [
+        {
+          "title": "OPC UA for LADS Part 1 Basics (OPC 30500-1) — reference.opcfoundation.org",
+          "url": "https://reference.opcfoundation.org/LADS/v100/docs/"
+        },
+        {
+          "title": "OPC UA LADS (SLAS standards)",
+          "url": "https://www.slas.org/resources/standards/opc-ua-lads/"
+        }
+      ]
+    },
+    {
+      "id": "ctrl_split",
+      "label": "制御権限の二層分界",
+      "type": "concept",
+      "domain": "d4",
+      "content": "協業前提でデバイスを設計指定するとき、安全クリティカルな高速ループはデバイス局所コントローラ(検証済PID: 温度37℃/pH7.1/DO40%/撹拌rpm, 秒オーダ・決定的)に置き、ReActブレインは監督制御(設定点変更・灌流/給餌率・サンプリング/継代トリガ・アラーム応答, 30秒+オーダ)に限定する。LLMは高速ループを閉じない(安全/CSV)。緊急停止・無菌バリア・ハード保安連動は安全系のみが強制し、ブレインは読み取りのみ。",
+      "sources": [
+        {
+          "title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",
+          "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"
+        }
+      ]
+    },
+    {
+      "id": "devprofile",
+      "label": "デバイスプロファイル / ICD（協業の成果物）",
+      "type": "concept",
+      "domain": "d5",
+      "content": "協業でデバイス側に実装を指定する単一の情報モデル(Interface Control Document)。LADS/OPC-UAのFunctional Unit/Function/Programで表現し、これがdevice実装とauto_cellのDomainVertical(channel↔sensor Function, tool↔controller Function/method, EBR↔Program/Result, event↔alarm)を束ねる。setpoint範囲・単位・検証済包絡線を含み、second-source(別ベンダ実装)を可能にする。bespoke REST/gRPCを一次契約にしない。",
+      "sources": [
+        {
+          "title": "OPC UA for LADS Part 1 Basics (OPC 30500-1) — reference.opcfoundation.org",
+          "url": "https://reference.opcfoundation.org/LADS/v100/docs/"
         }
       ]
     }
@@ -1781,6 +1915,91 @@
       "source": "src_susp",
       "target": "suspension",
       "rel": "reports"
+    },
+    {
+      "source": "d1",
+      "rel": "has",
+      "target": "kinetics"
+    },
+    {
+      "source": "kinetics",
+      "rel": "reproduces",
+      "target": "suspension"
+    },
+    {
+      "source": "kinetics",
+      "rel": "validates",
+      "target": "loop"
+    },
+    {
+      "source": "src_borys",
+      "rel": "demonstrates",
+      "target": "suspension"
+    },
+    {
+      "source": "src_kropp",
+      "rel": "demonstrates",
+      "target": "suspension"
+    },
+    {
+      "source": "src_traj",
+      "rel": "reports",
+      "target": "suspension"
+    },
+    {
+      "source": "src_manstein",
+      "rel": "defines",
+      "target": "kinetics"
+    },
+    {
+      "source": "src_manstein",
+      "rel": "demonstrates",
+      "target": "suspension"
+    },
+    {
+      "source": "src_galv",
+      "rel": "informs",
+      "target": "kinetics"
+    },
+    {
+      "source": "src_lads",
+      "rel": "specifies",
+      "target": "opcua"
+    },
+    {
+      "source": "gateway",
+      "rel": "bridges_to",
+      "target": "opcua"
+    },
+    {
+      "source": "d4",
+      "rel": "has",
+      "target": "ctrl_split"
+    },
+    {
+      "source": "ctrl_split",
+      "rel": "constrains",
+      "target": "loop"
+    },
+    {
+      "source": "csv",
+      "rel": "validates",
+      "target": "ctrl_split"
+    },
+    {
+      "source": "d5",
+      "rel": "has",
+      "target": "devprofile"
+    },
+    {
+      "source": "devprofile",
+      "rel": "uses",
+      "target": "opcua"
+    },
+    {
+      "source": "gateway",
+      "rel": "implements",
+      "target": "devprofile"
     }
   ]
 }

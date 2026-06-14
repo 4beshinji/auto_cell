@@ -105,3 +105,16 @@ src_cxa,CellXpress.ai 適用ノート,source,Automation of iPSC culture/passagin
 src_cxa,CellXpress.ai 適用ノート,source,Deep learning for label-free monitoring of iPSC & organoids,https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures
 src_susp,浮遊培養 一貫化（eLife）,source,"iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）",https://www.riken.jp/press/2024/20241120_1/index.html
 src_susp,浮遊培養 一貫化（eLife）,source,"iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）",https://stemcells.or.jp/ips-9/
+kinetics,浮遊培養速度論モデル（Tier2 plant 原典）,concept,"Kinetic modeling of hiPSC expansion in suspension culture（Galvanauskas et al., Regen Therapy 2019;12:88-93）",https://pmc.ncbi.nlm.nih.gov/articles/PMC6933447/
+src_galv,Galvanauskas et al. 2019 (近縁の3項モデル),source,Kinetic modeling of hiPSC expansion in suspension culture（PMC6933447）,https://pmc.ncbi.nlm.nih.gov/articles/PMC6933447/
+src_galv,Galvanauskas et al. 2019 (近縁の3項モデル),source,PubMed 31890771,https://pubmed.ncbi.nlm.nih.gov/31890771/
+src_borys,Borys et al. 2021 (Stem Cell Res Ther),source,"Borys et al. 2021, Stem Cell Res Ther 12:55（PMC7805206）",https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/
+src_kropp,Kropp/Lipsitz et al. 2015 (BMC Proceedings),source,"Kropp et al. 2015, BMC Proceedings（PMC4685349）",https://pmc.ncbi.nlm.nih.gov/articles/PMC4685349/
+src_traj,Nogueira 2019 / Olmer 2012（到達密度 実測）,source,"Nogueira et al. 2019, J Biol Eng（PMC6744632）",https://pmc.ncbi.nlm.nih.gov/articles/PMC6744632/
+src_traj,Nogueira 2019 / Olmer 2012（到達密度 実測）,source,"Olmer et al. 2012, Tissue Eng Part C（PMC3460618）",https://pmc.ncbi.nlm.nih.gov/articles/PMC3460618/
+src_manstein,Manstein & Zweigerdt 2021（plant_model 原典）,source,"Manstein et al. 2021, Stem Cells Transl Med 10(7):1063-1080（DOI 10.1002/sctm.20-0453, PMID 33660952）",https://pubmed.ncbi.nlm.nih.gov/33660952/
+src_manstein,Manstein & Zweigerdt 2021（plant_model 原典）,source,"Manstein et al. 2021, STAR Protocols 2(4):100988 — in silico model Table 1（PMC8666714）",https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/
+src_lads,OPC UA LADS v1.0.0 (OPC Foundation),source,OPC UA for LADS Part 1 Basics (OPC 30500-1) — reference.opcfoundation.org,https://reference.opcfoundation.org/LADS/v100/docs/
+src_lads,OPC UA LADS v1.0.0 (OPC Foundation),source,OPC UA LADS (SLAS standards),https://www.slas.org/resources/standards/opc-ua-lads/
+ctrl_split,制御権限の二層分界,concept,"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc
+devprofile,デバイスプロファイル / ICD（協業の成果物）,concept,OPC UA for LADS Part 1 Basics (OPC 30500-1) — reference.opcfoundation.org,https://reference.opcfoundation.org/LADS/v100/docs/

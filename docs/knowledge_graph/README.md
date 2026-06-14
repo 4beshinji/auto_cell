@@ -4,9 +4,24 @@
 ドメイン知識を構造化したナレッジグラフの **シード**。auto_cell の設計はこれを一次資料
 （research SoT）とする。設計への落とし込みは [`../design/kg_to_auto_cell.md`](../design/kg_to_auto_cell.md)。
 
-- 規模: **68 ノード / 139 エッジ / 8 ドメイン**（root=1, domain=8, concept=44, system=3, player=5, source=7）
-- 生成: 2026-06-14
+- 規模: **77 ノード / 156 エッジ / 8 ドメイン**（root=1, domain=8, concept=47, system=3, player=5, source=13）
+- 生成: 2026-06-14（同日 P1 拡張＋続報訂正＋P3 デバイス IF・制御権限）
 - 名前空間: `https://tangletech.dev/ips-automation-kg#`（TTL）
+
+> **P1 拡張＋続報 (2026-06-14)**: 浮遊速度論モデルと CPP の文献根拠を調査。**plant_model の真の原典は
+> Manstein & Zweigerdt 2021**（`src_manstein`; SCTM 10:1063-1080 / STAR Protocols 2:100988）で、6 定数
+> すべて忠実と確定。deep-research 本調査が一旦原典と推定した Galvanauskas 2019（`src_galv`）は近縁の
+> 3 項別モデルで、これは誤推定だった（続報の WebFetch で訂正）。追加: `kinetics`/`src_manstein`/`src_galv`/
+> `src_borys`/`src_kropp`/`src_traj`。詳細レポートは
+> [`research/2026-06-14_P1_kinetics_cpp.md`](research/2026-06-14_P1_kinetics_cpp.md)（冒頭に訂正セクション）、
+> 設計反映は [`../design/kg_to_auto_cell.md`](../design/kg_to_auto_cell.md) §4.1/§6。`json` を正本に派生
+> （jsonl/csv/ttl）と HTML ビューア埋め込みを再生成済。
+
+> **P3 デバイス IF / 制御権限 (2026-06-14)**: バイオリアクタ本体は **OPC-UA/LADS 第一**（LADS v1.0.0 が
+> バイオリアクタを明示モデル化、`src_lads`）、ラボ自動化は **SiLA2 従**、閉鎖ターンキー(Terumo 等)は制御対象外。
+> 協業前提では **制御権限を二層分界**（局所 PID＋ブレイン監督, `ctrl_split`）し、**単一デバイスプロファイル/ICD**
+> （LADS 情報モデル, `devprofile`）で device 実装と DomainVertical を束ねる。設計反映は
+> [`../design/kg_to_auto_cell.md`](../design/kg_to_auto_cell.md) §7.1-7.3/§8。現在 **77/156 で全整合**。
 
 ## ファイル
 

@@ -245,6 +245,19 @@ const S = { // reusable sources
   kitano:{t:'細胞培養の自動化に取り組むユニット長 北野優子（リケラボ）',u:'https://www.rikelab.jp/post/11588.html'},
   ramlaw:{t:'再生医療等安全性確保法 関連（Science Portal）',u:'https://scienceportal.jst.go.jp/newsflash/20250403_n01/'},
   astellas:{t:'iPS細胞をロボが培養（アステラス, 日経）',u:'https://www.nikkei.com/article/DGKKZO75692350Z21C23A0TB0000/'},
+  // ---- P1 拡張 (2026-06-14, deep-research): 浮遊速度論ODE原典 + CPP文献 ----
+  galv_reth:{t:'Kinetic modeling of hiPSC expansion in suspension culture（Galvanauskas et al., Regen Therapy 2019;12:88-93）',u:'https://pmc.ncbi.nlm.nih.gov/articles/PMC6933447/'},
+  galv_pubmed:{t:'PubMed 31890771（Galvanauskas et al. 2019）',u:'https://pubmed.ncbi.nlm.nih.gov/31890771/'},
+  borys:{t:'Borys et al. 2021, Stem Cell Res Ther 12:55（PMC7805206）',u:'https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/'},
+  kropp:{t:'Kropp et al. 2015, BMC Proceedings（PMC4685349）',u:'https://pmc.ncbi.nlm.nih.gov/articles/PMC4685349/'},
+  nogueira:{t:'Nogueira et al. 2019, J Biol Eng（PMC6744632）',u:'https://pmc.ncbi.nlm.nih.gov/articles/PMC6744632/'},
+  olmer:{t:'Olmer et al. 2012, Tissue Eng Part C（PMC3460618）',u:'https://pmc.ncbi.nlm.nih.gov/articles/PMC3460618/'},
+  // ---- P1 続報 (2026-06-14): plant_model の真の原典 = Manstein & Zweigerdt 2021 ----
+  manstein_sctm:{t:'Manstein et al. 2021, Stem Cells Transl Med 10(7):1063-1080（DOI 10.1002/sctm.20-0453, PMID 33660952）',u:'https://pubmed.ncbi.nlm.nih.gov/33660952/'},
+  manstein_star:{t:'Manstein et al. 2021, STAR Protocols 2(4):100988 — in silico model Table 1（PMC8666714）',u:'https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/'},
+  // ---- P3 (2026-06-14): デバイス IF ----
+  lads_ref:{t:'OPC UA for LADS Part 1 Basics (OPC 30500-1) — reference.opcfoundation.org',u:'https://reference.opcfoundation.org/LADS/v100/docs/'},
+  lads_slas:{t:'OPC UA LADS (SLAS standards)',u:'https://www.slas.org/resources/standards/opc-ua-lads/'},
 };
 
 const NODES = [
@@ -358,8 +371,11 @@ const NODES = [
    content:'HTTP/2＋Protocol BuffersとFeature Definition Languageで意味的に同一なデバイスIFを標準化。ベンダロックイン回避と統合工数削減の中核。',
    sources:[S.sila_faq,S.sila_sdk]},
   {id:'opcua',label:'OPC-UA / LADS',type:'concept',domain:'d5',
-   content:'産業で普及するM2M標準OPC-UAと、その研究室向けコンパニオン規格LADS。SiLA2と並ぶデバイス通信の選択肢で、製造ライン連携に強い。',
-   sources:[S.sila_sdk]},
+   content:'産業で普及するM2M標準OPC-UAと、その研究室向けコンパニオン規格LADS。SiLA2と並ぶデバイス通信の選択肢で、製造ライン連携に強い。【P3】LADS v1.0.0(2024年1月, OPC Foundation+Spectaris+VDMA)はバイオリアクタを明示的にモデル化—Functional Unit×Function(analogセンサ/controller/program)構成で、auto_cellのchannel_config/tool_schemas/EBRに直接対応。Eppendorf DASware等プロセス制御機はOPC公開。A層バイオリアクタ制御のデバイスIF第一候補。',
+   sources:[S.sila_sdk,S.lads_ref]},
+  {id:'src_lads',label:'OPC UA LADS v1.0.0 (OPC Foundation)',type:'source',domain:'d5',
+   content:'Laboratory and Analytical Device Standard。OPC-UAコンパニオン規格(2024-01, OPC Foundation+Spectaris+VDMA, OPC 30500-1)。Functional Unit/Function(sensor analog/discrete/multi-state, controller, actuator)＋Program/Result管理＋Asset/保守。バイオリアクタを明示例として槽=Functional Unit(温度センサ+モータ+program)でモデル化。auto_cellのDomainVertical面に直対応。',
+   sources:[S.lads_ref,S.lads_slas]},
   {id:'mtp',label:'MTP（モジュール型パッケージ）',type:'concept',domain:'d5',
    content:'モジュール式・柔軟自動化を可能にする記述。SiLA2と組み合わせ、R&Dから製造へのスケールを支える構成管理の枠組み。',
    sources:[S.sila_faq]},
@@ -421,7 +437,7 @@ const NODES = [
    content:'自家iPSの閉鎖系フル自動製造を推進。約3週間・原材料費約100万円/人を掲げ、PMDA適合性調査・非臨床を経て2028年度の治験開始を目標。',
    sources:[S.myips,S.myips2,S.myipsproj]},
   {id:'terumo',label:'Terumo BCT / Quantum Flex',type:'system',domain:'d8',
-   content:'2024年に財団と提携。Quantum Flex Cell Expansion System上で閉鎖・自動・統合プロセスを構築し、デジタル技術で効率と制御を高める。',
+   content:'2024年に財団と提携。Quantum Flex Cell Expansion System上で閉鎖・自動・統合プロセスを構築し、デジタル技術で効率と制御を高める。【P3】Quantum FlexはCPAソフト(プロトコルビルダ/最大100台フリート/cGMP)の閉鎖ターンキーで、公開デバイスAPIは確認できず＝自前ブレインの閉ループ制御対象ではなく商用/臨床エンドポイント(連携するなら監視のみ)。',
    sources:[S.terumo]},
   {id:'pana',label:'パナソニックHD',type:'player',domain:'d8',
    content:'岩田研由来の閉鎖型自動培養の系譜。2026年4月、中之島クロスでiPS樹立工程の自動化実証を開始し、最難関の樹立に踏み込む。',
@@ -464,6 +480,34 @@ const NODES = [
   {id:'src_susp',label:'浮遊培養 一貫化（eLife）',type:'source',domain:'d1',
    content:'樹立→大量培養→直接凍結まで浮遊系で一貫。量産・自動化の生物学的基盤。財団・理研・カネカ共同。',
    sources:[S.riken_susp,S.susp2]},
+
+  // ---- P1 拡張 (2026-06-14): 浮遊速度論ODE原典 + CPP文献根拠 ----
+  {id:'kinetics',label:'浮遊培養速度論モデル（Tier2 plant 原典）',type:'concept',domain:'d1',
+   content:'iPSC浮遊培養の比増殖速度をMonod型で表すin silicoモデル。auto_cell Tier2 plant_modelの原典はManstein & Zweigerdt 2021（SCTM/STAR Protocols, src_manstein）で、グルコース・乳酸・グルタミン・浸透圧・凝集体径の阻害項を持ち、灌流で7日35×10⁶ cells/mLを達成した過程制御モデル。Table1定数(µ=1.35/d, KGlc=1.5mM, KLac=50mM, KGln=0.01mM, KOsm=500mOsm/kg, KAgg=350/2=175µm径)はplant_modelと完全一致。Galvanauskas 2019(src_galv)は3項のみの近縁別モデル。',
+   sources:[S.manstein_sctm,S.manstein_star]},
+  {id:'src_manstein',label:'Manstein & Zweigerdt 2021（plant_model 原典）',type:'source',domain:'d4',
+   content:'auto_cell Tier2 plant_modelの真の原典。hPSC灌流撹拌槽培養をpH7.1/DO40%/浸透圧ピーク抑制/灌流で制御し、7日で70倍・35×10⁶ cells/mL(150mLで52.5億細胞)を達成。Monod型in silicoモデル(Table1: µ=1.35/d, KGlc=1.5mM, KLac=50mM, KGln=0.01mM, KOsm=500mOsm/kg, KAgg=350/2=175µm)はplant_modelの6定数と完全一致。撹拌80rpm(150mLスケール)。',
+   sources:[S.manstein_sctm,S.manstein_star]},
+  {id:'src_galv',label:'Galvanauskas et al. 2019 (近縁の3項モデル)',type:'source',domain:'d1',
+   content:'iPSC浮遊培養速度論の近縁モデル(Galvanauskas/Kino-Oka 2019, Regen Therapy 12:88-93)。グルコースMonod＋乳酸阻害＋凝集体体積阻害の3項のみで、グルタミン制限/浸透圧項は持たない(明示的に省略)。定数もplant_modelと異なる(µmax≈2.35/d, KG≈7mM, KAgg=5.6e6µm³体積)。deep-researchが一旦原典と誤推定したが、真の原典はManstein 2021(src_manstein)。',
+   sources:[S.galv_reth,S.galv_pubmed]},
+  {id:'src_borys',label:'Borys et al. 2021 (Stem Cell Res Ther)',type:'source',domain:'d4',
+   content:'iPSC Vertical-Wheel(PBS Biotech)撹拌最適化。40rpmが最大増殖(day6で32.3±3.2倍)、day5凝集体径169-275µm、>400µmで壊死予想。撹拌CPPの文献アンカー(最適40-60rpm、auto_cellの50-120rpm上限は高め)。',
+   sources:[S.borys]},
+  {id:'src_kropp',label:'Kropp/Lipsitz et al. 2015 (BMC Proceedings)',type:'source',domain:'d4',
+   content:'hPSC撹拌懸濁のBox-Behnken DoE。pH7.3/37℃、毎日給餌で高密度、播種2×10⁵が最適、DOは本研究で非有意。注: HES2(ESC)・Micro-24振盪式(400rpm=振盪周波数)でiPSC/インペラ槽への転用に注意。',
+   sources:[S.kropp]},
+  {id:'src_traj',label:'Nogueira 2019 / Olmer 2012（バッチ到達密度）',type:'source',domain:'d1',
+   content:'バッチ vs 灌流の到達密度差。標準バッチはNogueira(Vertical-Wheel)=peak 2.3×10⁶、Olmer(撹拌槽)=2.4×10⁶ cells/mL止まり。plant_modelの検証目標35×10⁶はManstein 2021の灌流プロセス(src_manstein)で達成される値で、バッチでは到達しない。',
+   sources:[S.nogueira,S.olmer]},
+
+  // ---- P3 拡張 (2026-06-14): 制御権限分界 + デバイスプロファイル ----
+  {id:'ctrl_split',label:'制御権限の二層分界',type:'concept',domain:'d4',
+   content:'協業前提でデバイスを設計指定するとき、安全クリティカルな高速ループはデバイス局所コントローラ(検証済PID: 温度37℃/pH7.1/DO40%/撹拌rpm, 秒オーダ・決定的)に置き、ReActブレインは監督制御(設定点変更・灌流/給餌率・サンプリング/継代トリガ・アラーム応答, 30秒+オーダ)に限定する。LLMは高速ループを閉じない(安全/CSV)。緊急停止・無菌バリア・ハード保安連動は安全系のみが強制し、ブレインは読み取りのみ。',
+   sources:[S.cgtqc]},
+  {id:'devprofile',label:'デバイスプロファイル / ICD（協業の成果物）',type:'concept',domain:'d5',
+   content:'協業でデバイス側に実装を指定する単一の情報モデル(Interface Control Document)。LADS/OPC-UAのFunctional Unit/Function/Programで表現し、device実装とauto_cellのDomainVertical(channel↔sensor Function, tool↔controller Function/method, EBR↔Program/Result, event↔alarm)を束ねる。setpoint範囲・単位・検証済包絡線を含み、second-source(別ベンダ実装)を可能にする。bespoke REST/gRPCを一次契約にしない。',
+   sources:[S.lads_ref]},
 ];
 
 // fallback source helpers
@@ -530,6 +574,14 @@ const EDGES = [
   {s:'sila',t:'edge',rel:'integrates'},
   {s:'opcua',t:'closeddev',rel:'integrates'},
   {s:'gateway',t:'sila',rel:'bridges_to'},
+  {s:'gateway',t:'opcua',rel:'bridges_to'},   // P3
+  {s:'src_lads',t:'opcua',rel:'specifies'},   // P3
+  {s:'d4',t:'ctrl_split',rel:'has'},          // P3 拡張
+  {s:'ctrl_split',t:'loop',rel:'constrains'},
+  {s:'csv',t:'ctrl_split',rel:'validates'},
+  {s:'d5',t:'devprofile',rel:'has'},
+  {s:'devprofile',t:'opcua',rel:'uses'},
+  {s:'gateway',t:'devprofile',rel:'implements'},
   {s:'orch',t:'sched',rel:'hosts'},
   {s:'orch',t:'sila',rel:'consumes'},
   {s:'datamodel',t:'lims',rel:'feeds'},
@@ -581,6 +633,18 @@ const EDGES = [
   {s:'src_cxa',t:'conf',rel:'illustrates'},
   {s:'src_cxa',t:'diffdet',rel:'illustrates'},
   {s:'src_susp',t:'suspension',rel:'reports'},
+
+  // ---- P1 拡張 (2026-06-14): 速度論モデル原典 + CPP文献 ----
+  // P1続報: 真の原典は Manstein 2021。src_galv は近縁別モデルへ降格(defines→informs)。
+  {s:'d1',t:'kinetics',rel:'has'},
+  {s:'src_manstein',t:'kinetics',rel:'defines'},
+  {s:'src_manstein',t:'suspension',rel:'demonstrates'},
+  {s:'src_galv',t:'kinetics',rel:'informs'},
+  {s:'kinetics',t:'suspension',rel:'reproduces'},
+  {s:'kinetics',t:'loop',rel:'validates'},
+  {s:'src_borys',t:'suspension',rel:'demonstrates'},
+  {s:'src_kropp',t:'suspension',rel:'demonstrates'},
+  {s:'src_traj',t:'suspension',rel:'reports'},
 ];
 
 /* ===================== RENDER ===================== */

@@ -9,3 +9,6 @@ build/
 *.egg-info/
 .env
 # App: DO commit uv.lock (reproducible). Intentionally NOT ignored.
+
+# Raw KG seed archive — canonical content lives extracted in docs/knowledge_graph/
+files.zip
