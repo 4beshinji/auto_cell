@@ -1,0 +1,1786 @@
+{
+  "meta": {
+    "title": "iPS自動培養ソフトウェア ドメイン知識マップ",
+    "description": "京都大学iPS細胞研究財団と関連研究を起点に、自動細胞培養ソフトウェアの実装に必要なドメイン知識をナレッジグラフのシードとして構造化したもの。",
+    "generated": "2026-06-14",
+    "node_types": [
+      "root",
+      "domain",
+      "concept",
+      "system",
+      "player",
+      "source"
+    ],
+    "node_count": 68,
+    "edge_count": 139
+  },
+  "domains": [
+    {
+      "id": "d1",
+      "label": "細胞生物学・培養プロトコル"
+    },
+    {
+      "id": "d2",
+      "label": "画像取得・コンピュータビジョン"
+    },
+    {
+      "id": "d3",
+      "label": "ロボティクス・液体ハンドリング"
+    },
+    {
+      "id": "d4",
+      "label": "プロセス制御・自律最適化"
+    },
+    {
+      "id": "d5",
+      "label": "ソフトウェア基盤・相互運用"
+    },
+    {
+      "id": "d6",
+      "label": "GMP・規制・データインテグリティ"
+    },
+    {
+      "id": "d7",
+      "label": "センサ・環境モニタリング"
+    },
+    {
+      "id": "d8",
+      "label": "エコシステム・プレイヤー"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "root",
+      "label": "iPS自動培養ソフトウェア",
+      "type": "root",
+      "domain": null,
+      "content": "患者血液→iPS樹立→維持/拡大→分化誘導→品質評価までを、画像判断・ロボット操作・規制対応を統合して自動制御するソフトウェアスタック。本マップはその実装に必要なドメイン知識の地図。",
+      "sources": [
+        {
+          "title": "iPS財団 My iPSプロジェクト（自家細胞を自動作製）",
+          "url": "https://www.nikkan.co.jp/articles/view/00745986"
+        },
+        {
+          "title": "my iPSプロジェクト（iPS財団 公式）",
+          "url": "https://www.cira-foundation.or.jp/j/about/project/myips/"
+        }
+      ]
+    },
+    {
+      "id": "d1",
+      "label": "細胞生物学・培養プロトコル",
+      "type": "domain",
+      "domain": "d1",
+      "content": "自動化の対象そのもの。iPS細胞の樹立・維持・継代・分化誘導・量産の生物学的手順群で、各操作のパラメータが下流の制御変数になる。",
+      "sources": [
+        {
+          "title": "CiRA ヒトiPS細胞 培養プロトコール集",
+          "url": "https://www.cira.kyoto-u.ac.jp/j/research/protocol.html"
+        }
+      ]
+    },
+    {
+      "id": "d2",
+      "label": "画像取得・コンピュータビジョン",
+      "type": "domain",
+      "domain": "d2",
+      "content": "ラベルフリー画像から細胞状態を定量し、意思決定の入力を生成する層。コンフルエンシー・形態・分化の判定が中核。",
+      "sources": [
+        {
+          "title": "Deep learning for label-free monitoring of iPSC & organoids",
+          "url": "https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"
+        }
+      ]
+    },
+    {
+      "id": "d3",
+      "label": "ロボティクス・液体ハンドリング",
+      "type": "domain",
+      "domain": "d3",
+      "content": "培養操作を物理的に実行する装置・ロボット層。汎用双腕と閉鎖型専用機の二系統がある。",
+      "sources": [
+        {
+          "title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）",
+          "url": "https://elifesciences.org/articles/77007"
+        },
+        {
+          "title": "Long-term iPSC maintenance by automated culture system（Konagaya 2015）",
+          "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"
+        }
+      ]
+    },
+    {
+      "id": "d4",
+      "label": "プロセス制御・自律最適化",
+      "type": "domain",
+      "domain": "d4",
+      "content": "観察→判断→操作の閉ループと、プロトコル最適化（ベイズ最適化等）を担う制御知能の層。",
+      "sources": [
+        {
+          "title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）",
+          "url": "https://elifesciences.org/articles/77007"
+        },
+        {
+          "title": "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）",
+          "url": "https://www.riken.jp/press/2020/20201204_1/index.html"
+        }
+      ]
+    },
+    {
+      "id": "d5",
+      "label": "ソフトウェア基盤・相互運用",
+      "type": "domain",
+      "domain": "d5",
+      "content": "デバイス統合標準・ワークフローオーケストレーション・データ基盤。異種機器を跨ぐ統合の土台。",
+      "sources": [
+        {
+          "title": "SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）",
+          "url": "https://sila-standard.com/faq/"
+        },
+        {
+          "title": "The SiLA 2 Manager（device discovery / data integrity）",
+          "url": "https://www.sciencedirect.com/science/article/pii/S2352711022000103"
+        }
+      ]
+    },
+    {
+      "id": "d6",
+      "label": "GMP・規制・データインテグリティ",
+      "type": "domain",
+      "domain": "d6",
+      "content": "製造ソフトが満たすべき規制・品質・電子記録の要件群。設計の制約条件を規定する。",
+      "sources": [
+        {
+          "title": "GCTP適合性調査（PMDA）",
+          "url": "https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html"
+        },
+        {
+          "title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",
+          "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"
+        }
+      ]
+    },
+    {
+      "id": "d7",
+      "label": "センサ・環境モニタリング",
+      "type": "domain",
+      "domain": "d7",
+      "content": "培養環境・無菌性の連続計測と、閉ループ制御への状態量供給。エッジ実装で分散計測。",
+      "sources": [
+        {
+          "title": "Long-term iPSC maintenance by automated culture system（Konagaya 2015）",
+          "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"
+        }
+      ]
+    },
+    {
+      "id": "d8",
+      "label": "エコシステム・プレイヤー",
+      "type": "domain",
+      "domain": "d8",
+      "content": "財団・企業・装置など実在の担い手と製品。技術選定とパートナリングの地図。",
+      "sources": [
+        {
+          "title": "iPS財団 My iPSプロジェクト（自家細胞を自動作製）",
+          "url": "https://www.nikkan.co.jp/articles/view/00745986"
+        },
+        {
+          "title": "Terumo BCT × CiRA Foundation 自動化提携（Quantum Flex）",
+          "url": "https://www.terumo.com/newsrelease/detail/20240319/6146"
+        }
+      ]
+    },
+    {
+      "id": "maint",
+      "label": "iPSC維持培養",
+      "type": "concept",
+      "domain": "d1",
+      "content": "未分化状態を保つ日々の培地交換と環境維持。ヒトiPSは毎日の培地交換と約3日ごとの継代が必要で、熟練手技に依存する点が自動化の主対象。",
+      "sources": [
+        {
+          "title": "CiRA ヒトiPS細胞 培養プロトコール集",
+          "url": "https://www.cira.kyoto-u.ac.jp/j/research/protocol.html"
+        },
+        {
+          "title": "Long-term iPSC maintenance by automated culture system（Konagaya 2015）",
+          "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"
+        }
+      ]
+    },
+    {
+      "id": "passage",
+      "label": "継代（剥離・分散）",
+      "type": "concept",
+      "domain": "d1",
+      "content": "コロニーを剥離し新プレートへ植え継ぐ工程。単一細胞分散かクランプ維持か、ROCK阻害剤(Y-27632)添加、シェアストレス管理が品質を左右する。",
+      "sources": [
+        {
+          "title": "CiRA ヒトiPS細胞 培養プロトコール集",
+          "url": "https://www.cira.kyoto-u.ac.jp/j/research/protocol.html"
+        },
+        {
+          "title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）",
+          "url": "https://elifesciences.org/articles/77007"
+        }
+      ]
+    },
+    {
+      "id": "feeder",
+      "label": "フィーダーフリー培養",
+      "type": "concept",
+      "domain": "d1",
+      "content": "フィーダー細胞を用いず基質コート上で培養する方式。臨床・自動化に適し、画像解析でも背景が単純化しやすい。",
+      "sources": [
+        {
+          "title": "CiRA ヒトiPS細胞 培養プロトコール集",
+          "url": "https://www.cira.kyoto-u.ac.jp/j/research/protocol.html"
+        }
+      ]
+    },
+    {
+      "id": "diff",
+      "label": "分化誘導プロトコル",
+      "type": "concept",
+      "domain": "d1",
+      "content": "目的細胞へ誘導する多段階手順。iPSC→RPEは seeding / preconditioning / passage / induction / maintenance の5段階として定式化され、自動探索のテンプレになった。",
+      "sources": [
+        {
+          "title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）",
+          "url": "https://elifesciences.org/articles/77007"
+        }
+      ]
+    },
+    {
+      "id": "signal",
+      "label": "シグナル制御（添加因子）",
+      "type": "concept",
+      "domain": "d1",
+      "content": "分化方向を決める阻害剤の濃度・タイミング。RPE誘導では FGFR阻害剤・SB431542(TGFβ)・CKI-7(Wnt)・Y-27632 等が制御変数。これらが最適化の探索空間になる。",
+      "sources": [
+        {
+          "title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）",
+          "url": "https://elifesciences.org/articles/77007"
+        }
+      ]
+    },
+    {
+      "id": "suspension",
+      "label": "浮遊・懸濁培養（量産）",
+      "type": "concept",
+      "domain": "d1",
+      "content": "3次元浮遊撹拌で容積当たり密度を上げ量産する方式。突発的分化を化合物で抑制し、樹立→大量培養→直接凍結まで一貫化。自動化・スケールアップの基盤形態。",
+      "sources": [
+        {
+          "title": "iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）",
+          "url": "https://www.riken.jp/press/2024/20241120_1/index.html"
+        },
+        {
+          "title": "iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）",
+          "url": "https://stemcells.or.jp/ips-9/"
+        }
+      ]
+    },
+    {
+      "id": "reprog",
+      "label": "iPSC樹立（初期化）",
+      "type": "concept",
+      "domain": "d1",
+      "content": "体細胞をRNA等で初期化しコロニーを得る最難関工程。形態が動的で良質コロニー選抜が職人技。財団・パナソニックが2026年に樹立工程の自動化実証に着手。",
+      "sources": [
+        {
+          "title": "パナソニックHD iPS樹立工程の自動化 実証実験（2026/4）",
+          "url": "https://prtimes.jp/main/html/rd/p/000006702.000003442.html"
+        },
+        {
+          "title": "ML label-free iPSC colony formation detection（Sci Rep）",
+          "url": "https://www.nature.com/articles/s41598-017-13680-x"
+        }
+      ]
+    },
+    {
+      "id": "qccrit",
+      "label": "細胞品質基準",
+      "type": "concept",
+      "domain": "d1",
+      "content": "未分化マーカー発現・三胚葉分化能・核型など、製造物が満たすべき生物学的基準。自動判定の「正解ラベル」を定義し、画像代理指標と紐づける必要がある。",
+      "sources": [
+        {
+          "title": "Parametric analysis of hPSC colony morphology for QC（Sci Rep）",
+          "url": "https://www.nature.com/articles/srep34009"
+        },
+        {
+          "title": "Long-term iPSC maintenance by automated culture system（Konagaya 2015）",
+          "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"
+        }
+      ]
+    },
+    {
+      "id": "bf",
+      "label": "明視野/位相差イメージング",
+      "type": "concept",
+      "domain": "d2",
+      "content": "低光毒性で非侵襲なラベルフリー観察。一方で低コントラスト・不均一背景・ハロー/エッジ効果があり、頑健なセグメンテーションが難所。",
+      "sources": [
+        {
+          "title": "Deep learning for label-free monitoring of iPSC & organoids",
+          "url": "https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"
+        }
+      ]
+    },
+    {
+      "id": "conf",
+      "label": "コンフルエンシー算出",
+      "type": "concept",
+      "domain": "d2",
+      "content": "セグメンテーションで占有面積/コロニー面積を定量。継代や次工程移行の判断指標（例: 70-80%）として閾値化される中核メトリクス。",
+      "sources": [
+        {
+          "title": "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）",
+          "url": "https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"
+        },
+        {
+          "title": "Deep learning for label-free monitoring of iPSC & organoids",
+          "url": "https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"
+        }
+      ]
+    },
+    {
+      "id": "morphcls",
+      "label": "コロニー形態分類",
+      "type": "concept",
+      "domain": "d2",
+      "content": "良/不良フェノタイプをCNN等で識別。形態パラメータが未分化性・クローン性維持能と相関し、選抜・除外の自動判断に使う。",
+      "sources": [
+        {
+          "title": "QC of hPSC colonies by CNN image analysis",
+          "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9820636/"
+        },
+        {
+          "title": "Parametric analysis of hPSC colony morphology for QC（Sci Rep）",
+          "url": "https://www.nature.com/articles/srep34009"
+        }
+      ]
+    },
+    {
+      "id": "diffdet",
+      "label": "分化領域検出",
+      "type": "concept",
+      "domain": "d2",
+      "content": "未分化コロニー内の自発分化領域を検出・定量。分化率の閾値超過ウェルを除外したり、誘導の進行度評価に用いる専用DLモデル。",
+      "sources": [
+        {
+          "title": "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）",
+          "url": "https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"
+        },
+        {
+          "title": "Deep learning for label-free monitoring of iPSC & organoids",
+          "url": "https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"
+        }
+      ]
+    },
+    {
+      "id": "growth",
+      "label": "増殖曲線予測→継代トリガ",
+      "type": "concept",
+      "domain": "d2",
+      "content": "定期観察から面積値の増殖曲線を推定し、目標密度到達の至適時刻を予測。これがスケジューラと継代操作のトリガになる閉ループの起点。",
+      "sources": [
+        {
+          "title": "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）",
+          "url": "https://www.riken.jp/press/2020/20201204_1/index.html"
+        },
+        {
+          "title": "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）",
+          "url": "https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"
+        }
+      ]
+    },
+    {
+      "id": "dlmodel",
+      "label": "DLモデル（分割/分類）",
+      "type": "concept",
+      "domain": "d2",
+      "content": "セグメンテーション(面積/コンフルエンシー)と分類(形態・分化)の学習モデル群。ラベルフリー前提・低コントラスト対応・施設間汎化が実装課題。",
+      "sources": [
+        {
+          "title": "Deep learning for label-free monitoring of iPSC & organoids",
+          "url": "https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"
+        },
+        {
+          "title": "QC of hPSC colonies by CNN image analysis",
+          "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9820636/"
+        }
+      ]
+    },
+    {
+      "id": "dualarm",
+      "label": "双腕ヒューマノイド",
+      "type": "concept",
+      "domain": "d3",
+      "content": "汎用器具をそのまま扱える人型双腕（例: LabDroid Maholo）。プロトコル変更に柔軟で、パラメータ探索や手作業の写像に向く。",
+      "sources": [
+        {
+          "title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）",
+          "url": "https://elifesciences.org/articles/77007"
+        },
+        {
+          "title": "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）",
+          "url": "https://www.riken.jp/press/2020/20201204_1/index.html"
+        }
+      ]
+    },
+    {
+      "id": "closeddev",
+      "label": "閉鎖型専用培養装置",
+      "type": "concept",
+      "domain": "d3",
+      "content": "装置内で取り出さず培養するクローズド機。無菌性・更衣簡略化・人為ミス低減に優れ、財団のmy iPS製造の中核アーキテクチャ。",
+      "sources": [
+        {
+          "title": "iPS財団 My iPSプロジェクト（自家細胞を自動作製）",
+          "url": "https://www.nikkan.co.jp/articles/view/00745986"
+        },
+        {
+          "title": "Long-term iPSC maintenance by automated culture system（Konagaya 2015）",
+          "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"
+        }
+      ]
+    },
+    {
+      "id": "dispense",
+      "label": "自動分注・ピペッティング",
+      "type": "concept",
+      "domain": "d3",
+      "content": "培地・試薬の精密分注と吸引。液面追従・体積制御・無菌チップ運用が再現性を決める。リキッドハンドラ統合の基本ユニット。",
+      "sources": [
+        {
+          "title": "Long-term iPSC maintenance by automated culture system（Konagaya 2015）",
+          "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"
+        }
+      ]
+    },
+    {
+      "id": "transport",
+      "label": "プレート搬送・把持",
+      "type": "concept",
+      "domain": "d3",
+      "content": "インキュベータ⇄顕微鏡⇄作業台間のプレート/容器搬送とグリッパ制御。スケジュールに沿う物流が自律運転の連続性を支える。",
+      "sources": [
+        {
+          "title": "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）",
+          "url": "https://www.riken.jp/press/2020/20201204_1/index.html"
+        },
+        {
+          "title": "SiLA2: cell culture autopilot / vendor-agnostic",
+          "url": "https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard"
+        }
+      ]
+    },
+    {
+      "id": "motioncap",
+      "label": "熟練手技のモーション再現",
+      "type": "concept",
+      "domain": "d3",
+      "content": "熟練者の作業を動作解析し数値化してロボットで再現する思想。「誰でもできるよう数値化して自動化」が財団の自動化方針の核。",
+      "sources": [
+        {
+          "title": "免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）",
+          "url": "https://scienceportal.jst.go.jp/newsflash/20250403_n01/"
+        },
+        {
+          "title": "がん治療に役立つ細胞の分化・培養を自動化（Panasonic）",
+          "url": "https://news.panasonic.com/jp/stories/17100"
+        }
+      ]
+    },
+    {
+      "id": "sched",
+      "label": "スケジューリング",
+      "type": "concept",
+      "domain": "d4",
+      "content": "12時間ごとの観察など定期タスクと、至適継代時刻のような条件起動タスクを編成。多細胞株・多バッチの並行運転を破綻なく回す制御層。",
+      "sources": [
+        {
+          "title": "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）",
+          "url": "https://www.riken.jp/press/2020/20201204_1/index.html"
+        }
+      ]
+    },
+    {
+      "id": "loop",
+      "label": "クローズドループ判断",
+      "type": "concept",
+      "domain": "d4",
+      "content": "観察→判断→操作のサイクルを人手介入なしで回す。画像メトリクスを意思決定点に変換し、通知か次工程実行かを分岐する制御ロジック。",
+      "sources": [
+        {
+          "title": "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）",
+          "url": "https://www.riken.jp/press/2020/20201204_1/index.html"
+        },
+        {
+          "title": "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）",
+          "url": "https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"
+        }
+      ]
+    },
+    {
+      "id": "bbo",
+      "label": "バッチベイズ最適化",
+      "type": "concept",
+      "domain": "d4",
+      "content": "数百万通りの培養条件を、ガウス過程＋バッチ取得関数で効率探索。RPE分化率を反復改善した自律実験の中核解法（GPyOptベース）。",
+      "sources": [
+        {
+          "title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）",
+          "url": "https://elifesciences.org/articles/77007"
+        },
+        {
+          "title": "LabDroid_optimizer（GitHub / GPyOpt）",
+          "url": "https://github.com/labauto/LabDroid_optimizer"
+        }
+      ]
+    },
+    {
+      "id": "doe",
+      "label": "実験計画の定式化",
+      "type": "concept",
+      "domain": "d4",
+      "content": "プロトコルをパラメータ空間に写像し、最適化問題として定義する工程。各操作を変数化（濃度・日数・剥離強度等）し探索可能にする前処理。",
+      "sources": [
+        {
+          "title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）",
+          "url": "https://elifesciences.org/articles/77007"
+        }
+      ]
+    },
+    {
+      "id": "sdl",
+      "label": "自律実験 / Self-driving Lab",
+      "type": "concept",
+      "domain": "d4",
+      "content": "ロボットが自ら結果を評価し次実験を計画する枠組み。再現性ある細胞製造に向け、探索空間の系統的・無バイアス探索を加速する。",
+      "sources": [
+        {
+          "title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）",
+          "url": "https://elifesciences.org/articles/77007"
+        },
+        {
+          "title": "Implementing robotics and AI（eLife digest）",
+          "url": "https://elifesciences.org/articles/80609"
+        }
+      ]
+    },
+    {
+      "id": "rl",
+      "label": "強化学習（発展領域）",
+      "type": "concept",
+      "domain": "d4",
+      "content": "方策学習による操作・条件最適化。製造GMP文脈では検証可能性が壁で、現状は画像判断・BOが主流、RLは研究段階。",
+      "sources": [
+        {
+          "title": "Implementing robotics and AI（eLife digest）",
+          "url": "https://elifesciences.org/articles/80609"
+        }
+      ]
+    },
+    {
+      "id": "sila",
+      "label": "SiLA 2（デバイス標準）",
+      "type": "concept",
+      "domain": "d5",
+      "content": "HTTP/2＋Protocol BuffersとFeature Definition Languageで意味的に同一なデバイスIFを標準化。ベンダロックイン回避と統合工数削減の中核。",
+      "sources": [
+        {
+          "title": "SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）",
+          "url": "https://sila-standard.com/faq/"
+        },
+        {
+          "title": "Tecan SiLA2 SDK（royalty-free, open-source）",
+          "url": "https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext"
+        }
+      ]
+    },
+    {
+      "id": "opcua",
+      "label": "OPC-UA / LADS",
+      "type": "concept",
+      "domain": "d5",
+      "content": "産業で普及するM2M標準OPC-UAと、その研究室向けコンパニオン規格LADS。SiLA2と並ぶデバイス通信の選択肢で、製造ライン連携に強い。",
+      "sources": [
+        {
+          "title": "Tecan SiLA2 SDK（royalty-free, open-source）",
+          "url": "https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext"
+        }
+      ]
+    },
+    {
+      "id": "mtp",
+      "label": "MTP（モジュール型パッケージ）",
+      "type": "concept",
+      "domain": "d5",
+      "content": "モジュール式・柔軟自動化を可能にする記述。SiLA2と組み合わせ、R&Dから製造へのスケールを支える構成管理の枠組み。",
+      "sources": [
+        {
+          "title": "SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）",
+          "url": "https://sila-standard.com/faq/"
+        }
+      ]
+    },
+    {
+      "id": "orch",
+      "label": "ワークフロー・オーケストレーション",
+      "type": "concept",
+      "domain": "d5",
+      "content": "タスクとデータと物理ハードを途切れなく統合する制御フレーム（AlabOS, Helao 等）。各機器をサービス化し横断ワークフローを管理。",
+      "sources": [
+        {
+          "title": "SiLA2: cell culture autopilot / vendor-agnostic",
+          "url": "https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard"
+        }
+      ]
+    },
+    {
+      "id": "gateway",
+      "label": "レガシーデバイス・ゲートウェイ",
+      "type": "concept",
+      "domain": "d5",
+      "content": "独自IFしか持たない既存機器を標準IFへ橋渡しするゲートウェイ層。GPIO/USB/シリアル接続と遠隔監視で「スマート化」する。",
+      "sources": [
+        {
+          "title": "The SiLA 2 Manager（device discovery / data integrity）",
+          "url": "https://www.sciencedirect.com/science/article/pii/S2352711022000103"
+        }
+      ]
+    },
+    {
+      "id": "lims",
+      "label": "LIMS / LES（情報・実行系）",
+      "type": "concept",
+      "domain": "d5",
+      "content": "検体・試薬・手順・結果を記録/指図する上位システム。デバイス層からのデータを集約し、バッチ記録・トレーサビリティに接続する。",
+      "sources": [
+        {
+          "title": "The SiLA 2 Manager（device discovery / data integrity）",
+          "url": "https://www.sciencedirect.com/science/article/pii/S2352711022000103"
+        },
+        {
+          "title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",
+          "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"
+        }
+      ]
+    },
+    {
+      "id": "datamodel",
+      "label": "データモデル / インジェスト",
+      "type": "concept",
+      "domain": "d5",
+      "content": "画像・センサ・操作ログの標準化された取り込み。新旧機器の異種IFを跨いだ「データ取り込みギャップ」の解消が自律運転の前提。",
+      "sources": [
+        {
+          "title": "SiLA2: cell culture autopilot / vendor-agnostic",
+          "url": "https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard"
+        },
+        {
+          "title": "The SiLA 2 Manager（device discovery / data integrity）",
+          "url": "https://www.sciencedirect.com/science/article/pii/S2352711022000103"
+        }
+      ]
+    },
+    {
+      "id": "gctp",
+      "label": "GCTP（再生医療等製品製造管理）",
+      "type": "concept",
+      "domain": "d6",
+      "content": "再生医療等製品の製造・品質管理基準。製造設備に加え管理手法の適合性をPMDAが調査。製造ソフトの設計境界を規定する。",
+      "sources": [
+        {
+          "title": "GCTP適合性調査（PMDA）",
+          "url": "https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html"
+        }
+      ]
+    },
+    {
+      "id": "ramlaw",
+      "label": "再生医療等安全性確保法 / 施設基準",
+      "type": "concept",
+      "domain": "d6",
+      "content": "細胞培養加工施設の構造設備基準と適合性調査の根拠法。my iPS製造施設はこの枠組みでPMDA適合性調査を受け稼働を目指す。",
+      "sources": [
+        {
+          "title": "再生医療等安全性確保法 関連（Science Portal）",
+          "url": "https://scienceportal.jst.go.jp/newsflash/20250403_n01/"
+        },
+        {
+          "title": "免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）",
+          "url": "https://scienceportal.jst.go.jp/newsflash/20250403_n01/"
+        }
+      ]
+    },
+    {
+      "id": "alcoa",
+      "label": "ALCOA+ データインテグリティ",
+      "type": "concept",
+      "domain": "d6",
+      "content": "帰属性・判読性・同時性・原本性・正確性＋αを全ライフサイクルで満たす原則。製造/解析で生成する全データが従うべき設計要件。",
+      "sources": [
+        {
+          "title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",
+          "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"
+        }
+      ]
+    },
+    {
+      "id": "csv",
+      "label": "CSV / CSA（システムバリデーション）",
+      "type": "concept",
+      "domain": "d6",
+      "content": "計算機システムが目的適合かつALCOA+準拠であることを文書化した証拠。技術的統制で担保するのは複雑で時間を要するが必須工程。",
+      "sources": [
+        {
+          "title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",
+          "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"
+        }
+      ]
+    },
+    {
+      "id": "part11",
+      "label": "21 CFR Part 11 / Annex 11",
+      "type": "concept",
+      "domain": "d6",
+      "content": "電子記録・電子署名の監査性と安全な取扱いを求めるFDA/EU規制。電子系の設計（権限・署名・改ざん防止）の直接要件。",
+      "sources": [
+        {
+          "title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",
+          "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"
+        }
+      ]
+    },
+    {
+      "id": "ebr",
+      "label": "電子バッチ記録（EBR）",
+      "type": "concept",
+      "domain": "d6",
+      "content": "製造工程で生成される改ざん不能な電子記録。前工程データの検証で次工程の整合を担保し、逸脱時の是正を可能にする。",
+      "sources": [
+        {
+          "title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",
+          "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"
+        }
+      ]
+    },
+    {
+      "id": "audit",
+      "label": "監査証跡（Audit Trail）",
+      "type": "concept",
+      "domain": "d6",
+      "content": "誰が・いつ・何を変更したかを追える記録。データインテグリティとPart11準拠の中核で、全操作のロギング設計が必要。",
+      "sources": [
+        {
+          "title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",
+          "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"
+        }
+      ]
+    },
+    {
+      "id": "capa",
+      "label": "CAPA / リスク管理（FMEA）",
+      "type": "concept",
+      "domain": "d6",
+      "content": "逸脱・品質事象の根本原因分析と是正/予防措置。FMEA等のリスク評価が製品・工程設計の判断を導く。ソフトの逸脱検知設計に直結。",
+      "sources": [
+        {
+          "title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",
+          "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"
+        }
+      ]
+    },
+    {
+      "id": "envmon",
+      "label": "環境モニタリング（DO/pH/CO₂/温度）",
+      "type": "concept",
+      "domain": "d7",
+      "content": "培養環境の連続計測。維持培養や量産の安定性を支え、閉ループ制御の状態量を供給する。エッジ実装（ESP32等）で分散計測が可能。",
+      "sources": [
+        {
+          "title": "Long-term iPSC maintenance by automated culture system（Konagaya 2015）",
+          "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"
+        }
+      ]
+    },
+    {
+      "id": "sterility",
+      "label": "無菌性・コンタミ監視",
+      "type": "concept",
+      "domain": "d7",
+      "content": "菌混入や逸脱の検知。閉鎖系では更衣簡略化と引換えに監視設計が重要で、9日連続運転でも重大エラー/汚染ゼロが品質目標水準。",
+      "sources": [
+        {
+          "title": "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）",
+          "url": "https://www.riken.jp/press/2020/20201204_1/index.html"
+        },
+        {
+          "title": "免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）",
+          "url": "https://scienceportal.jst.go.jp/newsflash/20250403_n01/"
+        }
+      ]
+    },
+    {
+      "id": "cpv",
+      "label": "インライン/アットライン分析（CPV）",
+      "type": "concept",
+      "domain": "d7",
+      "content": "工程内・近接でのリアルタイム計測で工程性能を継続検証(CPV)。AI/自動化が高スループットQCと工程安定性監視を可能にする。",
+      "sources": [
+        {
+          "title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",
+          "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"
+        }
+      ]
+    },
+    {
+      "id": "edge",
+      "label": "エッジセンサ統合",
+      "type": "concept",
+      "domain": "d7",
+      "content": "マイコン/IoTによる多点センサ取得とデバイス層への配信。標準IF（SiLA2/OPC-UA）やゲートウェイ経由で上位へ集約する接点。",
+      "sources": [
+        {
+          "title": "The SiLA 2 Manager（device discovery / data integrity）",
+          "url": "https://www.sciencedirect.com/science/article/pii/S2352711022000103"
+        }
+      ]
+    },
+    {
+      "id": "cira",
+      "label": "CiRA財団 / my iPS",
+      "type": "player",
+      "domain": "d8",
+      "content": "自家iPSの閉鎖系フル自動製造を推進。約3週間・原材料費約100万円/人を掲げ、PMDA適合性調査・非臨床を経て2028年度の治験開始を目標。",
+      "sources": [
+        {
+          "title": "iPS財団 My iPSプロジェクト（自家細胞を自動作製）",
+          "url": "https://www.nikkan.co.jp/articles/view/00745986"
+        },
+        {
+          "title": "免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）",
+          "url": "https://scienceportal.jst.go.jp/newsflash/20250403_n01/"
+        },
+        {
+          "title": "my iPSプロジェクト（iPS財団 公式）",
+          "url": "https://www.cira-foundation.or.jp/j/about/project/myips/"
+        }
+      ]
+    },
+    {
+      "id": "terumo",
+      "label": "Terumo BCT / Quantum Flex",
+      "type": "system",
+      "domain": "d8",
+      "content": "2024年に財団と提携。Quantum Flex Cell Expansion System上で閉鎖・自動・統合プロセスを構築し、デジタル技術で効率と制御を高める。",
+      "sources": [
+        {
+          "title": "Terumo BCT × CiRA Foundation 自動化提携（Quantum Flex）",
+          "url": "https://www.terumo.com/newsrelease/detail/20240319/6146"
+        }
+      ]
+    },
+    {
+      "id": "pana",
+      "label": "パナソニックHD",
+      "type": "player",
+      "domain": "d8",
+      "content": "岩田研由来の閉鎖型自動培養の系譜。2026年4月、中之島クロスでiPS樹立工程の自動化実証を開始し、最難関の樹立に踏み込む。",
+      "sources": [
+        {
+          "title": "パナソニックHD iPS樹立工程の自動化 実証実験（2026/4）",
+          "url": "https://prtimes.jp/main/html/rd/p/000006702.000003442.html"
+        },
+        {
+          "title": "がん治療に役立つ細胞の分化・培養を自動化（Panasonic）",
+          "url": "https://news.panasonic.com/jp/stories/17100"
+        }
+      ]
+    },
+    {
+      "id": "kaneka",
+      "label": "カネカ × 理研（林洋平ら）",
+      "type": "player",
+      "domain": "d8",
+      "content": "財団研究開発センターと共同で、樹立から大量培養までを一貫させた浮遊培養をeLifeに報告。量産・自動化の基盤形態を提供。",
+      "sources": [
+        {
+          "title": "iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）",
+          "url": "https://www.riken.jp/press/2024/20241120_1/index.html"
+        },
+        {
+          "title": "iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）",
+          "url": "https://stemcells.or.jp/ips-9/"
+        }
+      ]
+    },
+    {
+      "id": "rbi",
+      "label": "Robotic Biology Institute / Maholo",
+      "type": "system",
+      "domain": "d8",
+      "content": "双腕ヒューマノイドLabDroid Maholoの提供元。汎用器具操作と高再現性で、自律探索プラットフォームの物理基盤を担う。",
+      "sources": [
+        {
+          "title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）",
+          "url": "https://elifesciences.org/articles/77007"
+        }
+      ]
+    },
+    {
+      "id": "epistra",
+      "label": "Epistra（自律最適化）",
+      "type": "player",
+      "domain": "d8",
+      "content": "Maholo×AIの自律実験を支えた企業の一つ。実験計画・ベイズ最適化など最適化エンジン側で関与。",
+      "sources": [
+        {
+          "title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）",
+          "url": "https://elifesciences.org/articles/77007"
+        }
+      ]
+    },
+    {
+      "id": "moldev",
+      "label": "Molecular Devices / CellXpress.ai",
+      "type": "system",
+      "domain": "d8",
+      "content": "イメージングベースのAI判断で給餌・継代を自動化する商用システム。DLで形態/分化を識別し、24/365運転で複数株を拡大。",
+      "sources": [
+        {
+          "title": "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）",
+          "url": "https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"
+        },
+        {
+          "title": "Deep learning for label-free monitoring of iPSC & organoids",
+          "url": "https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"
+        }
+      ]
+    },
+    {
+      "id": "astellas",
+      "label": "アステラス製薬（双腕ロボ）",
+      "type": "player",
+      "domain": "d8",
+      "content": "双腕ロボットでiPS培養を自動化し、治験用供給を企図。製薬側からの製造自動化プレイヤー。",
+      "sources": [
+        {
+          "title": "iPS細胞をロボが培養（アステラス, 日経）",
+          "url": "https://www.nikkei.com/article/DGKKZO75692350Z21C23A0TB0000/"
+        }
+      ]
+    },
+    {
+      "id": "src_kanda",
+      "label": "Kanda et al. 2022 (eLife)",
+      "type": "source",
+      "domain": "d4",
+      "content": "自律ロボット×バッチベイズ最適化でiPSC-RPE分化を最適化した記念碑的論文。プロトコルの5段階定式化とパラメータ探索、コード公開を含む。",
+      "sources": [
+        {
+          "title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）",
+          "url": "https://elifesciences.org/articles/77007"
+        },
+        {
+          "title": "LabDroid_optimizer（GitHub / GPyOpt）",
+          "url": "https://github.com/labauto/LabDroid_optimizer"
+        }
+      ]
+    },
+    {
+      "id": "src_riken2020",
+      "label": "理研 自律培養 2020",
+      "type": "source",
+      "domain": "d2",
+      "content": "人型ロボット×AIで12h観察→増殖予測→至適継代を9日間自律実行。閉ループ自律培養の国内先行実証。",
+      "sources": [
+        {
+          "title": "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）",
+          "url": "https://www.riken.jp/press/2020/20201204_1/index.html"
+        }
+      ]
+    },
+    {
+      "id": "src_sila",
+      "label": "SiLA 2 標準群",
+      "type": "source",
+      "domain": "d5",
+      "content": "デバイス相互運用の標準。Tecan SDK・SiLA2 Manager・cell culture autopilot事例まで、実装に直接使える資源群。",
+      "sources": [
+        {
+          "title": "Tecan SiLA2 SDK（royalty-free, open-source）",
+          "url": "https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext"
+        },
+        {
+          "title": "The SiLA 2 Manager（device discovery / data integrity）",
+          "url": "https://www.sciencedirect.com/science/article/pii/S2352711022000103"
+        },
+        {
+          "title": "SiLA2: cell culture autopilot / vendor-agnostic",
+          "url": "https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard"
+        }
+      ]
+    },
+    {
+      "id": "src_gctp",
+      "label": "PMDA GCTP / 適合性調査",
+      "type": "source",
+      "domain": "d6",
+      "content": "再生医療等製品の製造・品質管理の適合性を定める一次情報。製造ソフトの規制要件の出発点。",
+      "sources": [
+        {
+          "title": "GCTP適合性調査（PMDA）",
+          "url": "https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html"
+        }
+      ]
+    },
+    {
+      "id": "src_cgt",
+      "label": "CGT QC/QA（ALCOA・Part11）",
+      "type": "source",
+      "domain": "d6",
+      "content": "データインテグリティ・CSV・CAPA・CPVを横断する実務解説。電子系設計の要件マップとして有用。",
+      "sources": [
+        {
+          "title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",
+          "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"
+        }
+      ]
+    },
+    {
+      "id": "src_cxa",
+      "label": "CellXpress.ai 適用ノート",
+      "type": "source",
+      "domain": "d2",
+      "content": "コンフルエンシー/分化のDL2モデルと閾値起動の自動継代を具体記述。画像→意思決定の設計参照。",
+      "sources": [
+        {
+          "title": "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）",
+          "url": "https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"
+        },
+        {
+          "title": "Deep learning for label-free monitoring of iPSC & organoids",
+          "url": "https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"
+        }
+      ]
+    },
+    {
+      "id": "src_susp",
+      "label": "浮遊培養 一貫化（eLife）",
+      "type": "source",
+      "domain": "d1",
+      "content": "樹立→大量培養→直接凍結まで浮遊系で一貫。量産・自動化の生物学的基盤。財団・理研・カネカ共同。",
+      "sources": [
+        {
+          "title": "iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）",
+          "url": "https://www.riken.jp/press/2024/20241120_1/index.html"
+        },
+        {
+          "title": "iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）",
+          "url": "https://stemcells.or.jp/ips-9/"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "root",
+      "target": "d1",
+      "rel": "contains"
+    },
+    {
+      "source": "root",
+      "target": "d2",
+      "rel": "contains"
+    },
+    {
+      "source": "root",
+      "target": "d3",
+      "rel": "contains"
+    },
+    {
+      "source": "root",
+      "target": "d4",
+      "rel": "contains"
+    },
+    {
+      "source": "root",
+      "target": "d5",
+      "rel": "contains"
+    },
+    {
+      "source": "root",
+      "target": "d6",
+      "rel": "contains"
+    },
+    {
+      "source": "root",
+      "target": "d7",
+      "rel": "contains"
+    },
+    {
+      "source": "root",
+      "target": "d8",
+      "rel": "contains"
+    },
+    {
+      "source": "d1",
+      "target": "maint",
+      "rel": "has"
+    },
+    {
+      "source": "d1",
+      "target": "passage",
+      "rel": "has"
+    },
+    {
+      "source": "d1",
+      "target": "feeder",
+      "rel": "has"
+    },
+    {
+      "source": "d1",
+      "target": "diff",
+      "rel": "has"
+    },
+    {
+      "source": "d1",
+      "target": "signal",
+      "rel": "has"
+    },
+    {
+      "source": "d1",
+      "target": "suspension",
+      "rel": "has"
+    },
+    {
+      "source": "d1",
+      "target": "reprog",
+      "rel": "has"
+    },
+    {
+      "source": "d1",
+      "target": "qccrit",
+      "rel": "has"
+    },
+    {
+      "source": "d2",
+      "target": "bf",
+      "rel": "has"
+    },
+    {
+      "source": "d2",
+      "target": "conf",
+      "rel": "has"
+    },
+    {
+      "source": "d2",
+      "target": "morphcls",
+      "rel": "has"
+    },
+    {
+      "source": "d2",
+      "target": "diffdet",
+      "rel": "has"
+    },
+    {
+      "source": "d2",
+      "target": "growth",
+      "rel": "has"
+    },
+    {
+      "source": "d2",
+      "target": "dlmodel",
+      "rel": "has"
+    },
+    {
+      "source": "d3",
+      "target": "dualarm",
+      "rel": "has"
+    },
+    {
+      "source": "d3",
+      "target": "closeddev",
+      "rel": "has"
+    },
+    {
+      "source": "d3",
+      "target": "dispense",
+      "rel": "has"
+    },
+    {
+      "source": "d3",
+      "target": "transport",
+      "rel": "has"
+    },
+    {
+      "source": "d3",
+      "target": "motioncap",
+      "rel": "has"
+    },
+    {
+      "source": "d4",
+      "target": "sched",
+      "rel": "has"
+    },
+    {
+      "source": "d4",
+      "target": "loop",
+      "rel": "has"
+    },
+    {
+      "source": "d4",
+      "target": "bbo",
+      "rel": "has"
+    },
+    {
+      "source": "d4",
+      "target": "doe",
+      "rel": "has"
+    },
+    {
+      "source": "d4",
+      "target": "sdl",
+      "rel": "has"
+    },
+    {
+      "source": "d4",
+      "target": "rl",
+      "rel": "has"
+    },
+    {
+      "source": "d5",
+      "target": "sila",
+      "rel": "has"
+    },
+    {
+      "source": "d5",
+      "target": "opcua",
+      "rel": "has"
+    },
+    {
+      "source": "d5",
+      "target": "mtp",
+      "rel": "has"
+    },
+    {
+      "source": "d5",
+      "target": "orch",
+      "rel": "has"
+    },
+    {
+      "source": "d5",
+      "target": "gateway",
+      "rel": "has"
+    },
+    {
+      "source": "d5",
+      "target": "lims",
+      "rel": "has"
+    },
+    {
+      "source": "d5",
+      "target": "datamodel",
+      "rel": "has"
+    },
+    {
+      "source": "d6",
+      "target": "gctp",
+      "rel": "has"
+    },
+    {
+      "source": "d6",
+      "target": "ramlaw",
+      "rel": "has"
+    },
+    {
+      "source": "d6",
+      "target": "alcoa",
+      "rel": "has"
+    },
+    {
+      "source": "d6",
+      "target": "csv",
+      "rel": "has"
+    },
+    {
+      "source": "d6",
+      "target": "part11",
+      "rel": "has"
+    },
+    {
+      "source": "d6",
+      "target": "ebr",
+      "rel": "has"
+    },
+    {
+      "source": "d6",
+      "target": "audit",
+      "rel": "has"
+    },
+    {
+      "source": "d6",
+      "target": "capa",
+      "rel": "has"
+    },
+    {
+      "source": "d7",
+      "target": "envmon",
+      "rel": "has"
+    },
+    {
+      "source": "d7",
+      "target": "sterility",
+      "rel": "has"
+    },
+    {
+      "source": "d7",
+      "target": "cpv",
+      "rel": "has"
+    },
+    {
+      "source": "d7",
+      "target": "edge",
+      "rel": "has"
+    },
+    {
+      "source": "d8",
+      "target": "cira",
+      "rel": "has"
+    },
+    {
+      "source": "d8",
+      "target": "terumo",
+      "rel": "has"
+    },
+    {
+      "source": "d8",
+      "target": "pana",
+      "rel": "has"
+    },
+    {
+      "source": "d8",
+      "target": "kaneka",
+      "rel": "has"
+    },
+    {
+      "source": "d8",
+      "target": "rbi",
+      "rel": "has"
+    },
+    {
+      "source": "d8",
+      "target": "epistra",
+      "rel": "has"
+    },
+    {
+      "source": "d8",
+      "target": "moldev",
+      "rel": "has"
+    },
+    {
+      "source": "d8",
+      "target": "astellas",
+      "rel": "has"
+    },
+    {
+      "source": "growth",
+      "target": "passage",
+      "rel": "triggers"
+    },
+    {
+      "source": "conf",
+      "target": "sched",
+      "rel": "feeds"
+    },
+    {
+      "source": "conf",
+      "target": "loop",
+      "rel": "feeds"
+    },
+    {
+      "source": "diffdet",
+      "target": "qccrit",
+      "rel": "evaluates"
+    },
+    {
+      "source": "morphcls",
+      "target": "qccrit",
+      "rel": "evaluates"
+    },
+    {
+      "source": "dlmodel",
+      "target": "conf",
+      "rel": "powers"
+    },
+    {
+      "source": "dlmodel",
+      "target": "morphcls",
+      "rel": "powers"
+    },
+    {
+      "source": "dlmodel",
+      "target": "diffdet",
+      "rel": "powers"
+    },
+    {
+      "source": "bf",
+      "target": "dlmodel",
+      "rel": "input_to"
+    },
+    {
+      "source": "loop",
+      "target": "dispense",
+      "rel": "commands"
+    },
+    {
+      "source": "loop",
+      "target": "transport",
+      "rel": "commands"
+    },
+    {
+      "source": "sched",
+      "target": "loop",
+      "rel": "drives"
+    },
+    {
+      "source": "bbo",
+      "target": "signal",
+      "rel": "optimizes"
+    },
+    {
+      "source": "bbo",
+      "target": "diff",
+      "rel": "optimizes"
+    },
+    {
+      "source": "doe",
+      "target": "bbo",
+      "rel": "formulates"
+    },
+    {
+      "source": "sdl",
+      "target": "bbo",
+      "rel": "uses"
+    },
+    {
+      "source": "sdl",
+      "target": "loop",
+      "rel": "extends"
+    },
+    {
+      "source": "rl",
+      "target": "sdl",
+      "rel": "advances"
+    },
+    {
+      "source": "passage",
+      "target": "maint",
+      "rel": "part_of"
+    },
+    {
+      "source": "signal",
+      "target": "diff",
+      "rel": "controls"
+    },
+    {
+      "source": "feeder",
+      "target": "maint",
+      "rel": "enables"
+    },
+    {
+      "source": "suspension",
+      "target": "reprog",
+      "rel": "scales"
+    },
+    {
+      "source": "reprog",
+      "target": "maint",
+      "rel": "precedes"
+    },
+    {
+      "source": "motioncap",
+      "target": "passage",
+      "rel": "reproduces"
+    },
+    {
+      "source": "dualarm",
+      "target": "diff",
+      "rel": "executes"
+    },
+    {
+      "source": "closeddev",
+      "target": "maint",
+      "rel": "executes"
+    },
+    {
+      "source": "dispense",
+      "target": "maint",
+      "rel": "executes"
+    },
+    {
+      "source": "sila",
+      "target": "closeddev",
+      "rel": "integrates"
+    },
+    {
+      "source": "sila",
+      "target": "dualarm",
+      "rel": "integrates"
+    },
+    {
+      "source": "sila",
+      "target": "edge",
+      "rel": "integrates"
+    },
+    {
+      "source": "opcua",
+      "target": "closeddev",
+      "rel": "integrates"
+    },
+    {
+      "source": "gateway",
+      "target": "sila",
+      "rel": "bridges_to"
+    },
+    {
+      "source": "orch",
+      "target": "sched",
+      "rel": "hosts"
+    },
+    {
+      "source": "orch",
+      "target": "sila",
+      "rel": "consumes"
+    },
+    {
+      "source": "datamodel",
+      "target": "lims",
+      "rel": "feeds"
+    },
+    {
+      "source": "lims",
+      "target": "ebr",
+      "rel": "produces"
+    },
+    {
+      "source": "edge",
+      "target": "envmon",
+      "rel": "carries"
+    },
+    {
+      "source": "envmon",
+      "target": "maint",
+      "rel": "monitors"
+    },
+    {
+      "source": "envmon",
+      "target": "loop",
+      "rel": "state_for"
+    },
+    {
+      "source": "sterility",
+      "target": "closeddev",
+      "rel": "guards"
+    },
+    {
+      "source": "cpv",
+      "target": "qccrit",
+      "rel": "verifies"
+    },
+    {
+      "source": "gctp",
+      "target": "cira",
+      "rel": "governs"
+    },
+    {
+      "source": "ramlaw",
+      "target": "closeddev",
+      "rel": "governs"
+    },
+    {
+      "source": "alcoa",
+      "target": "ebr",
+      "rel": "constrains"
+    },
+    {
+      "source": "alcoa",
+      "target": "audit",
+      "rel": "constrains"
+    },
+    {
+      "source": "alcoa",
+      "target": "datamodel",
+      "rel": "constrains"
+    },
+    {
+      "source": "csv",
+      "target": "lims",
+      "rel": "validates"
+    },
+    {
+      "source": "csv",
+      "target": "loop",
+      "rel": "validates"
+    },
+    {
+      "source": "part11",
+      "target": "ebr",
+      "rel": "requires"
+    },
+    {
+      "source": "part11",
+      "target": "audit",
+      "rel": "requires"
+    },
+    {
+      "source": "capa",
+      "target": "sterility",
+      "rel": "responds_to"
+    },
+    {
+      "source": "gctp",
+      "target": "qccrit",
+      "rel": "defines"
+    },
+    {
+      "source": "cira",
+      "target": "closeddev",
+      "rel": "uses"
+    },
+    {
+      "source": "cira",
+      "target": "terumo",
+      "rel": "partners"
+    },
+    {
+      "source": "cira",
+      "target": "reprog",
+      "rel": "pursues"
+    },
+    {
+      "source": "cira",
+      "target": "maint",
+      "rel": "pursues"
+    },
+    {
+      "source": "terumo",
+      "target": "closeddev",
+      "rel": "provides"
+    },
+    {
+      "source": "pana",
+      "target": "closeddev",
+      "rel": "builds"
+    },
+    {
+      "source": "pana",
+      "target": "reprog",
+      "rel": "automates"
+    },
+    {
+      "source": "kaneka",
+      "target": "suspension",
+      "rel": "demonstrates"
+    },
+    {
+      "source": "rbi",
+      "target": "dualarm",
+      "rel": "provides"
+    },
+    {
+      "source": "epistra",
+      "target": "bbo",
+      "rel": "provides"
+    },
+    {
+      "source": "moldev",
+      "target": "conf",
+      "rel": "implements"
+    },
+    {
+      "source": "moldev",
+      "target": "diffdet",
+      "rel": "implements"
+    },
+    {
+      "source": "moldev",
+      "target": "loop",
+      "rel": "implements"
+    },
+    {
+      "source": "astellas",
+      "target": "dualarm",
+      "rel": "uses"
+    },
+    {
+      "source": "src_kanda",
+      "target": "bbo",
+      "rel": "defines"
+    },
+    {
+      "source": "src_kanda",
+      "target": "sdl",
+      "rel": "defines"
+    },
+    {
+      "source": "src_kanda",
+      "target": "diff",
+      "rel": "demonstrates"
+    },
+    {
+      "source": "src_riken2020",
+      "target": "growth",
+      "rel": "demonstrates"
+    },
+    {
+      "source": "src_riken2020",
+      "target": "loop",
+      "rel": "demonstrates"
+    },
+    {
+      "source": "src_sila",
+      "target": "sila",
+      "rel": "specifies"
+    },
+    {
+      "source": "src_sila",
+      "target": "orch",
+      "rel": "informs"
+    },
+    {
+      "source": "src_gctp",
+      "target": "gctp",
+      "rel": "specifies"
+    },
+    {
+      "source": "src_cgt",
+      "target": "alcoa",
+      "rel": "explains"
+    },
+    {
+      "source": "src_cgt",
+      "target": "csv",
+      "rel": "explains"
+    },
+    {
+      "source": "src_cxa",
+      "target": "conf",
+      "rel": "illustrates"
+    },
+    {
+      "source": "src_cxa",
+      "target": "diffdet",
+      "rel": "illustrates"
+    },
+    {
+      "source": "src_susp",
+      "target": "suspension",
+      "rel": "reports"
+    }
+  ]
+}

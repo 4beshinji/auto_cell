@@ -1,0 +1,107 @@
+node_id,node_label,node_type,source_title,source_url
+root,iPS自動培養ソフトウェア,root,iPS財団 My iPSプロジェクト（自家細胞を自動作製）,https://www.nikkan.co.jp/articles/view/00745986
+root,iPS自動培養ソフトウェア,root,my iPSプロジェクト（iPS財団 公式）,https://www.cira-foundation.or.jp/j/about/project/myips/
+d1,細胞生物学・培養プロトコル,domain,CiRA ヒトiPS細胞 培養プロトコール集,https://www.cira.kyoto-u.ac.jp/j/research/protocol.html
+d2,画像取得・コンピュータビジョン,domain,Deep learning for label-free monitoring of iPSC & organoids,https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures
+d3,ロボティクス・液体ハンドリング,domain,"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",https://elifesciences.org/articles/77007
+d3,ロボティクス・液体ハンドリング,domain,Long-term iPSC maintenance by automated culture system（Konagaya 2015）,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/
+d4,プロセス制御・自律最適化,domain,"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",https://elifesciences.org/articles/77007
+d4,プロセス制御・自律最適化,domain,ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）,https://www.riken.jp/press/2020/20201204_1/index.html
+d5,ソフトウェア基盤・相互運用,domain,"SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）",https://sila-standard.com/faq/
+d5,ソフトウェア基盤・相互運用,domain,The SiLA 2 Manager（device discovery / data integrity）,https://www.sciencedirect.com/science/article/pii/S2352711022000103
+d6,GMP・規制・データインテグリティ,domain,GCTP適合性調査（PMDA）,https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html
+d6,GMP・規制・データインテグリティ,domain,"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc
+d7,センサ・環境モニタリング,domain,Long-term iPSC maintenance by automated culture system（Konagaya 2015）,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/
+d8,エコシステム・プレイヤー,domain,iPS財団 My iPSプロジェクト（自家細胞を自動作製）,https://www.nikkan.co.jp/articles/view/00745986
+d8,エコシステム・プレイヤー,domain,Terumo BCT × CiRA Foundation 自動化提携（Quantum Flex）,https://www.terumo.com/newsrelease/detail/20240319/6146
+maint,iPSC維持培養,concept,CiRA ヒトiPS細胞 培養プロトコール集,https://www.cira.kyoto-u.ac.jp/j/research/protocol.html
+maint,iPSC維持培養,concept,Long-term iPSC maintenance by automated culture system（Konagaya 2015）,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/
+passage,継代（剥離・分散）,concept,CiRA ヒトiPS細胞 培養プロトコール集,https://www.cira.kyoto-u.ac.jp/j/research/protocol.html
+passage,継代（剥離・分散）,concept,"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",https://elifesciences.org/articles/77007
+feeder,フィーダーフリー培養,concept,CiRA ヒトiPS細胞 培養プロトコール集,https://www.cira.kyoto-u.ac.jp/j/research/protocol.html
+diff,分化誘導プロトコル,concept,"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",https://elifesciences.org/articles/77007
+signal,シグナル制御（添加因子）,concept,"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",https://elifesciences.org/articles/77007
+suspension,浮遊・懸濁培養（量産）,concept,"iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）",https://www.riken.jp/press/2024/20241120_1/index.html
+suspension,浮遊・懸濁培養（量産）,concept,"iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）",https://stemcells.or.jp/ips-9/
+reprog,iPSC樹立（初期化）,concept,パナソニックHD iPS樹立工程の自動化 実証実験（2026/4）,https://prtimes.jp/main/html/rd/p/000006702.000003442.html
+reprog,iPSC樹立（初期化）,concept,ML label-free iPSC colony formation detection（Sci Rep）,https://www.nature.com/articles/s41598-017-13680-x
+qccrit,細胞品質基準,concept,Parametric analysis of hPSC colony morphology for QC（Sci Rep）,https://www.nature.com/articles/srep34009
+qccrit,細胞品質基準,concept,Long-term iPSC maintenance by automated culture system（Konagaya 2015）,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/
+bf,明視野/位相差イメージング,concept,Deep learning for label-free monitoring of iPSC & organoids,https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures
+conf,コンフルエンシー算出,concept,Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）,https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system
+conf,コンフルエンシー算出,concept,Deep learning for label-free monitoring of iPSC & organoids,https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures
+morphcls,コロニー形態分類,concept,QC of hPSC colonies by CNN image analysis,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9820636/
+morphcls,コロニー形態分類,concept,Parametric analysis of hPSC colony morphology for QC（Sci Rep）,https://www.nature.com/articles/srep34009
+diffdet,分化領域検出,concept,Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）,https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system
+diffdet,分化領域検出,concept,Deep learning for label-free monitoring of iPSC & organoids,https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures
+growth,増殖曲線予測→継代トリガ,concept,ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）,https://www.riken.jp/press/2020/20201204_1/index.html
+growth,増殖曲線予測→継代トリガ,concept,Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）,https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system
+dlmodel,DLモデル（分割/分類）,concept,Deep learning for label-free monitoring of iPSC & organoids,https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures
+dlmodel,DLモデル（分割/分類）,concept,QC of hPSC colonies by CNN image analysis,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9820636/
+dualarm,双腕ヒューマノイド,concept,"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",https://elifesciences.org/articles/77007
+dualarm,双腕ヒューマノイド,concept,ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）,https://www.riken.jp/press/2020/20201204_1/index.html
+closeddev,閉鎖型専用培養装置,concept,iPS財団 My iPSプロジェクト（自家細胞を自動作製）,https://www.nikkan.co.jp/articles/view/00745986
+closeddev,閉鎖型専用培養装置,concept,Long-term iPSC maintenance by automated culture system（Konagaya 2015）,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/
+dispense,自動分注・ピペッティング,concept,Long-term iPSC maintenance by automated culture system（Konagaya 2015）,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/
+transport,プレート搬送・把持,concept,ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）,https://www.riken.jp/press/2020/20201204_1/index.html
+transport,プレート搬送・把持,concept,SiLA2: cell culture autopilot / vendor-agnostic,https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard
+motioncap,熟練手技のモーション再現,concept,免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）,https://scienceportal.jst.go.jp/newsflash/20250403_n01/
+motioncap,熟練手技のモーション再現,concept,がん治療に役立つ細胞の分化・培養を自動化（Panasonic）,https://news.panasonic.com/jp/stories/17100
+sched,スケジューリング,concept,ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）,https://www.riken.jp/press/2020/20201204_1/index.html
+loop,クローズドループ判断,concept,ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）,https://www.riken.jp/press/2020/20201204_1/index.html
+loop,クローズドループ判断,concept,Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）,https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system
+bbo,バッチベイズ最適化,concept,"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",https://elifesciences.org/articles/77007
+bbo,バッチベイズ最適化,concept,LabDroid_optimizer（GitHub / GPyOpt）,https://github.com/labauto/LabDroid_optimizer
+doe,実験計画の定式化,concept,"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",https://elifesciences.org/articles/77007
+sdl,自律実験 / Self-driving Lab,concept,"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",https://elifesciences.org/articles/77007
+sdl,自律実験 / Self-driving Lab,concept,Implementing robotics and AI（eLife digest）,https://elifesciences.org/articles/80609
+rl,強化学習（発展領域）,concept,Implementing robotics and AI（eLife digest）,https://elifesciences.org/articles/80609
+sila,SiLA 2（デバイス標準）,concept,"SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）",https://sila-standard.com/faq/
+sila,SiLA 2（デバイス標準）,concept,"Tecan SiLA2 SDK（royalty-free, open-source）",https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext
+opcua,OPC-UA / LADS,concept,"Tecan SiLA2 SDK（royalty-free, open-source）",https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext
+mtp,MTP（モジュール型パッケージ）,concept,"SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）",https://sila-standard.com/faq/
+orch,ワークフロー・オーケストレーション,concept,SiLA2: cell culture autopilot / vendor-agnostic,https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard
+gateway,レガシーデバイス・ゲートウェイ,concept,The SiLA 2 Manager（device discovery / data integrity）,https://www.sciencedirect.com/science/article/pii/S2352711022000103
+lims,LIMS / LES（情報・実行系）,concept,The SiLA 2 Manager（device discovery / data integrity）,https://www.sciencedirect.com/science/article/pii/S2352711022000103
+lims,LIMS / LES（情報・実行系）,concept,"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc
+datamodel,データモデル / インジェスト,concept,SiLA2: cell culture autopilot / vendor-agnostic,https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard
+datamodel,データモデル / インジェスト,concept,The SiLA 2 Manager（device discovery / data integrity）,https://www.sciencedirect.com/science/article/pii/S2352711022000103
+gctp,GCTP（再生医療等製品製造管理）,concept,GCTP適合性調査（PMDA）,https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html
+ramlaw,再生医療等安全性確保法 / 施設基準,concept,再生医療等安全性確保法 関連（Science Portal）,https://scienceportal.jst.go.jp/newsflash/20250403_n01/
+ramlaw,再生医療等安全性確保法 / 施設基準,concept,免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）,https://scienceportal.jst.go.jp/newsflash/20250403_n01/
+alcoa,ALCOA+ データインテグリティ,concept,"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc
+csv,CSV / CSA（システムバリデーション）,concept,"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc
+part11,21 CFR Part 11 / Annex 11,concept,"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc
+ebr,電子バッチ記録（EBR）,concept,"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc
+audit,監査証跡（Audit Trail）,concept,"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc
+capa,CAPA / リスク管理（FMEA）,concept,"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc
+envmon,環境モニタリング（DO/pH/CO₂/温度）,concept,Long-term iPSC maintenance by automated culture system（Konagaya 2015）,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/
+sterility,無菌性・コンタミ監視,concept,ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）,https://www.riken.jp/press/2020/20201204_1/index.html
+sterility,無菌性・コンタミ監視,concept,免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）,https://scienceportal.jst.go.jp/newsflash/20250403_n01/
+cpv,インライン/アットライン分析（CPV）,concept,"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc
+edge,エッジセンサ統合,concept,The SiLA 2 Manager（device discovery / data integrity）,https://www.sciencedirect.com/science/article/pii/S2352711022000103
+cira,CiRA財団 / my iPS,player,iPS財団 My iPSプロジェクト（自家細胞を自動作製）,https://www.nikkan.co.jp/articles/view/00745986
+cira,CiRA財団 / my iPS,player,免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）,https://scienceportal.jst.go.jp/newsflash/20250403_n01/
+cira,CiRA財団 / my iPS,player,my iPSプロジェクト（iPS財団 公式）,https://www.cira-foundation.or.jp/j/about/project/myips/
+terumo,Terumo BCT / Quantum Flex,system,Terumo BCT × CiRA Foundation 自動化提携（Quantum Flex）,https://www.terumo.com/newsrelease/detail/20240319/6146
+pana,パナソニックHD,player,パナソニックHD iPS樹立工程の自動化 実証実験（2026/4）,https://prtimes.jp/main/html/rd/p/000006702.000003442.html
+pana,パナソニックHD,player,がん治療に役立つ細胞の分化・培養を自動化（Panasonic）,https://news.panasonic.com/jp/stories/17100
+kaneka,カネカ × 理研（林洋平ら）,player,"iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）",https://www.riken.jp/press/2024/20241120_1/index.html
+kaneka,カネカ × 理研（林洋平ら）,player,"iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）",https://stemcells.or.jp/ips-9/
+rbi,Robotic Biology Institute / Maholo,system,"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",https://elifesciences.org/articles/77007
+epistra,Epistra（自律最適化）,player,"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",https://elifesciences.org/articles/77007
+moldev,Molecular Devices / CellXpress.ai,system,Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）,https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system
+moldev,Molecular Devices / CellXpress.ai,system,Deep learning for label-free monitoring of iPSC & organoids,https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures
+astellas,アステラス製薬（双腕ロボ）,player,"iPS細胞をロボが培養（アステラス, 日経）",https://www.nikkei.com/article/DGKKZO75692350Z21C23A0TB0000/
+src_kanda,Kanda et al. 2022 (eLife),source,"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",https://elifesciences.org/articles/77007
+src_kanda,Kanda et al. 2022 (eLife),source,LabDroid_optimizer（GitHub / GPyOpt）,https://github.com/labauto/LabDroid_optimizer
+src_riken2020,理研 自律培養 2020,source,ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）,https://www.riken.jp/press/2020/20201204_1/index.html
+src_sila,SiLA 2 標準群,source,"Tecan SiLA2 SDK（royalty-free, open-source）",https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext
+src_sila,SiLA 2 標準群,source,The SiLA 2 Manager（device discovery / data integrity）,https://www.sciencedirect.com/science/article/pii/S2352711022000103
+src_sila,SiLA 2 標準群,source,SiLA2: cell culture autopilot / vendor-agnostic,https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard
+src_gctp,PMDA GCTP / 適合性調査,source,GCTP適合性調査（PMDA）,https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html
+src_cgt,CGT QC/QA（ALCOA・Part11）,source,"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc
+src_cxa,CellXpress.ai 適用ノート,source,Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）,https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system
+src_cxa,CellXpress.ai 適用ノート,source,Deep learning for label-free monitoring of iPSC & organoids,https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures
+src_susp,浮遊培養 一貫化（eLife）,source,"iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）",https://www.riken.jp/press/2024/20241120_1/index.html
+src_susp,浮遊培養 一貫化（eLife）,source,"iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）",https://stemcells.or.jp/ips-9/

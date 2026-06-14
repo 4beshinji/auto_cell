@@ -1,0 +1,597 @@
+@prefix : <https://tangletech.dev/ips-automation-kg#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:Concept a rdfs:Class .
+:Domain a rdfs:Class .
+:Player a rdfs:Class .
+:Root a rdfs:Class .
+:Source a rdfs:Class .
+:System a rdfs:Class .
+
+:n_root a :Root ;
+    rdfs:label "iPS自動培養ソフトウェア"@ja ;
+    :content "患者血液→iPS樹立→維持/拡大→分化誘導→品質評価までを、画像判断・ロボット操作・規制対応を統合して自動制御するソフトウェアスタック。本マップはその実装に必要なドメイン知識の地図。"@ja ;
+    :hasSource [ dct:title "iPS財団 My iPSプロジェクト（自家細胞を自動作製）"@ja ; :url <https://www.nikkan.co.jp/articles/view/00745986> ] ,
+               [ dct:title "my iPSプロジェクト（iPS財団 公式）"@ja ; :url <https://www.cira-foundation.or.jp/j/about/project/myips/> ] .
+
+:n_d1 a :Domain ;
+    rdfs:label "細胞生物学・培養プロトコル"@ja ;
+    :content "自動化の対象そのもの。iPS細胞の樹立・維持・継代・分化誘導・量産の生物学的手順群で、各操作のパラメータが下流の制御変数になる。"@ja ;
+    :inDomain :n_d1 ;
+    :hasSource [ dct:title "CiRA ヒトiPS細胞 培養プロトコール集"@ja ; :url <https://www.cira.kyoto-u.ac.jp/j/research/protocol.html> ] .
+
+:n_d2 a :Domain ;
+    rdfs:label "画像取得・コンピュータビジョン"@ja ;
+    :content "ラベルフリー画像から細胞状態を定量し、意思決定の入力を生成する層。コンフルエンシー・形態・分化の判定が中核。"@ja ;
+    :inDomain :n_d2 ;
+    :hasSource [ dct:title "Deep learning for label-free monitoring of iPSC & organoids"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures> ] .
+
+:n_d3 a :Domain ;
+    rdfs:label "ロボティクス・液体ハンドリング"@ja ;
+    :content "培養操作を物理的に実行する装置・ロボット層。汎用双腕と閉鎖型専用機の二系統がある。"@ja ;
+    :inDomain :n_d3 ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ,
+               [ dct:title "Long-term iPSC maintenance by automated culture system（Konagaya 2015）"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/> ] .
+
+:n_d4 a :Domain ;
+    rdfs:label "プロセス制御・自律最適化"@ja ;
+    :content "観察→判断→操作の閉ループと、プロトコル最適化（ベイズ最適化等）を担う制御知能の層。"@ja ;
+    :inDomain :n_d4 ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ,
+               [ dct:title "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）"@ja ; :url <https://www.riken.jp/press/2020/20201204_1/index.html> ] .
+
+:n_d5 a :Domain ;
+    rdfs:label "ソフトウェア基盤・相互運用"@ja ;
+    :content "デバイス統合標準・ワークフローオーケストレーション・データ基盤。異種機器を跨ぐ統合の土台。"@ja ;
+    :inDomain :n_d5 ;
+    :hasSource [ dct:title "SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）"@ja ; :url <https://sila-standard.com/faq/> ] ,
+               [ dct:title "The SiLA 2 Manager（device discovery / data integrity）"@ja ; :url <https://www.sciencedirect.com/science/article/pii/S2352711022000103> ] .
+
+:n_d6 a :Domain ;
+    rdfs:label "GMP・規制・データインテグリティ"@ja ;
+    :content "製造ソフトが満たすべき規制・品質・電子記録の要件群。設計の制約条件を規定する。"@ja ;
+    :inDomain :n_d6 ;
+    :hasSource [ dct:title "GCTP適合性調査（PMDA）"@ja ; :url <https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html> ] ,
+               [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] .
+
+:n_d7 a :Domain ;
+    rdfs:label "センサ・環境モニタリング"@ja ;
+    :content "培養環境・無菌性の連続計測と、閉ループ制御への状態量供給。エッジ実装で分散計測。"@ja ;
+    :inDomain :n_d7 ;
+    :hasSource [ dct:title "Long-term iPSC maintenance by automated culture system（Konagaya 2015）"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/> ] .
+
+:n_d8 a :Domain ;
+    rdfs:label "エコシステム・プレイヤー"@ja ;
+    :content "財団・企業・装置など実在の担い手と製品。技術選定とパートナリングの地図。"@ja ;
+    :inDomain :n_d8 ;
+    :hasSource [ dct:title "iPS財団 My iPSプロジェクト（自家細胞を自動作製）"@ja ; :url <https://www.nikkan.co.jp/articles/view/00745986> ] ,
+               [ dct:title "Terumo BCT × CiRA Foundation 自動化提携（Quantum Flex）"@ja ; :url <https://www.terumo.com/newsrelease/detail/20240319/6146> ] .
+
+:n_maint a :Concept ;
+    rdfs:label "iPSC維持培養"@ja ;
+    :content "未分化状態を保つ日々の培地交換と環境維持。ヒトiPSは毎日の培地交換と約3日ごとの継代が必要で、熟練手技に依存する点が自動化の主対象。"@ja ;
+    :inDomain :n_d1 ;
+    :hasSource [ dct:title "CiRA ヒトiPS細胞 培養プロトコール集"@ja ; :url <https://www.cira.kyoto-u.ac.jp/j/research/protocol.html> ] ,
+               [ dct:title "Long-term iPSC maintenance by automated culture system（Konagaya 2015）"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/> ] .
+
+:n_passage a :Concept ;
+    rdfs:label "継代（剥離・分散）"@ja ;
+    :content "コロニーを剥離し新プレートへ植え継ぐ工程。単一細胞分散かクランプ維持か、ROCK阻害剤(Y-27632)添加、シェアストレス管理が品質を左右する。"@ja ;
+    :inDomain :n_d1 ;
+    :hasSource [ dct:title "CiRA ヒトiPS細胞 培養プロトコール集"@ja ; :url <https://www.cira.kyoto-u.ac.jp/j/research/protocol.html> ] ,
+               [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] .
+
+:n_feeder a :Concept ;
+    rdfs:label "フィーダーフリー培養"@ja ;
+    :content "フィーダー細胞を用いず基質コート上で培養する方式。臨床・自動化に適し、画像解析でも背景が単純化しやすい。"@ja ;
+    :inDomain :n_d1 ;
+    :hasSource [ dct:title "CiRA ヒトiPS細胞 培養プロトコール集"@ja ; :url <https://www.cira.kyoto-u.ac.jp/j/research/protocol.html> ] .
+
+:n_diff a :Concept ;
+    rdfs:label "分化誘導プロトコル"@ja ;
+    :content "目的細胞へ誘導する多段階手順。iPSC→RPEは seeding / preconditioning / passage / induction / maintenance の5段階として定式化され、自動探索のテンプレになった。"@ja ;
+    :inDomain :n_d1 ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] .
+
+:n_signal a :Concept ;
+    rdfs:label "シグナル制御（添加因子）"@ja ;
+    :content "分化方向を決める阻害剤の濃度・タイミング。RPE誘導では FGFR阻害剤・SB431542(TGFβ)・CKI-7(Wnt)・Y-27632 等が制御変数。これらが最適化の探索空間になる。"@ja ;
+    :inDomain :n_d1 ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] .
+
+:n_suspension a :Concept ;
+    rdfs:label "浮遊・懸濁培養（量産）"@ja ;
+    :content "3次元浮遊撹拌で容積当たり密度を上げ量産する方式。突発的分化を化合物で抑制し、樹立→大量培養→直接凍結まで一貫化。自動化・スケールアップの基盤形態。"@ja ;
+    :inDomain :n_d1 ;
+    :hasSource [ dct:title "iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）"@ja ; :url <https://www.riken.jp/press/2024/20241120_1/index.html> ] ,
+               [ dct:title "iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）"@ja ; :url <https://stemcells.or.jp/ips-9/> ] .
+
+:n_reprog a :Concept ;
+    rdfs:label "iPSC樹立（初期化）"@ja ;
+    :content "体細胞をRNA等で初期化しコロニーを得る最難関工程。形態が動的で良質コロニー選抜が職人技。財団・パナソニックが2026年に樹立工程の自動化実証に着手。"@ja ;
+    :inDomain :n_d1 ;
+    :hasSource [ dct:title "パナソニックHD iPS樹立工程の自動化 実証実験（2026/4）"@ja ; :url <https://prtimes.jp/main/html/rd/p/000006702.000003442.html> ] ,
+               [ dct:title "ML label-free iPSC colony formation detection（Sci Rep）"@ja ; :url <https://www.nature.com/articles/s41598-017-13680-x> ] .
+
+:n_qccrit a :Concept ;
+    rdfs:label "細胞品質基準"@ja ;
+    :content "未分化マーカー発現・三胚葉分化能・核型など、製造物が満たすべき生物学的基準。自動判定の「正解ラベル」を定義し、画像代理指標と紐づける必要がある。"@ja ;
+    :inDomain :n_d1 ;
+    :hasSource [ dct:title "Parametric analysis of hPSC colony morphology for QC（Sci Rep）"@ja ; :url <https://www.nature.com/articles/srep34009> ] ,
+               [ dct:title "Long-term iPSC maintenance by automated culture system（Konagaya 2015）"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/> ] .
+
+:n_bf a :Concept ;
+    rdfs:label "明視野/位相差イメージング"@ja ;
+    :content "低光毒性で非侵襲なラベルフリー観察。一方で低コントラスト・不均一背景・ハロー/エッジ効果があり、頑健なセグメンテーションが難所。"@ja ;
+    :inDomain :n_d2 ;
+    :hasSource [ dct:title "Deep learning for label-free monitoring of iPSC & organoids"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures> ] .
+
+:n_conf a :Concept ;
+    rdfs:label "コンフルエンシー算出"@ja ;
+    :content "セグメンテーションで占有面積/コロニー面積を定量。継代や次工程移行の判断指標（例: 70-80%）として閾値化される中核メトリクス。"@ja ;
+    :inDomain :n_d2 ;
+    :hasSource [ dct:title "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system> ] ,
+               [ dct:title "Deep learning for label-free monitoring of iPSC & organoids"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures> ] .
+
+:n_morphcls a :Concept ;
+    rdfs:label "コロニー形態分類"@ja ;
+    :content "良/不良フェノタイプをCNN等で識別。形態パラメータが未分化性・クローン性維持能と相関し、選抜・除外の自動判断に使う。"@ja ;
+    :inDomain :n_d2 ;
+    :hasSource [ dct:title "QC of hPSC colonies by CNN image analysis"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9820636/> ] ,
+               [ dct:title "Parametric analysis of hPSC colony morphology for QC（Sci Rep）"@ja ; :url <https://www.nature.com/articles/srep34009> ] .
+
+:n_diffdet a :Concept ;
+    rdfs:label "分化領域検出"@ja ;
+    :content "未分化コロニー内の自発分化領域を検出・定量。分化率の閾値超過ウェルを除外したり、誘導の進行度評価に用いる専用DLモデル。"@ja ;
+    :inDomain :n_d2 ;
+    :hasSource [ dct:title "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system> ] ,
+               [ dct:title "Deep learning for label-free monitoring of iPSC & organoids"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures> ] .
+
+:n_growth a :Concept ;
+    rdfs:label "増殖曲線予測→継代トリガ"@ja ;
+    :content "定期観察から面積値の増殖曲線を推定し、目標密度到達の至適時刻を予測。これがスケジューラと継代操作のトリガになる閉ループの起点。"@ja ;
+    :inDomain :n_d2 ;
+    :hasSource [ dct:title "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）"@ja ; :url <https://www.riken.jp/press/2020/20201204_1/index.html> ] ,
+               [ dct:title "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system> ] .
+
+:n_dlmodel a :Concept ;
+    rdfs:label "DLモデル（分割/分類）"@ja ;
+    :content "セグメンテーション(面積/コンフルエンシー)と分類(形態・分化)の学習モデル群。ラベルフリー前提・低コントラスト対応・施設間汎化が実装課題。"@ja ;
+    :inDomain :n_d2 ;
+    :hasSource [ dct:title "Deep learning for label-free monitoring of iPSC & organoids"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures> ] ,
+               [ dct:title "QC of hPSC colonies by CNN image analysis"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9820636/> ] .
+
+:n_dualarm a :Concept ;
+    rdfs:label "双腕ヒューマノイド"@ja ;
+    :content "汎用器具をそのまま扱える人型双腕（例: LabDroid Maholo）。プロトコル変更に柔軟で、パラメータ探索や手作業の写像に向く。"@ja ;
+    :inDomain :n_d3 ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ,
+               [ dct:title "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）"@ja ; :url <https://www.riken.jp/press/2020/20201204_1/index.html> ] .
+
+:n_closeddev a :Concept ;
+    rdfs:label "閉鎖型専用培養装置"@ja ;
+    :content "装置内で取り出さず培養するクローズド機。無菌性・更衣簡略化・人為ミス低減に優れ、財団のmy iPS製造の中核アーキテクチャ。"@ja ;
+    :inDomain :n_d3 ;
+    :hasSource [ dct:title "iPS財団 My iPSプロジェクト（自家細胞を自動作製）"@ja ; :url <https://www.nikkan.co.jp/articles/view/00745986> ] ,
+               [ dct:title "Long-term iPSC maintenance by automated culture system（Konagaya 2015）"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/> ] .
+
+:n_dispense a :Concept ;
+    rdfs:label "自動分注・ピペッティング"@ja ;
+    :content "培地・試薬の精密分注と吸引。液面追従・体積制御・無菌チップ運用が再現性を決める。リキッドハンドラ統合の基本ユニット。"@ja ;
+    :inDomain :n_d3 ;
+    :hasSource [ dct:title "Long-term iPSC maintenance by automated culture system（Konagaya 2015）"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/> ] .
+
+:n_transport a :Concept ;
+    rdfs:label "プレート搬送・把持"@ja ;
+    :content "インキュベータ⇄顕微鏡⇄作業台間のプレート/容器搬送とグリッパ制御。スケジュールに沿う物流が自律運転の連続性を支える。"@ja ;
+    :inDomain :n_d3 ;
+    :hasSource [ dct:title "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）"@ja ; :url <https://www.riken.jp/press/2020/20201204_1/index.html> ] ,
+               [ dct:title "SiLA2: cell culture autopilot / vendor-agnostic"@ja ; :url <https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard> ] .
+
+:n_motioncap a :Concept ;
+    rdfs:label "熟練手技のモーション再現"@ja ;
+    :content "熟練者の作業を動作解析し数値化してロボットで再現する思想。「誰でもできるよう数値化して自動化」が財団の自動化方針の核。"@ja ;
+    :inDomain :n_d3 ;
+    :hasSource [ dct:title "免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）"@ja ; :url <https://scienceportal.jst.go.jp/newsflash/20250403_n01/> ] ,
+               [ dct:title "がん治療に役立つ細胞の分化・培養を自動化（Panasonic）"@ja ; :url <https://news.panasonic.com/jp/stories/17100> ] .
+
+:n_sched a :Concept ;
+    rdfs:label "スケジューリング"@ja ;
+    :content "12時間ごとの観察など定期タスクと、至適継代時刻のような条件起動タスクを編成。多細胞株・多バッチの並行運転を破綻なく回す制御層。"@ja ;
+    :inDomain :n_d4 ;
+    :hasSource [ dct:title "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）"@ja ; :url <https://www.riken.jp/press/2020/20201204_1/index.html> ] .
+
+:n_loop a :Concept ;
+    rdfs:label "クローズドループ判断"@ja ;
+    :content "観察→判断→操作のサイクルを人手介入なしで回す。画像メトリクスを意思決定点に変換し、通知か次工程実行かを分岐する制御ロジック。"@ja ;
+    :inDomain :n_d4 ;
+    :hasSource [ dct:title "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）"@ja ; :url <https://www.riken.jp/press/2020/20201204_1/index.html> ] ,
+               [ dct:title "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system> ] .
+
+:n_bbo a :Concept ;
+    rdfs:label "バッチベイズ最適化"@ja ;
+    :content "数百万通りの培養条件を、ガウス過程＋バッチ取得関数で効率探索。RPE分化率を反復改善した自律実験の中核解法（GPyOptベース）。"@ja ;
+    :inDomain :n_d4 ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ,
+               [ dct:title "LabDroid_optimizer（GitHub / GPyOpt）"@ja ; :url <https://github.com/labauto/LabDroid_optimizer> ] .
+
+:n_doe a :Concept ;
+    rdfs:label "実験計画の定式化"@ja ;
+    :content "プロトコルをパラメータ空間に写像し、最適化問題として定義する工程。各操作を変数化（濃度・日数・剥離強度等）し探索可能にする前処理。"@ja ;
+    :inDomain :n_d4 ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] .
+
+:n_sdl a :Concept ;
+    rdfs:label "自律実験 / Self-driving Lab"@ja ;
+    :content "ロボットが自ら結果を評価し次実験を計画する枠組み。再現性ある細胞製造に向け、探索空間の系統的・無バイアス探索を加速する。"@ja ;
+    :inDomain :n_d4 ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ,
+               [ dct:title "Implementing robotics and AI（eLife digest）"@ja ; :url <https://elifesciences.org/articles/80609> ] .
+
+:n_rl a :Concept ;
+    rdfs:label "強化学習（発展領域）"@ja ;
+    :content "方策学習による操作・条件最適化。製造GMP文脈では検証可能性が壁で、現状は画像判断・BOが主流、RLは研究段階。"@ja ;
+    :inDomain :n_d4 ;
+    :hasSource [ dct:title "Implementing robotics and AI（eLife digest）"@ja ; :url <https://elifesciences.org/articles/80609> ] .
+
+:n_sila a :Concept ;
+    rdfs:label "SiLA 2（デバイス標準）"@ja ;
+    :content "HTTP/2＋Protocol BuffersとFeature Definition Languageで意味的に同一なデバイスIFを標準化。ベンダロックイン回避と統合工数削減の中核。"@ja ;
+    :inDomain :n_d5 ;
+    :hasSource [ dct:title "SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）"@ja ; :url <https://sila-standard.com/faq/> ] ,
+               [ dct:title "Tecan SiLA2 SDK（royalty-free, open-source）"@ja ; :url <https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext> ] .
+
+:n_opcua a :Concept ;
+    rdfs:label "OPC-UA / LADS"@ja ;
+    :content "産業で普及するM2M標準OPC-UAと、その研究室向けコンパニオン規格LADS。SiLA2と並ぶデバイス通信の選択肢で、製造ライン連携に強い。"@ja ;
+    :inDomain :n_d5 ;
+    :hasSource [ dct:title "Tecan SiLA2 SDK（royalty-free, open-source）"@ja ; :url <https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext> ] .
+
+:n_mtp a :Concept ;
+    rdfs:label "MTP（モジュール型パッケージ）"@ja ;
+    :content "モジュール式・柔軟自動化を可能にする記述。SiLA2と組み合わせ、R&Dから製造へのスケールを支える構成管理の枠組み。"@ja ;
+    :inDomain :n_d5 ;
+    :hasSource [ dct:title "SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）"@ja ; :url <https://sila-standard.com/faq/> ] .
+
+:n_orch a :Concept ;
+    rdfs:label "ワークフロー・オーケストレーション"@ja ;
+    :content "タスクとデータと物理ハードを途切れなく統合する制御フレーム（AlabOS, Helao 等）。各機器をサービス化し横断ワークフローを管理。"@ja ;
+    :inDomain :n_d5 ;
+    :hasSource [ dct:title "SiLA2: cell culture autopilot / vendor-agnostic"@ja ; :url <https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard> ] .
+
+:n_gateway a :Concept ;
+    rdfs:label "レガシーデバイス・ゲートウェイ"@ja ;
+    :content "独自IFしか持たない既存機器を標準IFへ橋渡しするゲートウェイ層。GPIO/USB/シリアル接続と遠隔監視で「スマート化」する。"@ja ;
+    :inDomain :n_d5 ;
+    :hasSource [ dct:title "The SiLA 2 Manager（device discovery / data integrity）"@ja ; :url <https://www.sciencedirect.com/science/article/pii/S2352711022000103> ] .
+
+:n_lims a :Concept ;
+    rdfs:label "LIMS / LES（情報・実行系）"@ja ;
+    :content "検体・試薬・手順・結果を記録/指図する上位システム。デバイス層からのデータを集約し、バッチ記録・トレーサビリティに接続する。"@ja ;
+    :inDomain :n_d5 ;
+    :hasSource [ dct:title "The SiLA 2 Manager（device discovery / data integrity）"@ja ; :url <https://www.sciencedirect.com/science/article/pii/S2352711022000103> ] ,
+               [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] .
+
+:n_datamodel a :Concept ;
+    rdfs:label "データモデル / インジェスト"@ja ;
+    :content "画像・センサ・操作ログの標準化された取り込み。新旧機器の異種IFを跨いだ「データ取り込みギャップ」の解消が自律運転の前提。"@ja ;
+    :inDomain :n_d5 ;
+    :hasSource [ dct:title "SiLA2: cell culture autopilot / vendor-agnostic"@ja ; :url <https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard> ] ,
+               [ dct:title "The SiLA 2 Manager（device discovery / data integrity）"@ja ; :url <https://www.sciencedirect.com/science/article/pii/S2352711022000103> ] .
+
+:n_gctp a :Concept ;
+    rdfs:label "GCTP（再生医療等製品製造管理）"@ja ;
+    :content "再生医療等製品の製造・品質管理基準。製造設備に加え管理手法の適合性をPMDAが調査。製造ソフトの設計境界を規定する。"@ja ;
+    :inDomain :n_d6 ;
+    :hasSource [ dct:title "GCTP適合性調査（PMDA）"@ja ; :url <https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html> ] .
+
+:n_ramlaw a :Concept ;
+    rdfs:label "再生医療等安全性確保法 / 施設基準"@ja ;
+    :content "細胞培養加工施設の構造設備基準と適合性調査の根拠法。my iPS製造施設はこの枠組みでPMDA適合性調査を受け稼働を目指す。"@ja ;
+    :inDomain :n_d6 ;
+    :hasSource [ dct:title "再生医療等安全性確保法 関連（Science Portal）"@ja ; :url <https://scienceportal.jst.go.jp/newsflash/20250403_n01/> ] ,
+               [ dct:title "免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）"@ja ; :url <https://scienceportal.jst.go.jp/newsflash/20250403_n01/> ] .
+
+:n_alcoa a :Concept ;
+    rdfs:label "ALCOA+ データインテグリティ"@ja ;
+    :content "帰属性・判読性・同時性・原本性・正確性＋αを全ライフサイクルで満たす原則。製造/解析で生成する全データが従うべき設計要件。"@ja ;
+    :inDomain :n_d6 ;
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] .
+
+:n_csv a :Concept ;
+    rdfs:label "CSV / CSA（システムバリデーション）"@ja ;
+    :content "計算機システムが目的適合かつALCOA+準拠であることを文書化した証拠。技術的統制で担保するのは複雑で時間を要するが必須工程。"@ja ;
+    :inDomain :n_d6 ;
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] .
+
+:n_part11 a :Concept ;
+    rdfs:label "21 CFR Part 11 / Annex 11"@ja ;
+    :content "電子記録・電子署名の監査性と安全な取扱いを求めるFDA/EU規制。電子系の設計（権限・署名・改ざん防止）の直接要件。"@ja ;
+    :inDomain :n_d6 ;
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] .
+
+:n_ebr a :Concept ;
+    rdfs:label "電子バッチ記録（EBR）"@ja ;
+    :content "製造工程で生成される改ざん不能な電子記録。前工程データの検証で次工程の整合を担保し、逸脱時の是正を可能にする。"@ja ;
+    :inDomain :n_d6 ;
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] .
+
+:n_audit a :Concept ;
+    rdfs:label "監査証跡（Audit Trail）"@ja ;
+    :content "誰が・いつ・何を変更したかを追える記録。データインテグリティとPart11準拠の中核で、全操作のロギング設計が必要。"@ja ;
+    :inDomain :n_d6 ;
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] .
+
+:n_capa a :Concept ;
+    rdfs:label "CAPA / リスク管理（FMEA）"@ja ;
+    :content "逸脱・品質事象の根本原因分析と是正/予防措置。FMEA等のリスク評価が製品・工程設計の判断を導く。ソフトの逸脱検知設計に直結。"@ja ;
+    :inDomain :n_d6 ;
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] .
+
+:n_envmon a :Concept ;
+    rdfs:label "環境モニタリング（DO/pH/CO₂/温度）"@ja ;
+    :content "培養環境の連続計測。維持培養や量産の安定性を支え、閉ループ制御の状態量を供給する。エッジ実装（ESP32等）で分散計測が可能。"@ja ;
+    :inDomain :n_d7 ;
+    :hasSource [ dct:title "Long-term iPSC maintenance by automated culture system（Konagaya 2015）"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/> ] .
+
+:n_sterility a :Concept ;
+    rdfs:label "無菌性・コンタミ監視"@ja ;
+    :content "菌混入や逸脱の検知。閉鎖系では更衣簡略化と引換えに監視設計が重要で、9日連続運転でも重大エラー/汚染ゼロが品質目標水準。"@ja ;
+    :inDomain :n_d7 ;
+    :hasSource [ dct:title "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）"@ja ; :url <https://www.riken.jp/press/2020/20201204_1/index.html> ] ,
+               [ dct:title "免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）"@ja ; :url <https://scienceportal.jst.go.jp/newsflash/20250403_n01/> ] .
+
+:n_cpv a :Concept ;
+    rdfs:label "インライン/アットライン分析（CPV）"@ja ;
+    :content "工程内・近接でのリアルタイム計測で工程性能を継続検証(CPV)。AI/自動化が高スループットQCと工程安定性監視を可能にする。"@ja ;
+    :inDomain :n_d7 ;
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] .
+
+:n_edge a :Concept ;
+    rdfs:label "エッジセンサ統合"@ja ;
+    :content "マイコン/IoTによる多点センサ取得とデバイス層への配信。標準IF（SiLA2/OPC-UA）やゲートウェイ経由で上位へ集約する接点。"@ja ;
+    :inDomain :n_d7 ;
+    :hasSource [ dct:title "The SiLA 2 Manager（device discovery / data integrity）"@ja ; :url <https://www.sciencedirect.com/science/article/pii/S2352711022000103> ] .
+
+:n_cira a :Player ;
+    rdfs:label "CiRA財団 / my iPS"@ja ;
+    :content "自家iPSの閉鎖系フル自動製造を推進。約3週間・原材料費約100万円/人を掲げ、PMDA適合性調査・非臨床を経て2028年度の治験開始を目標。"@ja ;
+    :inDomain :n_d8 ;
+    :hasSource [ dct:title "iPS財団 My iPSプロジェクト（自家細胞を自動作製）"@ja ; :url <https://www.nikkan.co.jp/articles/view/00745986> ] ,
+               [ dct:title "免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）"@ja ; :url <https://scienceportal.jst.go.jp/newsflash/20250403_n01/> ] ,
+               [ dct:title "my iPSプロジェクト（iPS財団 公式）"@ja ; :url <https://www.cira-foundation.or.jp/j/about/project/myips/> ] .
+
+:n_terumo a :System ;
+    rdfs:label "Terumo BCT / Quantum Flex"@ja ;
+    :content "2024年に財団と提携。Quantum Flex Cell Expansion System上で閉鎖・自動・統合プロセスを構築し、デジタル技術で効率と制御を高める。"@ja ;
+    :inDomain :n_d8 ;
+    :hasSource [ dct:title "Terumo BCT × CiRA Foundation 自動化提携（Quantum Flex）"@ja ; :url <https://www.terumo.com/newsrelease/detail/20240319/6146> ] .
+
+:n_pana a :Player ;
+    rdfs:label "パナソニックHD"@ja ;
+    :content "岩田研由来の閉鎖型自動培養の系譜。2026年4月、中之島クロスでiPS樹立工程の自動化実証を開始し、最難関の樹立に踏み込む。"@ja ;
+    :inDomain :n_d8 ;
+    :hasSource [ dct:title "パナソニックHD iPS樹立工程の自動化 実証実験（2026/4）"@ja ; :url <https://prtimes.jp/main/html/rd/p/000006702.000003442.html> ] ,
+               [ dct:title "がん治療に役立つ細胞の分化・培養を自動化（Panasonic）"@ja ; :url <https://news.panasonic.com/jp/stories/17100> ] .
+
+:n_kaneka a :Player ;
+    rdfs:label "カネカ × 理研（林洋平ら）"@ja ;
+    :content "財団研究開発センターと共同で、樹立から大量培養までを一貫させた浮遊培養をeLifeに報告。量産・自動化の基盤形態を提供。"@ja ;
+    :inDomain :n_d8 ;
+    :hasSource [ dct:title "iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）"@ja ; :url <https://www.riken.jp/press/2024/20241120_1/index.html> ] ,
+               [ dct:title "iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）"@ja ; :url <https://stemcells.or.jp/ips-9/> ] .
+
+:n_rbi a :System ;
+    rdfs:label "Robotic Biology Institute / Maholo"@ja ;
+    :content "双腕ヒューマノイドLabDroid Maholoの提供元。汎用器具操作と高再現性で、自律探索プラットフォームの物理基盤を担う。"@ja ;
+    :inDomain :n_d8 ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] .
+
+:n_epistra a :Player ;
+    rdfs:label "Epistra（自律最適化）"@ja ;
+    :content "Maholo×AIの自律実験を支えた企業の一つ。実験計画・ベイズ最適化など最適化エンジン側で関与。"@ja ;
+    :inDomain :n_d8 ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] .
+
+:n_moldev a :System ;
+    rdfs:label "Molecular Devices / CellXpress.ai"@ja ;
+    :content "イメージングベースのAI判断で給餌・継代を自動化する商用システム。DLで形態/分化を識別し、24/365運転で複数株を拡大。"@ja ;
+    :inDomain :n_d8 ;
+    :hasSource [ dct:title "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system> ] ,
+               [ dct:title "Deep learning for label-free monitoring of iPSC & organoids"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures> ] .
+
+:n_astellas a :Player ;
+    rdfs:label "アステラス製薬（双腕ロボ）"@ja ;
+    :content "双腕ロボットでiPS培養を自動化し、治験用供給を企図。製薬側からの製造自動化プレイヤー。"@ja ;
+    :inDomain :n_d8 ;
+    :hasSource [ dct:title "iPS細胞をロボが培養（アステラス, 日経）"@ja ; :url <https://www.nikkei.com/article/DGKKZO75692350Z21C23A0TB0000/> ] .
+
+:n_src_kanda a :Source ;
+    rdfs:label "Kanda et al. 2022 (eLife)"@ja ;
+    :content "自律ロボット×バッチベイズ最適化でiPSC-RPE分化を最適化した記念碑的論文。プロトコルの5段階定式化とパラメータ探索、コード公開を含む。"@ja ;
+    :inDomain :n_d4 ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ,
+               [ dct:title "LabDroid_optimizer（GitHub / GPyOpt）"@ja ; :url <https://github.com/labauto/LabDroid_optimizer> ] .
+
+:n_src_riken2020 a :Source ;
+    rdfs:label "理研 自律培養 2020"@ja ;
+    :content "人型ロボット×AIで12h観察→増殖予測→至適継代を9日間自律実行。閉ループ自律培養の国内先行実証。"@ja ;
+    :inDomain :n_d2 ;
+    :hasSource [ dct:title "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）"@ja ; :url <https://www.riken.jp/press/2020/20201204_1/index.html> ] .
+
+:n_src_sila a :Source ;
+    rdfs:label "SiLA 2 標準群"@ja ;
+    :content "デバイス相互運用の標準。Tecan SDK・SiLA2 Manager・cell culture autopilot事例まで、実装に直接使える資源群。"@ja ;
+    :inDomain :n_d5 ;
+    :hasSource [ dct:title "Tecan SiLA2 SDK（royalty-free, open-source）"@ja ; :url <https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext> ] ,
+               [ dct:title "The SiLA 2 Manager（device discovery / data integrity）"@ja ; :url <https://www.sciencedirect.com/science/article/pii/S2352711022000103> ] ,
+               [ dct:title "SiLA2: cell culture autopilot / vendor-agnostic"@ja ; :url <https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard> ] .
+
+:n_src_gctp a :Source ;
+    rdfs:label "PMDA GCTP / 適合性調査"@ja ;
+    :content "再生医療等製品の製造・品質管理の適合性を定める一次情報。製造ソフトの規制要件の出発点。"@ja ;
+    :inDomain :n_d6 ;
+    :hasSource [ dct:title "GCTP適合性調査（PMDA）"@ja ; :url <https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html> ] .
+
+:n_src_cgt a :Source ;
+    rdfs:label "CGT QC/QA（ALCOA・Part11）"@ja ;
+    :content "データインテグリティ・CSV・CAPA・CPVを横断する実務解説。電子系設計の要件マップとして有用。"@ja ;
+    :inDomain :n_d6 ;
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] .
+
+:n_src_cxa a :Source ;
+    rdfs:label "CellXpress.ai 適用ノート"@ja ;
+    :content "コンフルエンシー/分化のDL2モデルと閾値起動の自動継代を具体記述。画像→意思決定の設計参照。"@ja ;
+    :inDomain :n_d2 ;
+    :hasSource [ dct:title "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system> ] ,
+               [ dct:title "Deep learning for label-free monitoring of iPSC & organoids"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures> ] .
+
+:n_src_susp a :Source ;
+    rdfs:label "浮遊培養 一貫化（eLife）"@ja ;
+    :content "樹立→大量培養→直接凍結まで浮遊系で一貫。量産・自動化の生物学的基盤。財団・理研・カネカ共同。"@ja ;
+    :inDomain :n_d1 ;
+    :hasSource [ dct:title "iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）"@ja ; :url <https://www.riken.jp/press/2024/20241120_1/index.html> ] ,
+               [ dct:title "iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）"@ja ; :url <https://stemcells.or.jp/ips-9/> ] .
+
+# ---- relationships ----
+:n_root :contains :n_d1 .
+:n_root :contains :n_d2 .
+:n_root :contains :n_d3 .
+:n_root :contains :n_d4 .
+:n_root :contains :n_d5 .
+:n_root :contains :n_d6 .
+:n_root :contains :n_d7 .
+:n_root :contains :n_d8 .
+:n_d1 :has :n_maint .
+:n_d1 :has :n_passage .
+:n_d1 :has :n_feeder .
+:n_d1 :has :n_diff .
+:n_d1 :has :n_signal .
+:n_d1 :has :n_suspension .
+:n_d1 :has :n_reprog .
+:n_d1 :has :n_qccrit .
+:n_d2 :has :n_bf .
+:n_d2 :has :n_conf .
+:n_d2 :has :n_morphcls .
+:n_d2 :has :n_diffdet .
+:n_d2 :has :n_growth .
+:n_d2 :has :n_dlmodel .
+:n_d3 :has :n_dualarm .
+:n_d3 :has :n_closeddev .
+:n_d3 :has :n_dispense .
+:n_d3 :has :n_transport .
+:n_d3 :has :n_motioncap .
+:n_d4 :has :n_sched .
+:n_d4 :has :n_loop .
+:n_d4 :has :n_bbo .
+:n_d4 :has :n_doe .
+:n_d4 :has :n_sdl .
+:n_d4 :has :n_rl .
+:n_d5 :has :n_sila .
+:n_d5 :has :n_opcua .
+:n_d5 :has :n_mtp .
+:n_d5 :has :n_orch .
+:n_d5 :has :n_gateway .
+:n_d5 :has :n_lims .
+:n_d5 :has :n_datamodel .
+:n_d6 :has :n_gctp .
+:n_d6 :has :n_ramlaw .
+:n_d6 :has :n_alcoa .
+:n_d6 :has :n_csv .
+:n_d6 :has :n_part11 .
+:n_d6 :has :n_ebr .
+:n_d6 :has :n_audit .
+:n_d6 :has :n_capa .
+:n_d7 :has :n_envmon .
+:n_d7 :has :n_sterility .
+:n_d7 :has :n_cpv .
+:n_d7 :has :n_edge .
+:n_d8 :has :n_cira .
+:n_d8 :has :n_terumo .
+:n_d8 :has :n_pana .
+:n_d8 :has :n_kaneka .
+:n_d8 :has :n_rbi .
+:n_d8 :has :n_epistra .
+:n_d8 :has :n_moldev .
+:n_d8 :has :n_astellas .
+:n_growth :triggers :n_passage .
+:n_conf :feeds :n_sched .
+:n_conf :feeds :n_loop .
+:n_diffdet :evaluates :n_qccrit .
+:n_morphcls :evaluates :n_qccrit .
+:n_dlmodel :powers :n_conf .
+:n_dlmodel :powers :n_morphcls .
+:n_dlmodel :powers :n_diffdet .
+:n_bf :input_to :n_dlmodel .
+:n_loop :commands :n_dispense .
+:n_loop :commands :n_transport .
+:n_sched :drives :n_loop .
+:n_bbo :optimizes :n_signal .
+:n_bbo :optimizes :n_diff .
+:n_doe :formulates :n_bbo .
+:n_sdl :uses :n_bbo .
+:n_sdl :extends :n_loop .
+:n_rl :advances :n_sdl .
+:n_passage :part_of :n_maint .
+:n_signal :controls :n_diff .
+:n_feeder :enables :n_maint .
+:n_suspension :scales :n_reprog .
+:n_reprog :precedes :n_maint .
+:n_motioncap :reproduces :n_passage .
+:n_dualarm :executes :n_diff .
+:n_closeddev :executes :n_maint .
+:n_dispense :executes :n_maint .
+:n_sila :integrates :n_closeddev .
+:n_sila :integrates :n_dualarm .
+:n_sila :integrates :n_edge .
+:n_opcua :integrates :n_closeddev .
+:n_gateway :bridges_to :n_sila .
+:n_orch :hosts :n_sched .
+:n_orch :consumes :n_sila .
+:n_datamodel :feeds :n_lims .
+:n_lims :produces :n_ebr .
+:n_edge :carries :n_envmon .
+:n_envmon :monitors :n_maint .
+:n_envmon :state_for :n_loop .
+:n_sterility :guards :n_closeddev .
+:n_cpv :verifies :n_qccrit .
+:n_gctp :governs :n_cira .
+:n_ramlaw :governs :n_closeddev .
+:n_alcoa :constrains :n_ebr .
+:n_alcoa :constrains :n_audit .
+:n_alcoa :constrains :n_datamodel .
+:n_csv :validates :n_lims .
+:n_csv :validates :n_loop .
+:n_part11 :requires :n_ebr .
+:n_part11 :requires :n_audit .
+:n_capa :responds_to :n_sterility .
+:n_gctp :defines :n_qccrit .
+:n_cira :uses :n_closeddev .
+:n_cira :partners :n_terumo .
+:n_cira :pursues :n_reprog .
+:n_cira :pursues :n_maint .
+:n_terumo :provides :n_closeddev .
+:n_pana :builds :n_closeddev .
+:n_pana :automates :n_reprog .
+:n_kaneka :demonstrates :n_suspension .
+:n_rbi :provides :n_dualarm .
+:n_epistra :provides :n_bbo .
+:n_moldev :implements :n_conf .
+:n_moldev :implements :n_diffdet .
+:n_moldev :implements :n_loop .
+:n_astellas :uses :n_dualarm .
+:n_src_kanda :defines :n_bbo .
+:n_src_kanda :defines :n_sdl .
+:n_src_kanda :demonstrates :n_diff .
+:n_src_riken2020 :demonstrates :n_growth .
+:n_src_riken2020 :demonstrates :n_loop .
+:n_src_sila :specifies :n_sila .
+:n_src_sila :informs :n_orch .
+:n_src_gctp :specifies :n_gctp .
+:n_src_cgt :explains :n_alcoa .
+:n_src_cgt :explains :n_csv .
+:n_src_cxa :illustrates :n_conf .
+:n_src_cxa :illustrates :n_diffdet .
+:n_src_susp :reports :n_suspension .
