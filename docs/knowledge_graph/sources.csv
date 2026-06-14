@@ -79,6 +79,10 @@ envmon,環境モニタリング（DO/pH/CO₂/温度）,concept,Long-term iPSC m
 sterility,無菌性・コンタミ監視,concept,ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）,https://www.riken.jp/press/2020/20201204_1/index.html
 sterility,無菌性・コンタミ監視,concept,免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）,https://scienceportal.jst.go.jp/newsflash/20250403_n01/
 cpv,インライン/アットライン分析（CPV）,concept,"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc
+cpv,インライン/アットライン分析（CPV）,concept,"Krause et al. 2023, Curr Opin Biotechnol — biocapacitance online biomass",https://www.sciencedirect.com/science/article/pii/S0958166923000897
+cpv,インライン/アットライン分析（CPV）,concept,"Graf/Wei et al. 2022, Front Bioeng — in-line Raman closed-loop glucose (PID)",https://www.frontiersin.org/journals/bioengineering-and-biotechnology/articles/10.3389/fbioe.2022.719614/full
+cpv,インライン/アットライン分析（CPV）,concept,Nova Biomedical BioProfile FLEX2 (16-parameter at-line analyzer),https://www.novabiomedical.com/cell-culture-analyzers/bioprofile-flex2-basic/
+cpv,インライン/アットライン分析（CPV）,concept,"Kropp et al. 2019, Sci Rep — at-line bypass imaging of hiPSC aggregates",https://www.nature.com/articles/s41598-019-48814-w
 edge,エッジセンサ統合,concept,The SiLA 2 Manager（device discovery / data integrity）,https://www.sciencedirect.com/science/article/pii/S2352711022000103
 cira,CiRA財団 / my iPS,player,iPS財団 My iPSプロジェクト（自家細胞を自動作製）,https://www.nikkan.co.jp/articles/view/00745986
 cira,CiRA財団 / my iPS,player,免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）,https://scienceportal.jst.go.jp/newsflash/20250403_n01/

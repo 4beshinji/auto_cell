@@ -50,7 +50,7 @@ audit,監査証跡（Audit Trail）,concept,d6,GMP・規制・データインテ
 capa,CAPA / リスク管理（FMEA）,concept,d6,GMP・規制・データインテグリティ,逸脱・品質事象の根本原因分析と是正/予防措置。FMEA等のリスク評価が製品・工程設計の判断を導く。ソフトの逸脱検知設計に直結。,1
 envmon,環境モニタリング（DO/pH/CO₂/温度）,concept,d7,センサ・環境モニタリング,培養環境の連続計測。維持培養や量産の安定性を支え、閉ループ制御の状態量を供給する。エッジ実装（ESP32等）で分散計測が可能。,1
 sterility,無菌性・コンタミ監視,concept,d7,センサ・環境モニタリング,菌混入や逸脱の検知。閉鎖系では更衣簡略化と引換えに監視設計が重要で、9日連続運転でも重大エラー/汚染ゼロが品質目標水準。,2
-cpv,インライン/アットライン分析（CPV）,concept,d7,センサ・環境モニタリング,工程内・近接でのリアルタイム計測で工程性能を継続検証(CPV)。AI/自動化が高スループットQCと工程安定性監視を可能にする。,1
+cpv,インライン/アットライン分析（CPV）,concept,d7,センサ・環境モニタリング,"工程内・近接でのリアルタイム計測で工程性能を継続検証(CPV)。AI/自動化が高スループットQCと工程安定性監視を可能にする。【P5】具体スタック(2026-06-15調査): VCD=in-line capacitance(Aber FUTURA/Hamilton Incyte, Manstein iPSCで定性検証), 代謝物=in-line Raman(CHOで閉ループglucose制御実証)＋at-line Nova BioProfile FLEX2(16項＋osmolality/viability), 凝集体径=in-line DHM(Ovizio)/FBRM(CLD≠径) or at-line画像(Kropp2019/FlowCam, 日次)。品質(未分化/同一性)・無菌はoffline=BO目的関数専用。",5
 edge,エッジセンサ統合,concept,d7,センサ・環境モニタリング,マイコン/IoTによる多点センサ取得とデバイス層への配信。標準IF（SiLA2/OPC-UA）やゲートウェイ経由で上位へ集約する接点。,1
 cira,CiRA財団 / my iPS,player,d8,エコシステム・プレイヤー,自家iPSの閉鎖系フル自動製造を推進。約3週間・原材料費約100万円/人を掲げ、PMDA適合性調査・非臨床を経て2028年度の治験開始を目標。,3
 terumo,Terumo BCT / Quantum Flex,system,d8,エコシステム・プレイヤー,2024年に財団と提携。Quantum Flex Cell Expansion System上で閉鎖・自動・統合プロセスを構築し、デジタル技術で効率と制御を高める。【P3】Quantum FlexはCPAソフト(プロトコルビルダ/最大100台フリート/cGMP)の閉鎖ターンキーで、公開デバイスAPIは確認できず＝自前ブレインの閉ループ制御対象ではなく商用/臨床エンドポイント(連携するなら監視のみ)。,1

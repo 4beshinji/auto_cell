@@ -294,9 +294,13 @@
                [ dct:title "免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）"@ja ; :url <https://scienceportal.jst.go.jp/newsflash/20250403_n01/> ] .
 :n_cpv a :Concept ;
     rdfs:label "インライン/アットライン分析（CPV）"@ja ;
-    :content "工程内・近接でのリアルタイム計測で工程性能を継続検証(CPV)。AI/自動化が高スループットQCと工程安定性監視を可能にする。"@ja ;
+    :content "工程内・近接でのリアルタイム計測で工程性能を継続検証(CPV)。AI/自動化が高スループットQCと工程安定性監視を可能にする。【P5】具体スタック(2026-06-15調査): VCD=in-line capacitance(Aber FUTURA/Hamilton Incyte, Manstein iPSCで定性検証), 代謝物=in-line Raman(CHOで閉ループglucose制御実証)＋at-line Nova BioProfile FLEX2(16項＋osmolality/viability), 凝集体径=in-line DHM(Ovizio)/FBRM(CLD≠径) or at-line画像(Kropp2019/FlowCam, 日次)。品質(未分化/同一性)・無菌はoffline=BO目的関数専用。"@ja ;
     :inDomain :n_d7 ;
-    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] .
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] ,
+               [ dct:title "Krause et al. 2023, Curr Opin Biotechnol — biocapacitance online biomass"@ja ; :url <https://www.sciencedirect.com/science/article/pii/S0958166923000897> ] ,
+               [ dct:title "Graf/Wei et al. 2022, Front Bioeng — in-line Raman closed-loop glucose (PID)"@ja ; :url <https://www.frontiersin.org/journals/bioengineering-and-biotechnology/articles/10.3389/fbioe.2022.719614/full> ] ,
+               [ dct:title "Nova Biomedical BioProfile FLEX2 (16-parameter at-line analyzer)"@ja ; :url <https://www.novabiomedical.com/cell-culture-analyzers/bioprofile-flex2-basic/> ] ,
+               [ dct:title "Kropp et al. 2019, Sci Rep — at-line bypass imaging of hiPSC aggregates"@ja ; :url <https://www.nature.com/articles/s41598-019-48814-w> ] .
 :n_edge a :Concept ;
     rdfs:label "エッジセンサ統合"@ja ;
     :content "マイコン/IoTによる多点センサ取得とデバイス層への配信。標準IF（SiLA2/OPC-UA）やゲートウェイ経由で上位へ集約する接点。"@ja ;
@@ -593,3 +597,5 @@
 :n_d5 :has :n_devprofile .
 :n_devprofile :uses :n_opcua .
 :n_gateway :implements :n_devprofile .
+:n_cpv :feeds :n_loop .
+:n_src_manstein :demonstrates :n_cpv .

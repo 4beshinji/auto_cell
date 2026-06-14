@@ -178,6 +178,32 @@ hPSC **灌流**撹拌槽培養を Monod 型 in silico モデルで制御し、7 
 > **決定 #7（§8）の帰結**: 「(a) 原典値に揃える」は **適用不要**。plant_model は既に真の原典 Manstein に
 > 一致しており、Galvanauskas 値へ変えるとむしろ正しいモデルを壊す。残る作業は docstring の出典明記のみ（実施済）。
 
+### 4.2 観測性スタック — 各 CPP/品質を何で測れるか（P5, 2026-06-15）
+
+deep-research（計測/分析サーベイ）＋一次検証。詳細・出典は
+[`../knowledge_graph/research/2026-06-15_P5_observability.md`](../knowledge_graph/research/2026-06-15_P5_observability.md)。
+**閉ループ可（in-line/at-line・低遅延）と BO 目的関数専用（offline・run 単位）を区別**して ICD の sensor Function 候補にする。
+
+**A. 閉ループに使える** — L1/L2 のフィードバック源:
+
+| CPP | 手法/機器 | 配置 | cadence | 留保 |
+|---|---|---|---|---|
+| VCD/biomass | **capacitance/誘電分光**（Aber FUTURA, Hamilton Incyte Arc） | in-line | ~30s, Modbus 直結 | ✅**Manstein 500mL iPSC で offline VCD と一致**（定性, R²なし）。生細胞特異。iPSC 校正必須 |
+| glucose/lactate/gln | **in-line Raman** | in-line | ~1/min | CHO で PID 閉ループ glucose 制御実証。iPSC 再校正必須 |
+| 代謝物16項＋osmolality＋viability＋細胞径 | **Nova BioProfile FLEX2** | at-line | ~4.5min | マルチパラメータ。Raman 校正・BO 入力 |
+| 凝集体径 | Ovizio iLINE-F PRO(DHM) / FBRM(G400, **CLD≠径**) ／代替: at-line 画像(Kropp/FlowCam) | in-line〜at-line | 連続〜**24h** | turnkey な iPSC 実証 in-line なし → **v1 は at-line 画像/FBRM プロキシ寄り** |
+| pH/DO/温度 | 標準プローブ | in-line | 連続 | L0 局所 PID |
+
+**B. BO 目的関数専用**（offline/run 単位・閉ループ不可）: 未分化/多能性マーカー(OCT4/SOX2/NANOG/SSEA/TRA)・
+核型/同一性・自発分化（ラベルフリー画像 DL は将来余地）・無菌/汚染。⚠️「offline 限定」は確証 claim 不在に基づく**推定**
+（低遅延手段の不在を証明したものではない → #11/#17 で別途調査）。
+
+**設計含意**:
+- VCD の **in-line capacitance** が灌流レバー閉ループの anchor（Manstein で iPSC 検証済）。§4 の VCD channel を裏付け。
+- 代謝物は **in-line Raman（閉ループ）＋ at-line Nova（リッチ panel）** の二段。
+- **凝集体径は in-line が弱い** → §8#3「analog channel」は維持だが **cadence は at-line 寄り（連続でない）** を前提に L1 を設計。
+- **品質/無菌が offline＝BO 側**である事実は **ADR-0001 の L1(物理 CPP の決定的制御)/L2(BO は run 結果の品質を最適化) 分離を裏付ける**。
+
 ---
 
 ## 5. 規制・データインテグリティ → 技術的統制（d6）

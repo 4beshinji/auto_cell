@@ -155,3 +155,5 @@ csv,validates,ctrl_split
 d5,has,devprofile
 devprofile,uses,opcua
 gateway,implements,devprofile
+cpv,feeds,loop
+src_manstein,demonstrates,cpv

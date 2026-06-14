@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "iPS自動培養ソフトウェア ドメイン知識マップ",
-    "description": "京都大学iPS細胞研究財団と関連研究を起点に、自動細胞培養ソフトウェアの実装に必要なドメイン知識をナレッジグラフのシードとして構造化したもの。 [2026-06-14 P1拡張: 浮遊速度論ODEの原典(Galvanauskas et al. 2019)とCPP文献根拠を追加] [2026-06-14 P1続報: plant_model原典をManstein&Zweigerdt 2021と特定(Galvanauskas誤推定を訂正)] [2026-06-14 P3: デバイスIF=OPC-UA/LADS(バイオリアクタ)第一・SiLA2(ラボ自動化)従、閉鎖ターンキーは非制御対象] [2026-06-14 P3拡張: 協業前提の制御権限二層分界と単一デバイスプロファイル(ICD=LADS情報モデル)を追加]",
+    "description": "京都大学iPS細胞研究財団と関連研究を起点に、自動細胞培養ソフトウェアの実装に必要なドメイン知識をナレッジグラフのシードとして構造化したもの。 [2026-06-14 P1拡張: 浮遊速度論ODEの原典(Galvanauskas et al. 2019)とCPP文献根拠を追加] [2026-06-14 P1続報: plant_model原典をManstein&Zweigerdt 2021と特定(Galvanauskas誤推定を訂正)] [2026-06-14 P3: デバイスIF=OPC-UA/LADS(バイオリアクタ)第一・SiLA2(ラボ自動化)従、閉鎖ターンキーは非制御対象] [2026-06-14 P3拡張: 協業前提の制御権限二層分界と単一デバイスプロファイル(ICD=LADS情報モデル)を追加] [2026-06-15 P5: 観測性スタック(in-line capacitance VCD/Raman代謝物/at-line Nova/凝集体画像; 品質・無菌はoffline=BO専用)をcpvに拡充]",
     "generated": "2026-06-14",
     "node_types": [
       "root",
@@ -12,7 +12,7 @@
       "source"
     ],
     "node_count": 77,
-    "edge_count": 156,
+    "edge_count": 158,
     "updated": "2026-06-14"
   },
   "domains": [
@@ -830,11 +830,27 @@
       "label": "インライン/アットライン分析（CPV）",
       "type": "concept",
       "domain": "d7",
-      "content": "工程内・近接でのリアルタイム計測で工程性能を継続検証(CPV)。AI/自動化が高スループットQCと工程安定性監視を可能にする。",
+      "content": "工程内・近接でのリアルタイム計測で工程性能を継続検証(CPV)。AI/自動化が高スループットQCと工程安定性監視を可能にする。【P5】具体スタック(2026-06-15調査): VCD=in-line capacitance(Aber FUTURA/Hamilton Incyte, Manstein iPSCで定性検証), 代謝物=in-line Raman(CHOで閉ループglucose制御実証)＋at-line Nova BioProfile FLEX2(16項＋osmolality/viability), 凝集体径=in-line DHM(Ovizio)/FBRM(CLD≠径) or at-line画像(Kropp2019/FlowCam, 日次)。品質(未分化/同一性)・無菌はoffline=BO目的関数専用。",
       "sources": [
         {
           "title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",
           "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"
+        },
+        {
+          "title": "Krause et al. 2023, Curr Opin Biotechnol — biocapacitance online biomass",
+          "url": "https://www.sciencedirect.com/science/article/pii/S0958166923000897"
+        },
+        {
+          "title": "Graf/Wei et al. 2022, Front Bioeng — in-line Raman closed-loop glucose (PID)",
+          "url": "https://www.frontiersin.org/journals/bioengineering-and-biotechnology/articles/10.3389/fbioe.2022.719614/full"
+        },
+        {
+          "title": "Nova Biomedical BioProfile FLEX2 (16-parameter at-line analyzer)",
+          "url": "https://www.novabiomedical.com/cell-culture-analyzers/bioprofile-flex2-basic/"
+        },
+        {
+          "title": "Kropp et al. 2019, Sci Rep — at-line bypass imaging of hiPSC aggregates",
+          "url": "https://www.nature.com/articles/s41598-019-48814-w"
         }
       ]
     },
@@ -2000,6 +2016,16 @@
       "source": "gateway",
       "rel": "implements",
       "target": "devprofile"
+    },
+    {
+      "source": "cpv",
+      "rel": "feeds",
+      "target": "loop"
+    },
+    {
+      "source": "src_manstein",
+      "rel": "demonstrates",
+      "target": "cpv"
     }
   ]
 }

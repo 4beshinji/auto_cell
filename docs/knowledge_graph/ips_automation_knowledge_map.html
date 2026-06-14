@@ -258,6 +258,11 @@ const S = { // reusable sources
   // ---- P3 (2026-06-14): デバイス IF ----
   lads_ref:{t:'OPC UA for LADS Part 1 Basics (OPC 30500-1) — reference.opcfoundation.org',u:'https://reference.opcfoundation.org/LADS/v100/docs/'},
   lads_slas:{t:'OPC UA LADS (SLAS standards)',u:'https://www.slas.org/resources/standards/opc-ua-lads/'},
+  // ---- P5 (2026-06-15): 観測性スタック ----
+  krause:{t:'Krause et al. 2023, Curr Opin Biotechnol — biocapacitance online biomass',u:'https://www.sciencedirect.com/science/article/pii/S0958166923000897'},
+  graf:{t:'Graf/Wei et al. 2022, Front Bioeng — in-line Raman closed-loop glucose (PID)',u:'https://www.frontiersin.org/journals/bioengineering-and-biotechnology/articles/10.3389/fbioe.2022.719614/full'},
+  nova:{t:'Nova Biomedical BioProfile FLEX2 (16-parameter at-line analyzer)',u:'https://www.novabiomedical.com/cell-culture-analyzers/bioprofile-flex2-basic/'},
+  kropp2019:{t:'Kropp et al. 2019, Sci Rep — at-line bypass imaging of hiPSC aggregates',u:'https://www.nature.com/articles/s41598-019-48814-w'},
 };
 
 const NODES = [
@@ -426,8 +431,8 @@ const NODES = [
    content:'菌混入や逸脱の検知。閉鎖系では更衣簡略化と引換えに監視設計が重要で、9日連続運転でも重大エラー/汚染ゼロが品質目標水準。',
    sources:[S.riken2020,S.myips2]},
   {id:'cpv',label:'インライン/アットライン分析（CPV）',type:'concept',domain:'d7',
-   content:'工程内・近接でのリアルタイム計測で工程性能を継続検証(CPV)。AI/自動化が高スループットQCと工程安定性監視を可能にする。',
-   sources:[S.cgtqc]},
+   content:'工程内・近接でのリアルタイム計測で工程性能を継続検証(CPV)。AI/自動化が高スループットQCと工程安定性監視を可能にする。【P5】具体スタック(2026-06-15調査): VCD=in-line capacitance(Aber FUTURA/Hamilton Incyte, Manstein iPSCで定性検証), 代謝物=in-line Raman(CHOで閉ループglucose制御実証)＋at-line Nova BioProfile FLEX2(16項＋osmolality/viability), 凝集体径=in-line DHM(Ovizio)/FBRM(CLD≠径) or at-line画像(Kropp2019/FlowCam, 日次)。品質(未分化/同一性)・無菌はoffline=BO目的関数専用。',
+   sources:[S.cgtqc,S.krause,S.graf,S.nova,S.kropp2019]},
   {id:'edge',label:'エッジセンサ統合',type:'concept',domain:'d7',
    content:'マイコン/IoTによる多点センサ取得とデバイス層への配信。標準IF（SiLA2/OPC-UA）やゲートウェイ経由で上位へ集約する接点。',
    sources:[S.sila_mgr]},
@@ -639,6 +644,8 @@ const EDGES = [
   {s:'d1',t:'kinetics',rel:'has'},
   {s:'src_manstein',t:'kinetics',rel:'defines'},
   {s:'src_manstein',t:'suspension',rel:'demonstrates'},
+  {s:'cpv',t:'loop',rel:'feeds'},                  // P5
+  {s:'src_manstein',t:'cpv',rel:'demonstrates'},   // P5
   {s:'src_galv',t:'kinetics',rel:'informs'},
   {s:'kinetics',t:'suspension',rel:'reproduces'},
   {s:'kinetics',t:'loop',rel:'validates'},

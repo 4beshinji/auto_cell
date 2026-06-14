@@ -24,6 +24,10 @@ https://news.panasonic.com/jp/stories/17100,がん治療に役立つ細胞の分
 https://github.com/labauto/LabDroid_optimizer,LabDroid_optimizer（GitHub / GPyOpt）,bbo;src_kanda
 https://elifesciences.org/articles/80609,Implementing robotics and AI（eLife digest）,sdl;rl
 https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext,"Tecan SiLA2 SDK（royalty-free, open-source）",sila;opcua;src_sila
+https://www.sciencedirect.com/science/article/pii/S0958166923000897,"Krause et al. 2023, Curr Opin Biotechnol — biocapacitance online biomass",cpv
+https://www.frontiersin.org/journals/bioengineering-and-biotechnology/articles/10.3389/fbioe.2022.719614/full,"Graf/Wei et al. 2022, Front Bioeng — in-line Raman closed-loop glucose (PID)",cpv
+https://www.novabiomedical.com/cell-culture-analyzers/bioprofile-flex2-basic/,Nova Biomedical BioProfile FLEX2 (16-parameter at-line analyzer),cpv
+https://www.nature.com/articles/s41598-019-48814-w,"Kropp et al. 2019, Sci Rep — at-line bypass imaging of hiPSC aggregates",cpv
 https://www.nikkei.com/article/DGKKZO75692350Z21C23A0TB0000/,"iPS細胞をロボが培養（アステラス, 日経）",astellas
 https://pmc.ncbi.nlm.nih.gov/articles/PMC6933447/,"Kinetic modeling of hiPSC expansion in suspension culture（Galvanauskas et al., Regen Therapy 2019;12:88-93）",kinetics;src_galv
 https://pubmed.ncbi.nlm.nih.gov/31890771/,PubMed 31890771,src_galv
