@@ -1,0 +1,201 @@
+{
+  "nodes": [
+    {
+      "id": "recipe_executor",
+      "label": "L1 決定的レシピ実行器",
+      "type": "concept",
+      "domain": "d4",
+      "content": "ADR-0001 で採用された L1 層。レシピ DSL とルールエンジンに基づき、灌流/給餌/撹拌/サンプリング/継代要否を状態とレシピから決定的に実行する。LLM は per-cycle には入らない。"
+    },
+    {
+      "id": "recipe_dsl",
+      "label": "レシピ DSL",
+      "type": "concept",
+      "domain": "d4",
+      "content": "培養フェーズ・条件起動ロジック・setpoint 包絡線を宣言的に記述する軽量ドメイン特化言語（YAML/JSON 想定）。Manstein 型灌流 0→7 vvd の条件起動を記述可能。"
+    },
+    {
+      "id": "rule_engine",
+      "label": "ルールエンジン",
+      "type": "concept",
+      "domain": "d4",
+      "content": "イベント（glucose_low/lactate_high/osmolality_high/vcd_target_reached/contamination_suspected 等）からアクションへの決定的マッピングを実行するエンジン。"
+    },
+    {
+      "id": "state_machine_l1",
+      "label": "L1 状態機械",
+      "type": "concept",
+      "domain": "d4",
+      "content": "L1 レシピ実行器内のフェーズ遷移（seed → perfusion_ramp → passage_ready → hold 等）を明確に管理する状態機械。"
+    },
+    {
+      "id": "l0_local_pid",
+      "label": "L0 局所 PID",
+      "type": "concept",
+      "domain": "d4",
+      "content": "バイオリアクター本体の局所コントローラ。温度/pH/DO/撹拌の高速安全ループを秒オーダで決定的に制御する。"
+    },
+    {
+      "id": "l0_fail_safe",
+      "label": "L0 フェイルセーフ",
+      "type": "concept",
+      "domain": "d4",
+      "content": "ブレイン/通信断時に局所 PID が最終検証済 setpoint を保持し続ける設計。ブレイン停止時も培養を継続させる。"
+    },
+    {
+      "id": "ax_bayesian",
+      "label": "Ax Bayesian optimization",
+      "type": "system",
+      "domain": "d4",
+      "content": "Meta が開発する高レベルベイズ最適化プラットフォーム。制約付き BO、バッチ BO、多忠実度をサポートし、auto_cell L2 の実装候補。"
+    },
+    {
+      "id": "botorch",
+      "label": "BoTorch",
+      "type": "system",
+      "domain": "d4",
+      "content": "PyTorch ベースの低レベルベイズ最適化ライブラリ。qEI/qNEHVI、MultiFidelityGP、KnowledgeGradient 等を提供。"
+    },
+    {
+      "id": "multi_fidelity",
+      "label": "多忠実度 BO",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Tier2 plant_model（低忠実度・低コスト）と実バイオリアクタ run（高忠実度・高コスト）を統合したベイズ最適化。"
+    },
+    {
+      "id": "safe_bo",
+      "label": "Safe BO",
+      "type": "concept",
+      "domain": "d4",
+      "content": "CPP 包絡線（pH/DO/乳酸/浸透圧/凝集体径等）を侵害しないよう制約を課したベイズ最適化。"
+    },
+    {
+      "id": "batch_bo",
+      "label": "バッチ BO",
+      "type": "concept",
+      "domain": "d4",
+      "content": "複数バイオリアクタを並行運転するためのバッチ取得関数（qEI/qNEHVI）に基づく実験計画。"
+    },
+    {
+      "id": "llm_orchestrator",
+      "label": "L3 薄い LLM オーケストレータ",
+      "type": "concept",
+      "domain": "d4",
+      "content": "ADR-0001 で採用された L3 層。ワークフロー dispatch、曖昧知覚解釈、新規例外処理、研究者対話・承認仲介をイベント駆動で実行。定常制御には関与しない。"
+    },
+    {
+      "id": "human_approval",
+      "label": "Human-on-the-loop 承認",
+      "type": "concept",
+      "domain": "d6",
+      "content": "包絡線を外れる setpoint 変更、継代実行、BO 提案採用、緊急停止/ホールド等に対する研究者/オペレータの承認。"
+    },
+    {
+      "id": "approval_workflow",
+      "label": "承認ワークフロー",
+      "type": "concept",
+      "domain": "d4",
+      "content": "requested → pending → approved/rejected/timeout → executed/cancelled の状態遷移。タイムアウト時は安全側に倒す。"
+    },
+    {
+      "id": "idempotency",
+      "label": "冪等性",
+      "type": "concept",
+      "domain": "d5",
+      "content": "L1→L0 の setpoint 変更を idempotency key 付き request-response とし、ブレイン再起動後も同一コマンドを再発行可能にする性質。"
+    },
+    {
+      "id": "validate_tool_call",
+      "label": "ツール呼び出し検証",
+      "type": "concept",
+      "domain": "d6",
+      "content": "副作用ツール呼び出し前に CPP 包絡線・変化率制限・競合を決定的に検証する仕組み。"
+    },
+    {
+      "id": "set_perfusion_rate",
+      "label": "set_perfusion_rate",
+      "type": "concept",
+      "domain": "d4",
+      "content": "灌流率（0→7 vvd）を設定する L1 副作用ツール。glucose/lactate/osmolality トリガで条件起動する。"
+    },
+    {
+      "id": "set_agitation_rpm",
+      "label": "set_agitation_rpm",
+      "type": "concept",
+      "domain": "d4",
+      "content": "撹拌回転数（50–120 rpm）を設定する L1 副作用ツール。凝集体径制御とシアストレス管理に用いる。"
+    },
+    {
+      "id": "trigger_passage_l1",
+      "label": "trigger_passage (L1)",
+      "type": "concept",
+      "domain": "d4",
+      "content": "VCD 目標到達または凝集体径逸脱時に継代を要求する L1 アクション。実行には原則として Human-on-the-loop 承認が必要。"
+    },
+    {
+      "id": "take_sample_l1",
+      "label": "take_sample (L1)",
+      "type": "concept",
+      "domain": "d4",
+      "content": "定期または条件起動で at-line サンプリングを行う L1 アクション。cpv へデータを供給する。"
+    }
+  ],
+  "edges": [
+    {"source": "recipe_executor", "rel": "implements", "target": "loop"},
+    {"source": "recipe_dsl", "rel": "defines", "target": "recipe_executor"},
+    {"source": "rule_engine", "rel": "evaluates", "target": "recipe_executor"},
+    {"source": "state_machine_l1", "rel": "governs", "target": "recipe_executor"},
+    {"source": "l0_local_pid", "rel": "controls", "target": "closeddev"},
+    {"source": "l0_fail_safe", "rel": "protects", "target": "l0_local_pid"},
+    {"source": "ctrl_split", "rel": "separates", "target": "l0_local_pid"},
+    {"source": "ctrl_split", "rel": "separates", "target": "recipe_executor"},
+    {"source": "ax_bayesian", "rel": "optimizes", "target": "bbo"},
+    {"source": "botorch", "rel": "powers", "target": "ax_bayesian"},
+    {"source": "multi_fidelity", "rel": "uses", "target": "kinetics"},
+    {"source": "multi_fidelity", "rel": "extends", "target": "bbo"},
+    {"source": "safe_bo", "rel": "constrains", "target": "bbo"},
+    {"source": "batch_bo", "rel": "extends", "target": "bbo"},
+    {"source": "llm_orchestrator", "rel": "extends", "target": "loop"},
+    {"source": "llm_orchestrator", "rel": "mediates", "target": "human_approval"},
+    {"source": "approval_workflow", "rel": "requires", "target": "human_approval"},
+    {"source": "approval_workflow", "rel": "constrains", "target": "loop"},
+    {"source": "idempotency", "rel": "ensures", "target": "loop"},
+    {"source": "validate_tool_call", "rel": "constrains", "target": "recipe_executor"},
+    {"source": "set_perfusion_rate", "rel": "part_of", "target": "recipe_executor"},
+    {"source": "set_agitation_rpm", "rel": "part_of", "target": "recipe_executor"},
+    {"source": "trigger_passage_l1", "rel": "triggers", "target": "passage"},
+    {"source": "take_sample_l1", "rel": "feeds", "target": "cpv"},
+    {"source": "recipe_executor", "rel": "commands", "target": "dispense"},
+    {"source": "recipe_executor", "rel": "commands", "target": "closeddev"},
+    {"source": "bbo", "rel": "optimizes", "target": "suspension"},
+    {"source": "kinetics", "rel": "validates", "target": "recipe_executor"}
+  ],
+  "sources": [
+    {
+      "id": "src_ax",
+      "title": "Ax Adaptive Experimentation Platform",
+      "url": "https://ax.dev/"
+    },
+    {
+      "id": "src_botorch",
+      "title": "BoTorch: Bayesian Optimization in PyTorch",
+      "url": "https://botorch.org/"
+    },
+    {
+      "id": "src_manstein_sctm",
+      "title": "Manstein et al. 2021, Stem Cells Transl Med 10(7):1063-1080",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/33660952/"
+    },
+    {
+      "id": "src_manstein_star",
+      "title": "Manstein et al. 2021, STAR Protocols 2(4):100988 — in silico model Table 1",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/"
+    },
+    {
+      "id": "src_kanda_elab",
+      "title": "Kanda et al. 2022, Robotic search for optimal cell culture (eLife)",
+      "url": "https://elifesciences.org/articles/77007"
+    }
+  ]
+}

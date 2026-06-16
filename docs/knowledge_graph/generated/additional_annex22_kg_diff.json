@@ -1,0 +1,354 @@
+{
+  "comment": "Mode B KG diff for PIC/S GMP Annex 22 roadmap (Agent F). Adds Annex 22 concepts (critical/non-critical AI, static/deterministic vs dynamic/probabilistic/generative models, HITL, XAI, confidence score, drift monitoring, test data/staff independence, data segregation, electronic signature, GAMP5 AI lifecycle) and source nodes. All IDs are new and do not conflict with knowledge_graph_v2.json nodes.",
+  "nodes": [
+    {
+      "id": "annex22",
+      "label": "PIC/S GMP Annex 22（AI）",
+      "type": "concept",
+      "domain": "d6",
+      "content": "PIC/S・EU GMP の AI/ML 専用アネックス（2025-07-07 草案公開）。クリティカル用途では静的・決定論的 AI/ML モデルのみ許容し、動的学習・確率的出力・生成 AI/LLM を禁止。非クリティカル用途の生成 AI は HITL 下で使用可能。Annex 11 上に位置づけられる。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        },
+        {
+          "title": "PIC/S news — Joint stakeholders consultation on Chapter 4 / Annex 11 / Annex 22",
+          "url": "https://picscheme.org/en/news/joint-stakeholders-consultation-on-the-revision-of-chapter-4"
+        }
+      ]
+    },
+    {
+      "id": "critical_ai",
+      "label": "クリティカル AI",
+      "type": "concept",
+      "domain": "d6",
+      "content": "患者安全・製品品質・データインテグリティに直接影響する GMP 判断を支援・自動化する AI/ML モデル。Annex 22 では静的・決定論的モデルのみ許可され、厳格な検証・監視・説明性が求められる。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "noncritical_ai",
+      "label": "非クリティカル AI",
+      "type": "concept",
+      "domain": "d6",
+      "content": "文書作成、トレーニング、スケジューリング、非 GMP 傾向分析など、患者安全・品質・データ完全性に直接影響しない AI。生成 AI/LLM も HITL 下で使用可能。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "static_model",
+      "label": "静的 AI モデル",
+      "type": "concept",
+      "domain": "d6",
+      "content": "デプロイ後に新データを取り込んで性能を適応させない凍結モデル。Annex 22 クリティカル用途で要求される。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "deterministic_output",
+      "label": "決定論的出力",
+      "type": "concept",
+      "domain": "d6",
+      "content": "同一入力に対し同一出力を返すモデル特性。Annex 22 クリティカル用途で必須。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "dynamic_model",
+      "label": "動的 AI モデル",
+      "type": "concept",
+      "domain": "d6",
+      "content": "使用中又は新データを継続的・自動的に学習し性能を適応させるモデル。Annex 22 ではクリティカル GMP 用途で禁止。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "probabilistic_model",
+      "label": "確率的 AI モデル",
+      "type": "concept",
+      "domain": "d6",
+      "content": "同一入力でも異なる出力を生じうるモデル。Annex 22 ではクリティカル GMP 用途で禁止。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "generative_ai",
+      "label": "生成 AI",
+      "type": "concept",
+      "domain": "d6",
+      "content": "テキスト・画像等を生成する確率的モデル群。クリティカル GMP 用途では禁止され、非クリティカル用途で HITL 下でのみ使用可能。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "hitl",
+      "label": "Human-in-the-Loop（HITL）",
+      "type": "concept",
+      "domain": "d6",
+      "content": "AI 出力を適格な人間がレビュー・承認する仕組み。Annex 22 では非クリティカル AI やテスト負荷が軽減されたクリティカル AI で要求される。auto_cell では Human-on-the-loop として実装。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "xai",
+      "label": "説明可能 AI（XAI）",
+      "type": "concept",
+      "domain": "d6",
+      "content": "AI 判断の根拠を人間が理解・監査できる技術。Annex 22 では特徴量帰属（feature attribution）の記録を要求。SHAP・LIME・ヒートマップ等が例。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "confidence_score",
+      "label": "信頼度スコア",
+      "type": "concept",
+      "domain": "d6",
+      "content": "AI モデルの予測・分類ごとの信頼度を数値化したもの。Annex 22 では低信頼度出力を undecided として人間レビューへルーティングすることを求める。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "feature_attribution",
+      "label": "特徴量帰属",
+      "type": "concept",
+      "domain": "d6",
+      "content": "モデル出力に寄与した入力特徴量を特定・記録する技術。XAI の中核。Annex 22 8.Explainability で要求。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "drift_monitoring",
+      "label": "ドリフト監視",
+      "type": "concept",
+      "domain": "d6",
+      "content": "AI モデルの性能劣化や入力データ分布の変化を継続的に監視する仕組み。Annex 22 10.Operation で要求。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "test_data_independence",
+      "label": "テストデータ独立性",
+      "type": "concept",
+      "domain": "d6",
+      "content": "テスト用データが訓練・検証に使用されないよう技術的・手続き的に保証すること。Annex 22 6.Test Data Independency で要求。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "staff_independence",
+      "label": "職員独立性",
+      "type": "concept",
+      "domain": "d6",
+      "content": "テストデータにアクセスした職員が同じモデルの訓練・検証に関与しないこと。不可能な場合は dual control/4-eyes で緩和。Annex 22 6.5 で要求。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "data_segregation",
+      "label": "データ分離",
+      "type": "concept",
+      "domain": "d6",
+      "content": "訓練・検証・テスト・運用データを分離し、混同・漏洩を防ぐ技術的管理。Annex 22 の test data independency と運用監視の前提。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "static_deterministic_proof",
+      "label": "静的決定論的証明",
+      "type": "concept",
+      "domain": "d6",
+      "content": "AI モデルが静的（凍結パラメータ）かつ決定論的（同一入力→同一出力）であることを、チェックサム・固定シード・再現性テスト・モデルカードで証明する手法。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "esignature",
+      "label": "電子署名",
+      "type": "concept",
+      "domain": "d6",
+      "content": "電子的な承認・検証を行う仕組み。R&D 一次では PIN/パスフレーズ+監査ログで済ませ、GMP 移行時に 21 CFR Part 11 / Annex 11 準拠の完全電子署名へ移行。",
+      "sources": [
+        {
+          "title": "21 CFR Part 11 — Electronic Records; Electronic Signatures",
+          "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11"
+        }
+      ]
+    },
+    {
+      "id": "gamp_ai_lifecycle",
+      "label": "GAMP5 AI ライフサイクル",
+      "type": "concept",
+      "domain": "d6",
+      "content": "ISPE GAMP 5 Appendix D11 及び GAMP AI Guide が定める concept / project / operation / retirement の AI 有効化システムライフサイクル。Annex 22 実装の業界標準フレームワーク。",
+      "sources": [
+        {
+          "title": "ISPE GAMP Guide: Artificial Intelligence (2025)",
+          "url": "https://ispe.org/publications/guidance-documents/gamp-guide-artificial-intelligence"
+        }
+      ]
+    },
+    {
+      "id": "src_pics_annex22_draft",
+      "label": "PIC/S GMP Annex 22 草案",
+      "type": "source",
+      "domain": "d6",
+      "content": "EudraLex Volume 4, Draft Annex 22: Artificial Intelligence, published 2025-07-07 for PIC/S and EU consultation. 患者安全・品質・データインテグリティに影響するクリティカル AI には静的決定論的モデルのみを許容。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",
+          "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "src_eu_ai_act",
+      "label": "EU AI Act (Regulation 2024/1689)",
+      "type": "source",
+      "domain": "d6",
+      "content": "欧州 AI 規則。製造プロセス制御等の high-risk AI に透明性・文書化・人間監視を要求。Annex 22 と併用される。",
+      "sources": [
+        {
+          "title": "Regulation (EU) 2024/1689 — Artificial Intelligence Act",
+          "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {"source": "d6", "rel": "has", "target": "annex22"},
+    {"source": "d6", "rel": "has", "target": "critical_ai"},
+    {"source": "d6", "rel": "has", "target": "noncritical_ai"},
+    {"source": "d6", "rel": "has", "target": "static_model"},
+    {"source": "d6", "rel": "has", "target": "deterministic_output"},
+    {"source": "d6", "rel": "has", "target": "dynamic_model"},
+    {"source": "d6", "rel": "has", "target": "probabilistic_model"},
+    {"source": "d6", "rel": "has", "target": "generative_ai"},
+    {"source": "d6", "rel": "has", "target": "hitl"},
+    {"source": "d6", "rel": "has", "target": "xai"},
+    {"source": "d6", "rel": "has", "target": "confidence_score"},
+    {"source": "d6", "rel": "has", "target": "feature_attribution"},
+    {"source": "d6", "rel": "has", "target": "drift_monitoring"},
+    {"source": "d6", "rel": "has", "target": "test_data_independence"},
+    {"source": "d6", "rel": "has", "target": "staff_independence"},
+    {"source": "d6", "rel": "has", "target": "data_segregation"},
+    {"source": "d6", "rel": "has", "target": "static_deterministic_proof"},
+    {"source": "d6", "rel": "has", "target": "esignature"},
+    {"source": "d6", "rel": "has", "target": "gamp_ai_lifecycle"},
+    {"source": "annex22", "rel": "complements", "target": "part11"},
+    {"source": "annex22", "rel": "constrains", "target": "loop"},
+    {"source": "annex22", "rel": "constrains", "target": "llm_orchestrator"},
+    {"source": "annex22", "rel": "defines", "target": "critical_ai"},
+    {"source": "annex22", "rel": "defines", "target": "noncritical_ai"},
+    {"source": "critical_ai", "rel": "requires", "target": "static_model"},
+    {"source": "critical_ai", "rel": "requires", "target": "deterministic_output"},
+    {"source": "static_model", "rel": "produces", "target": "deterministic_output"},
+    {"source": "critical_ai", "rel": "prohibits", "target": "dynamic_model"},
+    {"source": "critical_ai", "rel": "prohibits", "target": "probabilistic_model"},
+    {"source": "critical_ai", "rel": "prohibits", "target": "generative_ai"},
+    {"source": "noncritical_ai", "rel": "permits", "target": "generative_ai"},
+    {"source": "noncritical_ai", "rel": "requires", "target": "hitl"},
+    {"source": "generative_ai", "rel": "isa", "target": "probabilistic_model"},
+    {"source": "llm_orchestrator", "rel": "isa", "target": "generative_ai"},
+    {"source": "critical_ai", "rel": "requires", "target": "xai"},
+    {"source": "xai", "rel": "uses", "target": "feature_attribution"},
+    {"source": "critical_ai", "rel": "requires", "target": "confidence_score"},
+    {"source": "confidence_score", "rel": "triggers", "target": "hitl"},
+    {"source": "critical_ai", "rel": "requires", "target": "drift_monitoring"},
+    {"source": "critical_ai", "rel": "requires", "target": "test_data_independence"},
+    {"source": "test_data_independence", "rel": "requires", "target": "data_segregation"},
+    {"source": "test_data_independence", "rel": "requires", "target": "staff_independence"},
+    {"source": "static_deterministic_proof", "rel": "proves", "target": "static_model"},
+    {"source": "static_deterministic_proof", "rel": "proves", "target": "deterministic_output"},
+    {"source": "part11", "rel": "requires", "target": "esignature"},
+    {"source": "esignature", "rel": "implements", "target": "approval_log"},
+    {"source": "gamp_ai_lifecycle", "rel": "governs", "target": "critical_ai"},
+    {"source": "gamp_ai_lifecycle", "rel": "governs", "target": "noncritical_ai"},
+    {"source": "human_approval", "rel": "implements", "target": "hitl"},
+    {"source": "approval_workflow", "rel": "implements", "target": "hitl"},
+    {"source": "loop", "rel": "uses", "target": "confidence_score"},
+    {"source": "drift_monitoring", "rel": "monitors", "target": "loop"},
+    {"source": "alcoa", "rel": "constrains", "target": "data_segregation"},
+    {"source": "csv", "rel": "validates", "target": "static_deterministic_proof"},
+    {"source": "tech_control", "rel": "enforces", "target": "annex22"},
+    {"source": "src_pics_annex22_draft", "rel": "specifies", "target": "annex22"},
+    {"source": "src_eu_ai_act", "rel": "informs", "target": "annex22"},
+    {"source": "src_gamp5_ai", "rel": "informs", "target": "gamp_ai_lifecycle"}
+  ],
+  "sources": [
+    {
+      "id": "src_pics_annex22_draft",
+      "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf",
+      "title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"
+    },
+    {
+      "id": "src_eu_ai_act",
+      "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+      "title": "Regulation (EU) 2024/1689 — Artificial Intelligence Act"
+    }
+  ]
+}

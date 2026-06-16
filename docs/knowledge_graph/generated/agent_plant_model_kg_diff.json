@@ -1,0 +1,135 @@
+{
+  "nodes": [
+    {
+      "id": "tier2_plant_model",
+      "label": "Tier2 plant_model（in-silico 検証リグ）",
+      "type": "concept",
+      "domain": "d4",
+      "content": "auto_cell の Tier2 シミュレーション層。Manstein 2021 の 6 項 Monod 型 ODE を step(actuators)->sensors IF で実装し、L1 制御ループの回帰検証と L2 BO の低忠実度評価に使う。"
+    },
+    {
+      "id": "plant_model_interface",
+      "label": "plant_model step IF",
+      "type": "concept",
+      "domain": "d4",
+      "content": "step(actuators)->sensors という決定的インターフェース。アクチュエータ（perfusion_rate_vvd, agitation_rpm, gas setpoints, feed bolus）を受け、センサ軌道（VCD/代謝物/凝集体径）を返す。"
+    },
+    {
+      "id": "plant_model_calibration",
+      "label": "plant_model パラメータ同定・不確実性",
+      "type": "concept",
+      "domain": "d4",
+      "content": "文献値を prior とし、実 run データでベイズ推定または最小二乗により校正。パラメタ事後分布・GP バイアス・構造候補モデルで不確実性を表現。"
+    },
+    {
+      "id": "multifidelity_sim",
+      "label": "多忠実度シミュレーション接続",
+      "type": "concept",
+      "domain": "d4",
+      "content": "L2 BO への多忠実度接続。Tier2 plant_model を低コスト低忠実度評価、実バイオリアクタ run を高忠実度評価として組み込む。"
+    },
+    {
+      "id": "plant_model_regression",
+      "label": "plant_model 回帰テスト",
+      "type": "concept",
+      "domain": "d4",
+      "content": "同一アクチュエータ系列 → 同一センサ軌道の決定性を保証するゴールデンテスト。CSV/CSA 観点から L1 制御ループの検証リグとして運用。"
+    },
+    {
+      "id": "cobrapy_gem",
+      "label": "COBRApy + GEM 差替候補",
+      "type": "concept",
+      "domain": "d4",
+      "content": "将来のゲノム規模代謝モデル（COBRApy）への差替候補。培地組成を制約ベースで解き、代謝物収支を予測。"
+    },
+    {
+      "id": "aggregate_formation_model",
+      "label": "凝集体形成動力学モデル",
+      "type": "concept",
+      "domain": "d1",
+      "content": "凝集体の形成・合体・破砕を表す動的サブモデル。撹拌速度・細胞密度と凝集体径の関係を追加する拡張。"
+    },
+    {
+      "id": "shear_stress_model",
+      "label": "シアストレスモデル",
+      "type": "concept",
+      "domain": "d4",
+      "content": "撹拌速度・粘度・凝集体径から Kolmogorov 長またはエネルギー散逸率を推定し、細胞傷害閾値を設計する拡張。"
+    },
+    {
+      "id": "src_scipy",
+      "label": "SciPy（数値積分）",
+      "type": "source",
+      "domain": "d5",
+      "content": "Python の科学技術計算ライブラリ。plant_model の ODE 数値積分（solve_ivp 等）に使用。"
+    },
+    {
+      "id": "src_botorch",
+      "label": "BoTorch（ベイズ最適化）",
+      "type": "source",
+      "domain": "d4",
+      "content": "PyTorch ベースのベイズ最適化ライブラリ。多忠実度・制約付き BO に強く、L2 層の実装候補。"
+    },
+    {
+      "id": "src_ax",
+      "label": "Ax Adaptive Experimentation Platform",
+      "type": "source",
+      "domain": "d4",
+      "content": "Facebook/Meta の実験最適化プラットフォーム。BoTorch 上に構築され、探索空間・制約・多忠実度の管理に向く。"
+    },
+    {
+      "id": "src_cobrapy",
+      "label": "COBRApy",
+      "type": "source",
+      "domain": "d5",
+      "content": "Python によるゲノム規模代謝モデリングライブラリ。将来の COBRApy+GEM バックエンド差替の基盤。"
+    }
+  ],
+  "edges": [
+    {"source": "d4", "rel": "has", "target": "tier2_plant_model"},
+    {"source": "tier2_plant_model", "rel": "implements", "target": "kinetics"},
+    {"source": "tier2_plant_model", "rel": "simulates", "target": "suspension"},
+    {"source": "tier2_plant_model", "rel": "validates", "target": "loop"},
+    {"source": "tier2_plant_model", "rel": "feeds", "target": "bbo"},
+    {"source": "plant_model_interface", "rel": "defines", "target": "tier2_plant_model"},
+    {"source": "plant_model_calibration", "rel": "calibrates", "target": "tier2_plant_model"},
+    {"source": "multifidelity_sim", "rel": "uses", "target": "tier2_plant_model"},
+    {"source": "plant_model_regression", "rel": "tests", "target": "tier2_plant_model"},
+    {"source": "cobrapy_gem", "rel": "extends", "target": "tier2_plant_model"},
+    {"source": "aggregate_formation_model", "rel": "extends", "target": "tier2_plant_model"},
+    {"source": "shear_stress_model", "rel": "extends", "target": "tier2_plant_model"},
+    {"source": "src_scipy", "rel": "implements", "target": "tier2_plant_model"},
+    {"source": "src_botorch", "rel": "informs", "target": "bbo"},
+    {"source": "src_ax", "rel": "informs", "target": "bbo"},
+    {"source": "src_cobrapy", "rel": "informs", "target": "cobrapy_gem"},
+    {"source": "src_manstein", "rel": "defines", "target": "kinetics"},
+    {"source": "src_manstein", "rel": "demonstrates", "target": "cpv"}
+  ],
+  "sources": [
+    {
+      "id": "src_scipy",
+      "title": "SciPy — Fundamental algorithms for scientific computing in Python",
+      "url": "https://scipy.org/"
+    },
+    {
+      "id": "src_botorch",
+      "title": "BoTorch — Bayesian Optimization in PyTorch",
+      "url": "https://botorch.org/"
+    },
+    {
+      "id": "src_ax",
+      "title": "Ax Adaptive Experimentation Platform",
+      "url": "https://ax.dev/"
+    },
+    {
+      "id": "src_cobrapy",
+      "title": "COBRApy — COnstraints-Based Reconstruction and Analysis for Python",
+      "url": "https://opencobra.github.io/cobrapy/"
+    },
+    {
+      "id": "src_manstein",
+      "title": "Manstein et al. 2021, Stem Cells Transl Med 10(7):1063-1080 / STAR Protocols 2(4):100988",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/"
+    }
+  ]
+}

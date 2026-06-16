@@ -1,0 +1,254 @@
+{
+  "comment": "Mode B KG diff for agent_regulatory_controls (Agent E). Adds technical-control concepts, audit/approval schema nodes, and regulatory source nodes for ALCOA+, Part11, GAMP5/AI, CSA, Annex11, PIC/S, WHO. All IDs are chosen not to conflict with existing knowledge_graph.json nodes (root/d1-d8/concepts/sources).",
+  "nodes": [
+    {
+      "id": "tech_control",
+      "label": "技術的統制",
+      "type": "concept",
+      "domain": "d6",
+      "content": "R&D一次でありつつ将来GMP移行を妨げないよう、ソフトウェアに織り込むALCOA+/Part11/CSV/CSA/EBR/CAPAの実装上の統制群。",
+      "sources": [
+        {
+          "title": "FDA Guidance for Industry: Data Integrity and Compliance With Drug CGMP Questions and Answers (2018)",
+          "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/data-integrity-and-compliance-drug-cgmp-questions-and-answers"
+        }
+      ]
+    },
+    {
+      "id": "audit_schema",
+      "label": "監査ログスキーマ",
+      "type": "concept",
+      "domain": "d6",
+      "content": "副作用ツール呼び出し、承認状態遷移、センサ取り込み、システム状態変化をALCOA+/Part11準拠で記録するための構造化ログスキーマ。",
+      "sources": [
+        {
+          "title": "21 CFR Part 11 — Electronic Records; Electronic Signatures",
+          "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11"
+        }
+      ]
+    },
+    {
+      "id": "approval_log",
+      "label": "承認記録",
+      "type": "concept",
+      "domain": "d6",
+      "content": "Human-on-the-loopにおけるrequested→approved/rejected/timeout→executed/cancelledの承認状態遷移を記録する監査証跡。",
+      "sources": [
+        {
+          "title": "21 CFR Part 11 — Electronic Records; Electronic Signatures",
+          "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11"
+        }
+      ]
+    },
+    {
+      "id": "data_lifecycle",
+      "label": "データライフサイクル管理",
+      "type": "concept",
+      "domain": "d6",
+      "content": "生データの生成・処理・レビュー・保存・検索・廃棄までのALCOA+/Endurable/Availableを担保するライフサイクル管理。",
+      "sources": [
+        {
+          "title": "WHO Good Data and Record Management Practice",
+          "url": "https://www.who.int/teams/regulation-prequalification/regulation-and-safety/good-data-and-record-management-practice"
+        }
+      ]
+    },
+    {
+      "id": "llm_validation",
+      "label": "LLM層検証戦略",
+      "type": "concept",
+      "domain": "d6",
+      "content": "L3薄いLLMオーケストレータの非決定性を抑え、プロンプトバージョニング・出力根拠ログ・性能モニタリングでGAMP5 AI/ML要件に対応する戦略。",
+      "sources": [
+        {
+          "title": "ISPE GAMP Guide: Artificial Intelligence (2025)",
+          "url": "https://ispe.org/publications/guidance-documents/gamp-guide-artificial-intelligence"
+        }
+      ]
+    },
+    {
+      "id": "ebr_derivation",
+      "label": "EBR導出ビュー",
+      "type": "concept",
+      "domain": "d6",
+      "content": "1培養ラン=1EBRをevent_storeから導出するためのビュー。R&D一次ではEBR-like実験プロビナンスレポートとして運用。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 Annex 11 — Computerised Systems",
+          "url": "https://health.ec.europa.eu/document/download/2c252435-6383-4ced-8206-8fef57024cc1_en"
+        }
+      ]
+    },
+    {
+      "id": "event_store",
+      "label": "イベントストア",
+      "type": "concept",
+      "domain": "d5",
+      "content": "時系列のイミュータブルイベントログを格納するデータ基盤。EBR導出、監査証跡、LADS Program/Result対応の基盤。",
+      "sources": [
+        {
+          "title": "OPC UA for LADS Part 1 Basics (OPC 30500-1)",
+          "url": "https://reference.opcfoundation.org/LADS/v100/docs/"
+        }
+      ]
+    },
+    {
+      "id": "src_fda_data_integrity",
+      "label": "FDA 2018 Data Integrity Guidance",
+      "type": "source",
+      "domain": "d6",
+      "content": "FDA 'Data Integrity and Compliance With Drug CGMP Questions and Answers' (2018)。ALCOA+原則を医薬品製造のデータインテグリティに適用したガイダンス。",
+      "sources": [
+        {
+          "title": "FDA Guidance for Industry: Data Integrity and Compliance With Drug CGMP Questions and Answers (2018)",
+          "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/data-integrity-and-compliance-drug-cgmp-questions-and-answers"
+        }
+      ]
+    },
+    {
+      "id": "src_part11",
+      "label": "21 CFR Part 11",
+      "type": "source",
+      "domain": "d6",
+      "content": "FDA regulation 'Electronic Records; Electronic Signatures'。電子記録・電子署名・監査証跡の技術的要件を定める。",
+      "sources": [
+        {
+          "title": "21 CFR Part 11 — Electronic Records; Electronic Signatures",
+          "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11"
+        }
+      ]
+    },
+    {
+      "id": "src_fda_csa",
+      "label": "FDA CSA Guidance",
+      "type": "source",
+      "domain": "d6",
+      "content": "FDA 'Computer Software Assurance for Production and Quality System Software' (2022 draft / 2025 final)。リスクベースでソフトウェア保証活動を選定する現代的CSV/CSAアプローチ。",
+      "sources": [
+        {
+          "title": "FDA Guidance: Computer Software Assurance for Production and Quality System Software",
+          "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/computer-software-assurance-production-and-quality-system-software"
+        }
+      ]
+    },
+    {
+      "id": "src_gamp5",
+      "label": "ISPE GAMP 5 2nd Edition",
+      "type": "source",
+      "domain": "d6",
+      "content": "ISPE GAMP 5 Guide: A Risk-Based Approach to Compliant GxP Computerized Systems, Second Edition (2022)。Cat.1/3/4/5とAI/ML Appendix D11を含む。",
+      "sources": [
+        {
+          "title": "ISPE GAMP 5 Guide 2nd Edition (2022)",
+          "url": "https://ispe.org/publications/guidance-documents/gamp-5-guide-2nd-edition"
+        }
+      ]
+    },
+    {
+      "id": "src_gamp5_ai",
+      "label": "ISPE GAMP Guide: Artificial Intelligence",
+      "type": "source",
+      "domain": "d6",
+      "content": "ISPE GAMP Guide: Artificial Intelligence (2025)。AI有効化コンピュータ化システムのライフサイクル全体の検証・データガバナンス・モデルリスク管理を扱う。",
+      "sources": [
+        {
+          "title": "ISPE GAMP Guide: Artificial Intelligence (2025)",
+          "url": "https://ispe.org/publications/guidance-documents/gamp-guide-artificial-intelligence"
+        }
+      ]
+    },
+    {
+      "id": "src_annex11",
+      "label": "EudraLex Annex 11",
+      "type": "source",
+      "domain": "d6",
+      "content": "EudraLex Volume 4 Annex 11 — Computerised Systems。EUのGMPデータコンピュータ化システム要件。",
+      "sources": [
+        {
+          "title": "EudraLex Volume 4 Annex 11 — Computerised Systems",
+          "url": "https://health.ec.europa.eu/document/download/2c252435-6383-4ced-8206-8fef57024cc1_en"
+        }
+      ]
+    },
+    {
+      "id": "src_pics041",
+      "label": "PIC/S PI 041-1",
+      "type": "source",
+      "domain": "d6",
+      "content": "PIC/S PI 041-1 — Good Practices for Data Management and Integrity in Regulated GMP/GDP Environments (2021)。ALCOA+運用の国際的実務指針。",
+      "sources": [
+        {
+          "title": "PIC/S PI 041-1 (2021)",
+          "url": "https://picscheme.org/en/publications"
+        }
+      ]
+    },
+    {
+      "id": "src_who_gdrp",
+      "label": "WHO Good Data and Record Management Practice",
+      "type": "source",
+      "domain": "d6",
+      "content": "WHO Good Data and Record Management Practice。ALCOA+とデータライフサイクルのWHO解釈。",
+      "sources": [
+        {
+          "title": "WHO Good Data and Record Management Practice",
+          "url": "https://www.who.int/teams/regulation-prequalification/regulation-and-safety/good-data-and-record-management-practice"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {"source": "d6", "rel": "has", "target": "tech_control"},
+    {"source": "d6", "rel": "has", "target": "audit_schema"},
+    {"source": "d6", "rel": "has", "target": "approval_log"},
+    {"source": "d6", "rel": "has", "target": "data_lifecycle"},
+    {"source": "d6", "rel": "has", "target": "llm_validation"},
+    {"source": "d6", "rel": "has", "target": "ebr_derivation"},
+    {"source": "d5", "rel": "has", "target": "event_store"},
+    {"source": "tech_control", "rel": "enforces", "target": "alcoa"},
+    {"source": "tech_control", "rel": "enforces", "target": "part11"},
+    {"source": "alcoa", "rel": "constrains", "target": "audit_schema"},
+    {"source": "alcoa", "rel": "constrains", "target": "ebr_derivation"},
+    {"source": "part11", "rel": "requires", "target": "approval_log"},
+    {"source": "part11", "rel": "requires", "target": "audit_schema"},
+    {"source": "audit", "rel": "implements", "target": "audit_schema"},
+    {"source": "csv", "rel": "validates", "target": "tech_control"},
+    {"source": "capa", "rel": "uses", "target": "audit_schema"},
+    {"source": "gctp", "rel": "governs", "target": "tech_control"},
+    {"source": "loop", "rel": "generates", "target": "audit_schema"},
+    {"source": "loop", "rel": "uses", "target": "approval_log"},
+    {"source": "ctrl_split", "rel": "constrains", "target": "approval_log"},
+    {"source": "data_lifecycle", "rel": "governs", "target": "datamodel"},
+    {"source": "data_lifecycle", "rel": "governs", "target": "audit"},
+    {"source": "ebr_derivation", "rel": "derives", "target": "ebr"},
+    {"source": "ebr_derivation", "rel": "derived_from", "target": "event_store"},
+    {"source": "llm_validation", "rel": "validates", "target": "loop"},
+    {"source": "event_store", "rel": "feeds", "target": "ebr_derivation"},
+    {"source": "event_store", "rel": "feeds", "target": "audit"},
+    {"source": "src_fda_data_integrity", "rel": "explains", "target": "alcoa"},
+    {"source": "src_fda_data_integrity", "rel": "explains", "target": "tech_control"},
+    {"source": "src_part11", "rel": "specifies", "target": "part11"},
+    {"source": "src_part11", "rel": "specifies", "target": "audit_schema"},
+    {"source": "src_fda_csa", "rel": "informs", "target": "csv"},
+    {"source": "src_fda_csa", "rel": "informs", "target": "tech_control"},
+    {"source": "src_gamp5", "rel": "informs", "target": "csv"},
+    {"source": "src_gamp5", "rel": "informs", "target": "tech_control"},
+    {"source": "src_gamp5_ai", "rel": "informs", "target": "llm_validation"},
+    {"source": "src_annex11", "rel": "specifies", "target": "part11"},
+    {"source": "src_annex11", "rel": "specifies", "target": "ebr_derivation"},
+    {"source": "src_pics041", "rel": "explains", "target": "alcoa"},
+    {"source": "src_pics041", "rel": "explains", "target": "audit_schema"},
+    {"source": "src_who_gdrp", "rel": "explains", "target": "alcoa"},
+    {"source": "src_who_gdrp", "rel": "explains", "target": "data_lifecycle"}
+  ],
+  "sources": [
+    {"id": "src_fda_data_integrity", "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/data-integrity-and-compliance-drug-cgmp-questions-and-answers", "title": "FDA Guidance for Industry: Data Integrity and Compliance With Drug CGMP Questions and Answers (2018)"},
+    {"id": "src_part11", "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11", "title": "21 CFR Part 11 — Electronic Records; Electronic Signatures"},
+    {"id": "src_fda_csa", "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/computer-software-assurance-production-and-quality-system-software", "title": "FDA Guidance: Computer Software Assurance for Production and Quality System Software"},
+    {"id": "src_gamp5", "url": "https://ispe.org/publications/guidance-documents/gamp-5-guide-2nd-edition", "title": "ISPE GAMP 5 Guide 2nd Edition (2022)"},
+    {"id": "src_gamp5_ai", "url": "https://ispe.org/publications/guidance-documents/gamp-guide-artificial-intelligence", "title": "ISPE GAMP Guide: Artificial Intelligence (2025)"},
+    {"id": "src_annex11", "url": "https://health.ec.europa.eu/document/download/2c252435-6383-4ced-8206-8fef57024cc1_en", "title": "EudraLex Volume 4 Annex 11 — Computerised Systems"},
+    {"id": "src_pics041", "url": "https://picscheme.org/en/publications", "title": "PIC/S PI 041-1 — Good Practices for Data Management and Integrity in Regulated GMP/GDP Environments (2021)"},
+    {"id": "src_who_gdrp", "url": "https://www.who.int/teams/regulation-prequalification/regulation-and-safety/good-data-and-record-management-practice", "title": "WHO Good Data and Record Management Practice"}
+  ]
+}

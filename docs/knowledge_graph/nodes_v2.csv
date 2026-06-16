@@ -1,0 +1,204 @@
+id,label,type,domain,domain_label,content,source_count
+aggregate_formation_model,凝集体形成動力学モデル,concept,d1,細胞生物学・培養プロトコル,凝集体の形成・合体・破砕を表す動的サブモデル。撹拌速度・細胞密度と凝集体径の関係を追加する拡張。,0
+alcoa,ALCOA+ データインテグリティ,concept,d6,GMP・規制・データインテグリティ,帰属性・判読性・同時性・原本性・正確性＋αを全ライフサイクルで満たす原則。製造/解析で生成する全データが従うべき設計要件。,1
+alert_matrix,アラート/通知マトリクス,concept,d4,プロセス制御・自律最適化,各イベントの優先度（P0-P3）、抑制窓、通知チャネル、既定動作を定義したマトリクス。contamination_suspected は抑制不可（0 s）、BO 提案は run 単位（86400 s）など。,2
+approval_log,承認記録,concept,d6,GMP・規制・データインテグリティ,Human-on-the-loopにおけるrequested→approved/rejected/timeout→executed/cancelledの承認状態遷移を記録する監査証跡。,1
+approval_request_event,承認要求イベント,concept,d4,プロセス制御・自律最適化,承認ワークフローで発行されるイベント型。request_id、提案アクション、根拠、要求時刻、レビュー、決定、実行結果を含む。event_store に append-only で記録。,1
+approval_workflow,Human-on-the-loop 承認ワークフロー,concept,d4,プロセス制御・自律最適化,"requested → pending → approved/rejected/timeout → executed/cancelled の状態遷移。タイムアウト時は安全側に倒す。
+
+[merged from multiple agents]
+L1/L2/L3 が自律実行しようとする包絡線外・重大アクションに対し、研究者の明示承認を得てから実行する状態遷移機構。requested → approved/rejected/pending_timeout → executed/cancelled。承認結果は監査証跡に不変ログ化される。",2
+astellas,アステラス製薬（双腕ロボ）,player,d8,エコシステム・プレイヤー,双腕ロボットでiPS培養を自動化し、治験用供給を企図。製薬側からの製造自動化プレイヤー。,1
+audit,監査証跡（Audit Trail）,concept,d6,GMP・規制・データインテグリティ,誰が・いつ・何を変更したかを追える記録。データインテグリティとPart11準拠の中核で、全操作のロギング設計が必要。,1
+audit_schema,監査ログスキーマ,concept,d6,GMP・規制・データインテグリティ,副作用ツール呼び出し、承認状態遷移、センサ取り込み、システム状態変化をALCOA+/Part11準拠で記録するための構造化ログスキーマ。,1
+audit_ui,監査/EBR UI,concept,d6,GMP・規制・データインテグリティ,event_store から 1 培養ランの操作ログ・イベント・承認履歴を検索/エクスポートするビュー。ALCOA+ と EBR 再構成を支援。,2
+ax_bayesian,Ax Bayesian optimization,system,d4,プロセス制御・自律最適化,Meta が開発する高レベルベイズ最適化プラットフォーム。制約付き BO、バッチ BO、多忠実度をサポートし、auto_cell L2 の実装候補。,0
+batch_bo,バッチ BO,concept,d4,プロセス制御・自律最適化,複数バイオリアクタを並行運転するためのバッチ取得関数（qEI/qNEHVI）に基づく実験計画。,0
+bbo,バッチベイズ最適化,concept,d4,プロセス制御・自律最適化,数百万通りの培養条件を、ガウス過程＋バッチ取得関数で効率探索。RPE分化率を反復改善した自律実験の中核解法（GPyOptベース）。,2
+bf,明視野/位相差イメージング,concept,d2,画像取得・コンピュータビジョン,低光毒性で非侵襲なラベルフリー観察。一方で低コントラスト・不均一背景・ハロー/エッジ効果があり、頑健なセグメンテーションが難所。,1
+botorch,BoTorch,system,d4,プロセス制御・自律最適化,PyTorch ベースの低レベルベイズ最適化ライブラリ。qEI/qNEHVI、MultiFidelityGP、KnowledgeGradient 等を提供。,0
+capa,CAPA / リスク管理（FMEA）,concept,d6,GMP・規制・データインテグリティ,逸脱・品質事象の根本原因分析と是正/予防措置。FMEA等のリスク評価が製品・工程設計の判断を導く。ソフトの逸脱検知設計に直結。,1
+cira,CiRA財団 / my iPS,player,d8,エコシステム・プレイヤー,自家iPSの閉鎖系フル自動製造を推進。約3週間・原材料費約100万円/人を掲げ、PMDA適合性調査・非臨床を経て2028年度の治験開始を目標。,3
+closeddev,閉鎖型専用培養装置,concept,d3,ロボティクス・液体ハンドリング,装置内で取り出さず培養するクローズド機。無菌性・更衣簡略化・人為ミス低減に優れ、財団のmy iPS製造の中核アーキテクチャ。,2
+cobrapy_gem,COBRApy + GEM 差替候補,concept,d4,プロセス制御・自律最適化,将来のゲノム規模代謝モデル（COBRApy）への差替候補。培地組成を制約ベースで解き、代謝物収支を予測。,0
+conf,コンフルエンシー算出,concept,d2,画像取得・コンピュータビジョン,セグメンテーションで占有面積/コロニー面積を定量。継代や次工程移行の判断指標（例: 70-80%）として閾値化される中核メトリクス。,2
+contamination_response,汚染疑い応答フロー,concept,d7,センサ・環境モニタリング,contamination_suspected 検知時の P0 即時対応。ブレインは安全系へのホールド要求を出し、デバイス局所が強制停止。研究者確認・誤検知記録・CAPA 起票の分岐。,2
+cpp_aggregate_diameter,CPP: aggregate diameter,concept,d7,センサ・環境モニタリング,A-layer aggregate diameter 150-350 um; Borys 2021 reports >400 um necrosis risk.,0
+cpp_agitation,CPP: agitation rpm,concept,d4,プロセス制御・自律最適化,A-layer agitation 50-120 rpm; Borys 2021 optimum 40-60 rpm for Vertical-Wheel iPSC.,0
+cpp_ammonia,CPP: ammonia (monitoring),concept,d7,センサ・環境モニタリング,"Ammonia monitoring-only CPP for v1; mammalian toxicity threshold 4-6 mM, iPSC-native threshold not yet established.",0
+cpp_do,CPP: dissolved oxygen,concept,d7,センサ・環境モニタリング,A-layer DO setpoint 40% -> 10% at high density; L0 local PID with agitation cascade.,0
+cpp_glucose,CPP: glucose,concept,d7,センサ・環境モニタリング,A-layer glucose >1.5 mM; K_Glc=1.5 mM from Manstein 2021 Table 1; perfusion trigger source.,0
+cpp_glutamine,CPP: glutamine,concept,d7,センサ・環境モニタリング,A-layer glutamine >0.01 mM; K_Gln=0.01 mM from Manstein 2021 Table 1.,0
+cpp_lactate,CPP: lactate,concept,d7,センサ・環境モニタリング,A-layer lactate <50 mM; K_Lac=50 mM from Manstein 2021 Table 1; perfusion trigger source.,0
+cpp_osmolality,CPP: osmolality,concept,d7,センサ・環境モニタリング,A-layer osmolality <500 mOsm/kg; K_Osm=500 mOsm/kg from Manstein 2021 Table 1; perfusion trigger source.,0
+cpp_perfusion_rate,CPP: perfusion rate,concept,d4,プロセス制御・自律最適化,A-layer main actuator 0->7 vvd (Manstein 2021 Table 3); conditionally triggered by glucose/lactate/osmolality.,0
+cpp_ph,CPP: pH,concept,d7,センサ・環境モニタリング,"A-layer pH setpoint 7.1; L0 local PID maintains, L1 may shift within envelope.",0
+cpp_temp,CPP: temperature,concept,d7,センサ・環境モニタリング,A-layer temperature setpoint 37 C; L0 local PID.,0
+cpp_vcd,CPP: viable cell density,concept,d7,センサ・環境モニタリング,A-layer VCD target ~35e6 cells/mL; measured by in-line capacitance; triggers passage.,0
+cpp_viability,CPP: viability,concept,d7,センサ・環境モニタリング,"A-layer viability target >90%; primarily BO objective input, not L1 control target.",0
+cpv,インライン/アットライン分析（CPV）,concept,d7,センサ・環境モニタリング,"工程内・近接でのリアルタイム計測で工程性能を継続検証(CPV)。AI/自動化が高スループットQCと工程安定性監視を可能にする。【P5】具体スタック(2026-06-15調査): VCD=in-line capacitance(Aber FUTURA/Hamilton Incyte, Manstein iPSCで定性検証), 代謝物=in-line Raman(CHOで閉ループglucose制御実証)＋at-line Nova BioProfile FLEX2(16項＋osmolality/viability), 凝集体径=in-line DHM(Ovizio)/FBRM(CLD≠径) or at-line画像(Kropp2019/FlowCam, 日次)。品質(未分化/同一性)・無菌はoffline=BO目的関数専用。",5
+csv,CSV / CSA（システムバリデーション）,concept,d6,GMP・規制・データインテグリティ,計算機システムが目的適合かつALCOA+準拠であることを文書化した証拠。技術的統制で担保するのは複雑で時間を要するが必須工程。,1
+ctrl_split,制御権限の二層分界,concept,d4,プロセス制御・自律最適化,"協業前提でデバイスを設計指定するとき、安全クリティカルな高速ループはデバイス局所コントローラ(検証済PID: 温度37℃/pH7.1/DO40%/撹拌rpm, 秒オーダ・決定的)に置き、ReActブレインは監督制御(設定点変更・灌流/給餌率・サンプリング/継代トリガ・アラーム応答, 30秒+オーダ)に限定する。LLMは高速ループを閉じない(安全/CSV)。緊急停止・無菌バリア・ハード保安連動は安全系のみが強制し、ブレインは読み取りのみ。",1
+d1,細胞生物学・培養プロトコル,domain,d1,細胞生物学・培養プロトコル,自動化の対象そのもの。iPS細胞の樹立・維持・継代・分化誘導・量産の生物学的手順群で、各操作のパラメータが下流の制御変数になる。,1
+d2,画像取得・コンピュータビジョン,domain,d2,画像取得・コンピュータビジョン,ラベルフリー画像から細胞状態を定量し、意思決定の入力を生成する層。コンフルエンシー・形態・分化の判定が中核。,1
+d3,ロボティクス・液体ハンドリング,domain,d3,ロボティクス・液体ハンドリング,培養操作を物理的に実行する装置・ロボット層。汎用双腕と閉鎖型専用機の二系統がある。,2
+d4,プロセス制御・自律最適化,domain,d4,プロセス制御・自律最適化,観察→判断→操作の閉ループと、プロトコル最適化（ベイズ最適化等）を担う制御知能の層。,2
+d5,ソフトウェア基盤・相互運用,domain,d5,ソフトウェア基盤・相互運用,デバイス統合標準・ワークフローオーケストレーション・データ基盤。異種機器を跨ぐ統合の土台。,2
+d6,GMP・規制・データインテグリティ,domain,d6,GMP・規制・データインテグリティ,製造ソフトが満たすべき規制・品質・電子記録の要件群。設計の制約条件を規定する。,2
+d7,センサ・環境モニタリング,domain,d7,センサ・環境モニタリング,培養環境・無菌性の連続計測と、閉ループ制御への状態量供給。エッジ実装で分散計測。,1
+d8,エコシステム・プレイヤー,domain,d8,エコシステム・プレイヤー,財団・企業・装置など実在の担い手と製品。技術選定とパートナリングの地図。,2
+data_lifecycle,データライフサイクル管理,concept,d6,GMP・規制・データインテグリティ,生データの生成・処理・レビュー・保存・検索・廃棄までのALCOA+/Endurable/Availableを担保するライフサイクル管理。,1
+datamodel,データモデル / インジェスト,concept,d5,ソフトウェア基盤・相互運用,画像・センサ・操作ログの標準化された取り込み。新旧機器の異種IFを跨いだ「データ取り込みギャップ」の解消が自律運転の前提。,2
+degraded_mode,縮退運転モード,concept,d4,プロセス制御・自律最適化,ブレイン/LLM/通信断時にも L0 局所 PID と L1 最終検証済レシピで培養を継続するモード。再起動耐性・冪等性・安全を担保。,2
+devprofile,デバイスプロファイル / ICD（協業の成果物）,concept,d5,ソフトウェア基盤・相互運用,"協業でデバイス側に実装を指定する単一の情報モデル(Interface Control Document)。LADS/OPC-UAのFunctional Unit/Function/Programで表現し、これがdevice実装とauto_cellのDomainVertical(channel↔sensor Function, tool↔controller Function/method, EBR↔Program/Result, event↔alarm)を束ねる。setpoint範囲・単位・検証済包絡線を含み、second-source(別ベンダ実装)を可能にする。bespoke REST/gRPCを一次契約にしない。",1
+diff,分化誘導プロトコル,concept,d1,細胞生物学・培養プロトコル,目的細胞へ誘導する多段階手順。iPSC→RPEは seeding / preconditioning / passage / induction / maintenance の5段階として定式化され、自動探索のテンプレになった。,1
+diffdet,分化領域検出,concept,d2,画像取得・コンピュータビジョン,未分化コロニー内の自発分化領域を検出・定量。分化率の閾値超過ウェルを除外したり、誘導の進行度評価に用いる専用DLモデル。,2
+dispense,自動分注・ピペッティング,concept,d3,ロボティクス・液体ハンドリング,培地・試薬の精密分注と吸引。液面追従・体積制御・無菌チップ運用が再現性を決める。リキッドハンドラ統合の基本ユニット。,1
+dlmodel,DLモデル（分割/分類）,concept,d2,画像取得・コンピュータビジョン,セグメンテーション(面積/コンフルエンシー)と分類(形態・分化)の学習モデル群。ラベルフリー前提・低コントラスト対応・施設間汎化が実装課題。,2
+doe,実験計画の定式化,concept,d4,プロセス制御・自律最適化,プロトコルをパラメータ空間に写像し、最適化問題として定義する工程。各操作を変数化（濃度・日数・剥離強度等）し探索可能にする前処理。,1
+dualarm,双腕ヒューマノイド,concept,d3,ロボティクス・液体ハンドリング,汎用器具をそのまま扱える人型双腕（例: LabDroid Maholo）。プロトコル変更に柔軟で、パラメータ探索や手作業の写像に向く。,2
+ebr,電子バッチ記録（EBR）,concept,d6,GMP・規制・データインテグリティ,製造工程で生成される改ざん不能な電子記録。前工程データの検証で次工程の整合を担保し、逸脱時の是正を可能にする。,1
+ebr_derivation,EBR導出ビュー,concept,d6,GMP・規制・データインテグリティ,1培養ラン=1EBRをevent_storeから導出するためのビュー。R&D一次ではEBR-like実験プロビナンスレポートとして運用。,1
+edge,エッジセンサ統合,concept,d7,センサ・環境モニタリング,マイコン/IoTによる多点センサ取得とデバイス層への配信。標準IF（SiLA2/OPC-UA）やゲートウェイ経由で上位へ集約する接点。,1
+envmon,環境モニタリング（DO/pH/CO₂/温度）,concept,d7,センサ・環境モニタリング,培養環境の連続計測。維持培養や量産の安定性を支え、閉ループ制御の状態量を供給する。エッジ実装（ESP32等）で分散計測が可能。,1
+epistra,Epistra（自律最適化）,player,d8,エコシステム・プレイヤー,Maholo×AIの自律実験を支えた企業の一つ。実験計画・ベイズ最適化など最適化エンジン側で関与。,1
+escalation_policy,承認エスカレーションポリシー,concept,d4,プロセス制御・自律最適化,承認要求がタイムアウト・却下・実行失敗した場合のエスカレーションルール。安全側へ倒す（キャンセル/ホールド）を基本とし、リトライ上限超過時は人間介入待ち。,1
+event_store,イベントストア,concept,d5,ソフトウェア基盤・相互運用,時系列のイミュータブルイベントログを格納するデータ基盤。EBR導出、監査証跡、LADS Program/Result対応の基盤。,1
+feeder,フィーダーフリー培養,concept,d1,細胞生物学・培養プロトコル,フィーダー細胞を用いず基質コート上で培養する方式。臨床・自動化に適し、画像解析でも背景が単純化しやすい。,1
+gateway,レガシーデバイス・ゲートウェイ,concept,d5,ソフトウェア基盤・相互運用,独自IFしか持たない既存機器を標準IFへ橋渡しするゲートウェイ層。GPIO/USB/シリアル接続と遠隔監視で「スマート化」する。,1
+gateway_cmd_ack,Gateway command/ack correlation,concept,d5,ソフトウェア基盤・相互運用,MQTT 5.0 Response Topic + Correlation Data を使った非同期 request-response。冪等キーと Message Expiry Interval による重複/stale コマンド防止。,0
+gctp,GCTP（再生医療等製品製造管理）,concept,d6,GMP・規制・データインテグリティ,再生医療等製品の製造・品質管理基準。製造設備に加え管理手法の適合性をPMDAが調査。製造ソフトの設計境界を規定する。,1
+growth,増殖曲線予測→継代トリガ,concept,d2,画像取得・コンピュータビジョン,定期観察から面積値の増殖曲線を推定し、目標密度到達の至適時刻を予測。これがスケジューラと継代操作のトリガになる閉ループの起点。,2
+hmi_dashboard,HMI ダッシュボード,concept,d4,プロセス制御・自律最適化,研究者が培養状態・承認待ち・アラート・BO 提案を一目で把握するメイン画面。CPP 現在値・トレンド・phase・承認キューを表示し、on-the-loop の接点となる。,2
+human_approval,Human-on-the-loop 承認,concept,d6,GMP・規制・データインテグリティ,包絡線を外れる setpoint 変更、継代実行、BO 提案採用、緊急停止/ホールド等に対する研究者/オペレータの承認。,0
+human_on_the_loop,Human-on-the-loop,concept,d4,プロセス制御・自律最適化,監視・判断・包絡線内アクションは自律、包絡線外や重大アクションは人の承認を要する運転形態。auto_cell A 層の自律度。,1
+icd_setpoint_envelope,ICD setpoint envelope,concept,d4,プロセス制御・自律最適化,協業 ICD に定義された設定点範囲・単位・変化率制限。validate_tool_call と gateway 側の二重検証に使われる。,0
+idempotency,冪等性,concept,d5,ソフトウェア基盤・相互運用,L1→L0 の setpoint 変更を idempotency key 付き request-response とし、ブレイン再起動後も同一コマンドを再発行可能にする性質。,0
+instr_aber_futura,Aber FUTURA,system,d7,センサ・環境モニタリング,Aber Instruments の in-line capacitance biomass センサ。580 kHz 線形モデルで VCD を推定。,0
+instr_fbrm_g400,Mettler Toledo ParticleTrack G400,system,d7,センサ・環境モニタリング,FBRM 技術による in-situ 弦長分布計測器。0.5–2000 µm レンジ。,0
+instr_flowcam,FlowCam,system,d7,センサ・環境モニタリング,Fluid Imaging Technologies のフローイメージング顕微鏡。2 µm–1 mm の粒子/凝集体画像解析。,0
+instr_hamilton_incytes,Hamilton Incyte Arc,system,d7,センサ・環境モニタリング,Hamilton の in-line permittivity ベース VCD センサ。RS485 Modbus 出力、哺乳類 5e5–8e9 cells/mL レンジ。,0
+instr_nova_flex2,Nova BioProfile FLEX2,system,d7,センサ・環境モニタリング,Nova Biomedical の 16 項目 at-line 細胞培養分析器。275 µL・4.5 分、OLS による自動サンプリング対応。,0
+instr_ovizio_ilinef,Ovizio iLINE-F PRO,system,d7,センサ・環境モニタリング,Ovizio の D3HM ベース in-line ホログラフィ細胞/凝集体モニタリングシステム。OPC UA 対応。,0
+instr_sartorius_viamass,Sartorius BioPAT ViaMass,system,d7,センサ・環境モニタリング,Sartorius の in-line capacitance biomass センサ。Aber 技術ベース、BioPAT MFCS/DCU 統合。,0
+kaneka,カネカ × 理研（林洋平ら）,player,d8,エコシステム・プレイヤー,財団研究開発センターと共同で、樹立から大量培養までを一貫させた浮遊培養をeLifeに報告。量産・自動化の基盤形態を提供。,2
+kinetics,浮遊培養速度論モデル（Tier2 plant 原典）,concept,d1,細胞生物学・培養プロトコル,"iPSC浮遊培養の比増殖速度をMonod型で表すin silicoモデル。auto_cell Tier2 plant_modelの原典はManstein & Zweigerdt 2021（SCTM/STAR Protocols, src_manstein）で、グルコース・乳酸・グルタミン・浸透圧・凝集体径の阻害項を持ち、灌流で7日35×10⁶ cells/mLを達成した過程制御モデル。Table1定数(µ=1.35/d, KGlc=1.5mM, KLac=50mM, KGln=0.01mM, KOsm=500mOsm/kg, KAgg=350/2=175µm径)はplant_modelと完全一致。Galvanauskas 2019(src_galv)は3項のみの近縁別モデル。",1
+l0_fail_safe,L0 フェイルセーフ,concept,d4,プロセス制御・自律最適化,ブレイン/通信断時に局所 PID が最終検証済 setpoint を保持し続ける設計。ブレイン停止時も培養を継続させる。,0
+l0_local_pid,L0 局所 PID,concept,d4,プロセス制御・自律最適化,バイオリアクター本体の局所コントローラ。温度/pH/DO/撹拌の高速安全ループを秒オーダで決定的に制御する。,0
+lads_actuator_function,LADS Actuator Function,concept,d5,ソフトウェア基盤・相互運用,LADS Functional Unit に属する駆動機能。灌流ポンプ、給餌ポンプ、培地交換弁、サンプリング弁等の離散/連続駆動素子を表す。,0
+lads_controller_function,LADS Controller Function,concept,d5,ソフトウェア基盤・相互運用,LADS Functional Unit に属する制御機能。局所 PID（pH/DO/Temp/Agitation）の制御ロジックを内包し、ブレインからの検証済設定点を受け取る。,0
+lads_functional_unit,LADS Functional Unit,concept,d5,ソフトウェア基盤・相互運用,LADS v1.0.0 で定義される機能単位。バイオリアクタ槽を 1 つの仮想デバイスとして集約し、内部に Sensor/Controller/Actuator Function と ProgramManager を持つ。,0
+lads_program_result,LADS Program/Result,concept,d5,ソフトウェア基盤・相互運用,LADS ProgramManager が管理するプログラム（seed/passage/perfusion_ramp/clean）とその実行結果。EBR 導出の原材料となる。,0
+lads_sensor_function,LADS Sensor Function,concept,d5,ソフトウェア基盤・相互運用,LADS Functional Unit に属するセンサ機能（analog/discrete/multi-state）。pH/DO/Temp/Agitation/Capacitance/Raman/Pressure/Level/Foam 等が該当。,0
+lims,LIMS / LES（情報・実行系）,concept,d5,ソフトウェア基盤・相互運用,検体・試薬・手順・結果を記録/指図する上位システム。デバイス層からのデータを集約し、バッチ記録・トレーサビリティに接続する。,2
+llm_orchestrator,L3 薄い LLM オーケストレータ,concept,d4,プロセス制御・自律最適化,ADR-0001 で採用された L3 層。ワークフロー dispatch、曖昧知覚解釈、新規例外処理、研究者対話・承認仲介をイベント駆動で実行。定常制御には関与しない。,0
+llm_validation,LLM層検証戦略,concept,d6,GMP・規制・データインテグリティ,L3薄いLLMオーケストレータの非決定性を抑え、プロンプトバージョニング・出力根拠ログ・性能モニタリングでGAMP5 AI/ML要件に対応する戦略。,1
+loop,クローズドループ判断,concept,d4,プロセス制御・自律最適化,観察→判断→操作のサイクルを人手介入なしで回す。画像メトリクスを意思決定点に変換し、通知か次工程実行かを分岐する制御ロジック。,2
+maint,iPSC維持培養,concept,d1,細胞生物学・培養プロトコル,未分化状態を保つ日々の培地交換と環境維持。ヒトiPSは毎日の培地交換と約3日ごとの継代が必要で、熟練手技に依存する点が自動化の主対象。,2
+measurement_aggregate_imaging,at-line 凝集体画像計測,concept,d7,センサ・環境モニタリング,FlowCam または Kropp 型バイパス顕微鏡による凝集体径・形態の画像解析。v1 では離散/日次運用が現実的。,0
+measurement_atline_nova,at-line Nova FLEX2 マルチパラメータ,concept,d7,センサ・環境モニタリング,Nova BioProfile FLEX2 による 16 項目（代謝物/ガス/電解質/細胞密度/生存率/細胞径/浸透圧）のアットライン分析。Raman 校正・BO 入力の正解ラベル源。,0
+measurement_fbrm_cld,FBRM 弦長分布計測,concept,d7,センサ・環境モニタリング,Mettler Toledo ParticleTrack による Focused Beam Reflectance Measurement。連続計測可能だが、CLD は真の粒径分布ではなく凝集体形状に依存。,0
+measurement_ovizio_dhm,Ovizio D3HM ホログラフィ計測,concept,d7,センサ・環境モニタリング,Ovizio iLINE-F PRO の Double Differential Digital Holographic Microscopy。ラベルフリー連続細胞/凝集体モニタリング。iPSC 実証は限定的。,0
+measurement_raman_inline,in-line Raman 代謝物計測,concept,d7,センサ・環境モニタリング,in-line Raman 分光による glucose/lactate/glutamine/glutamate の同時推定。CHO で PID 閉ループ実証あり。iPSC では chemometric 再校正が必要。,0
+measurement_vcd_capacitance,in-line capacitance VCD,concept,d7,センサ・環境モニタリング,Aber/Hamilton/Sartorius 等の誘電分光/インピーダンスセンサによる生細胞密度の連続計測。iPSC 高密度では offline VCD・細胞径・生存率を用いた校正が必要。,0
+moldev,Molecular Devices / CellXpress.ai,system,d8,エコシステム・プレイヤー,イメージングベースのAI判断で給餌・継代を自動化する商用システム。DLで形態/分化を識別し、24/365運転で複数株を拡大。,2
+monitoring_ammonia_atline,at-line アンモニウムモニタリング,concept,d7,センサ・環境モニタリング,Nova FLEX2 による NH4+ のアットライン計測。CPP ではないが、代謝毒性早期発見のため監視。,0
+monitoring_quality_offline,offline 品質マーカー計測,concept,d7,センサ・環境モニタリング,未分化/多能性マーカー（OCT4/SOX2/NANOG/SSEA/TRA）、核型/同一性、自発分化等の offline/run 単位計測。BO 目的関数専用。,0
+monitoring_sterility_offline,offline/rapid 無菌性計測,concept,d7,センサ・環境モニタリング,汚染/無菌性の offline または rapid micro 検査。現時点で検証済み online 手段は未確認。CAPA トリガ源。,0
+morphcls,コロニー形態分類,concept,d2,画像取得・コンピュータビジョン,良/不良フェノタイプをCNN等で識別。形態パラメータが未分化性・クローン性維持能と相関し、選抜・除外の自動判断に使う。,2
+motioncap,熟練手技のモーション再現,concept,d3,ロボティクス・液体ハンドリング,熟練者の作業を動作解析し数値化してロボットで再現する思想。「誰でもできるよう数値化して自動化」が財団の自動化方針の核。,2
+mqtt_topic_contract,MQTT topic contract,concept,d5,ソフトウェア基盤・相互運用,auto_cell brain と device_gateway 間の MQTT topic 命名規則。cell/{culture_unit_id}/{direction}/{category}/{device_id}/{function_id} の形式。,0
+mtp,MTP（モジュール型パッケージ）,concept,d5,ソフトウェア基盤・相互運用,モジュール式・柔軟自動化を可能にする記述。SiLA2と組み合わせ、R&Dから製造へのスケールを支える構成管理の枠組み。,1
+multi_fidelity,多忠実度 BO,concept,d4,プロセス制御・自律最適化,Tier2 plant_model（低忠実度・低コスト）と実バイオリアクタ run（高忠実度・高コスト）を統合したベイズ最適化。,0
+multifidelity_sim,多忠実度シミュレーション接続,concept,d4,プロセス制御・自律最適化,L2 BO への多忠実度接続。Tier2 plant_model を低コスト低忠実度評価、実バイオリアクタ run を高忠実度評価として組み込む。,0
+notification_suppression,通知抑制（suppression_defaults）,concept,d4,プロセス制御・自律最適化,同一イベントの短時間再発を抑制し HMI/push のフラッディングを防ぐ仕組み。contamination_suspected は抑制不可とする。,1
+opcua,OPC-UA / LADS,concept,d5,ソフトウェア基盤・相互運用,"産業で普及するM2M標準OPC-UAと、その研究室向けコンパニオン規格LADS。SiLA2と並ぶデバイス通信の選択肢で、製造ライン連携に強い。【P3】LADS v1.0.0(2024年1月, OPC Foundation+Spectaris+VDMA)はバイオリアクタを明示的にモデル化—Functional Unit×Function(analogセンサ/controller/program)構成で、auto_cellのchannel_config/tool_schemas/EBRに直接対応。Eppendorf DASware等プロセス制御機はOPC公開。A層バイオリアクタ制御のデバイスIF第一候補。",1
+orch,ワークフロー・オーケストレーション,concept,d5,ソフトウェア基盤・相互運用,"タスクとデータと物理ハードを途切れなく統合する制御フレーム（AlabOS, Helao 等）。各機器をサービス化し横断ワークフローを管理。",1
+pana,パナソニックHD,player,d8,エコシステム・プレイヤー,岩田研由来の閉鎖型自動培養の系譜。2026年4月、中之島クロスでiPS樹立工程の自動化実証を開始し、最難関の樹立に踏み込む。,2
+part11,21 CFR Part 11 / Annex 11,concept,d6,GMP・規制・データインテグリティ,電子記録・電子署名の監査性と安全な取扱いを求めるFDA/EU規制。電子系の設計（権限・署名・改ざん防止）の直接要件。,1
+passage,継代（剥離・分散）,concept,d1,細胞生物学・培養プロトコル,コロニーを剥離し新プレートへ植え継ぐ工程。単一細胞分散かクランプ維持か、ROCK阻害剤(Y-27632)添加、シェアストレス管理が品質を左右する。,2
+perfusion_trigger,perfusion ramp trigger,concept,d4,プロセス制御・自律最適化,L1 rule event that raises perfusion rate when glucose/lactate/osmolality cross thresholds.,0
+peripheral_atline_analyzer,SiLA2 at-line 分析器,system,d8,エコシステム・プレイヤー,SiLA2 で統合される at-line 分析器（例: Nova BioProfile FLEX2）。代謝物パネル・浸透圧・生存率を提供。,0
+peripheral_dispenser,SiLA2 自動分注器,system,d8,エコシステム・プレイヤー,SiLA2 で統合される液体分注器。feed/exchange_media 等の培地操作を実行。,0
+peripheral_sampler,SiLA2 サンプリングロボ,system,d8,エコシステム・プレイヤー,SiLA2 で統合される at-line サンプリングロボ。take_sample コマンドを提供。,0
+plant_model_calibration,plant_model パラメータ同定・不確実性,concept,d4,プロセス制御・自律最適化,文献値を prior とし、実 run データでベイズ推定または最小二乗により校正。パラメタ事後分布・GP バイアス・構造候補モデルで不確実性を表現。,0
+plant_model_interface,plant_model step IF,concept,d4,プロセス制御・自律最適化,"step(actuators)->sensors という決定的インターフェース。アクチュエータ（perfusion_rate_vvd, agitation_rpm, gas setpoints, feed bolus）を受け、センサ軌道（VCD/代謝物/凝集体径）を返す。",0
+plant_model_regression,plant_model 回帰テスト,concept,d4,プロセス制御・自律最適化,同一アクチュエータ系列 → 同一センサ軌道の決定性を保証するゴールデンテスト。CSV/CSA 観点から L1 制御ループの検証リグとして運用。,0
+qccrit,細胞品質基準,concept,d1,細胞生物学・培養プロトコル,未分化マーカー発現・三胚葉分化能・核型など、製造物が満たすべき生物学的基準。自動判定の「正解ラベル」を定義し、画像代理指標と紐づける必要がある。,2
+ramlaw,再生医療等安全性確保法 / 施設基準,concept,d6,GMP・規制・データインテグリティ,細胞培養加工施設の構造設備基準と適合性調査の根拠法。my iPS製造施設はこの枠組みでPMDA適合性調査を受け稼働を目指す。,2
+ramp_limit,ramp rate limit,concept,d4,プロセス制御・自律最適化,Maximum per-unit-time change for perfusion/agitation/DO setpoints to avoid shear/osmotic shock.,0
+rbi,Robotic Biology Institute / Maholo,system,d8,エコシステム・プレイヤー,双腕ヒューマノイドLabDroid Maholoの提供元。汎用器具操作と高再現性で、自律探索プラットフォームの物理基盤を担う。,1
+recipe_dsl,レシピ DSL,concept,d4,プロセス制御・自律最適化,培養フェーズ・条件起動ロジック・setpoint 包絡線を宣言的に記述する軽量ドメイン特化言語（YAML/JSON 想定）。Manstein 型灌流 0→7 vvd の条件起動を記述可能。,0
+recipe_executor,L1 決定的レシピ実行器,concept,d4,プロセス制御・自律最適化,ADR-0001 で採用された L1 層。レシピ DSL とルールエンジンに基づき、灌流/給餌/撹拌/サンプリング/継代要否を状態とレシピから決定的に実行する。LLM は per-cycle には入らない。,0
+reprog,iPSC樹立（初期化）,concept,d1,細胞生物学・培養プロトコル,体細胞をRNA等で初期化しコロニーを得る最難関工程。形態が動的で良質コロニー選抜が職人技。財団・パナソニックが2026年に樹立工程の自動化実証に着手。,2
+rl,強化学習（発展領域）,concept,d4,プロセス制御・自律最適化,方策学習による操作・条件最適化。製造GMP文脈では検証可能性が壁で、現状は画像判断・BOが主流、RLは研究段階。,1
+root,iPS自動培養ソフトウェア,root,,,患者血液→iPS樹立→維持/拡大→分化誘導→品質評価までを、画像判断・ロボット操作・規制対応を統合して自動制御するソフトウェアスタック。本マップはその実装に必要なドメイン知識の地図。,2
+rule_engine,ルールエンジン,concept,d4,プロセス制御・自律最適化,イベント（glucose_low/lactate_high/osmolality_high/vcd_target_reached/contamination_suspected 等）からアクションへの決定的マッピングを実行するエンジン。,0
+safe_bo,Safe BO,concept,d4,プロセス制御・自律最適化,CPP 包絡線（pH/DO/乳酸/浸透圧/凝集体径等）を侵害しないよう制約を課したベイズ最適化。,0
+sched,スケジューリング,concept,d4,プロセス制御・自律最適化,12時間ごとの観察など定期タスクと、至適継代時刻のような条件起動タスクを編成。多細胞株・多バッチの並行運転を破綻なく回す制御層。,1
+sdl,自律実験 / Self-driving Lab,concept,d4,プロセス制御・自律最適化,ロボットが自ら結果を評価し次実験を計画する枠組み。再現性ある細胞製造に向け、探索空間の系統的・無バイアス探索を加速する。,2
+set_agitation_rpm,set_agitation_rpm,concept,d4,プロセス制御・自律最適化,撹拌回転数（50–120 rpm）を設定する L1 副作用ツール。凝集体径制御とシアストレス管理に用いる。,0
+set_perfusion_rate,set_perfusion_rate,concept,d4,プロセス制御・自律最適化,灌流率（0→7 vvd）を設定する L1 副作用ツール。glucose/lactate/osmolality トリガで条件起動する。,0
+shear_stress_model,シアストレスモデル,concept,d4,プロセス制御・自律最適化,撹拌速度・粘度・凝集体径から Kolmogorov 長またはエネルギー散逸率を推定し、細胞傷害閾値を設計する拡張。,0
+signal,シグナル制御（添加因子）,concept,d1,細胞生物学・培養プロトコル,分化方向を決める阻害剤の濃度・タイミング。RPE誘導では FGFR阻害剤・SB431542(TGFβ)・CKI-7(Wnt)・Y-27632 等が制御変数。これらが最適化の探索空間になる。,1
+sila,SiLA 2（デバイス標準）,concept,d5,ソフトウェア基盤・相互運用,HTTP/2＋Protocol BuffersとFeature Definition Languageで意味的に同一なデバイスIFを標準化。ベンダロックイン回避と統合工数削減の中核。,2
+sila_feature,SiLA2 Feature,concept,d5,ソフトウェア基盤・相互運用,SiLA2 Feature Definition Language（FDL）で定義される機能単位。サンプリングロボ、分注、at-line 分析器等のコマンド/property を記述。,0
+src_aber_futura,Aber FUTURA app note,source,d7,センサ・環境モニタリング,"Aber Instruments, FUTURA capacitance perfusion monitoring.",0
+src_annex11,EudraLex Annex 11,source,d6,GMP・規制・データインテグリティ,EudraLex Volume 4 Annex 11 — Computerised Systems。EUのGMPデータコンピュータ化システム要件。,1
+src_ax,Ax Adaptive Experimentation Platform,source,d4,プロセス制御・自律最適化,Facebook/Meta の実験最適化プラットフォーム。BoTorch 上に構築され、探索空間・制約・多忠実度の管理に向く。,0
+src_borys,Borys et al. 2021 (Stem Cell Res Ther),source,d4,プロセス制御・自律最適化,iPSC Vertical-Wheel(PBS Biotech)撹拌最適化。40rpmが最大増殖(day6で32.3±3.2倍)、day5凝集体径169-275µm、>400µmで壊死予想。撹拌CPPの文献アンカー(最適40-60rpm、auto_cellの50-120rpm上限は高め)。,1
+src_botorch,BoTorch（ベイズ最適化）,source,d4,プロセス制御・自律最適化,PyTorch ベースのベイズ最適化ライブラリ。多忠実度・制約付き BO に強く、L2 層の実装候補。,0
+src_cgt,CGT QC/QA（ALCOA・Part11）,source,d6,GMP・規制・データインテグリティ,データインテグリティ・CSV・CAPA・CPVを横断する実務解説。電子系設計の要件マップとして有用。,1
+src_cobrapy,COBRApy,source,d5,ソフトウェア基盤・相互運用,Python によるゲノム規模代謝モデリングライブラリ。将来の COBRApy+GEM バックエンド差替の基盤。,0
+src_cxa,CellXpress.ai 適用ノート,source,d2,画像取得・コンピュータビジョン,コンフルエンシー/分化のDL2モデルと閾値起動の自動継代を具体記述。画像→意思決定の設計参照。,2
+src_fbrm_g400,Mettler Toledo ParticleTrack FBRM,source,d7,センサ・環境モニタリング,"Mettler Toledo, ParticleTrack with FBRM technology.",0
+src_fda_csa,FDA CSA Guidance,source,d6,GMP・規制・データインテグリティ,FDA 'Computer Software Assurance for Production and Quality System Software' (2022 draft / 2025 final)。リスクベースでソフトウェア保証活動を選定する現代的CSV/CSAアプローチ。,1
+src_fda_data_integrity,FDA 2018 Data Integrity Guidance,source,d6,GMP・規制・データインテグリティ,FDA 'Data Integrity and Compliance With Drug CGMP Questions and Answers' (2018)。ALCOA+原則を医薬品製造のデータインテグリティに適用したガイダンス。,1
+src_flowcam,FlowCam overview,source,d7,センサ・環境モニタリング,"Fluid Imaging Technologies, FlowCam imaging particle analyzer overview.",0
+src_galv,Galvanauskas et al. 2019 (近縁の3項モデル),source,d1,細胞生物学・培養プロトコル,"iPSC浮遊培養速度論の近縁モデル(Galvanauskas/Kino-Oka 2019, Regen Therapy 12:88-93)。グルコースMonod＋乳酸阻害＋凝集体体積阻害の3項のみで、グルタミン制限/浸透圧項は持たない(明示的に省略)。定数もplant_modelと異なる(µmax≈2.35/d, KG≈7mM, KAgg=5.6e6µm³体積)。deep-researchが一旦原典と誤推定したが、真の原典はManstein 2021(src_manstein)。",2
+src_gamp5,ISPE GAMP 5 2nd Edition,source,d6,GMP・規制・データインテグリティ,"ISPE GAMP 5 Guide: A Risk-Based Approach to Compliant GxP Computerized Systems, Second Edition (2022)。Cat.1/3/4/5とAI/ML Appendix D11を含む。",1
+src_gamp5_ai,ISPE GAMP Guide: Artificial Intelligence,source,d6,GMP・規制・データインテグリティ,ISPE GAMP Guide: Artificial Intelligence (2025)。AI有効化コンピュータ化システムのライフサイクル全体の検証・データガバナンス・モデルリスク管理を扱う。,1
+src_gctp,PMDA GCTP / 適合性調査,source,d6,GMP・規制・データインテグリティ,再生医療等製品の製造・品質管理の適合性を定める一次情報。製造ソフトの規制要件の出発点。,1
+src_hamilton_incytes,Hamilton Incyte Arc specs,source,d7,センサ・環境モニタリング,"Hamilton Company, Incyte Arc Viable Cell Density Sensor specifications.",0
+src_iec62366,IEC 62366-1（医療機器ユーザビリティ）,source,d4,プロセス制御・自律最適化,医療機器のユーザビリティエンジニアリングを規定する国際標準。HMI 設計の人因工学基準。,1
+src_isa101,ISA-101（プロセス制御 HMI 設計）,source,d4,プロセス制御・自律最適化,ISA-101 標準群。プロセス産業向け HMI の視覚設計、アラーム管理、パフォーマンス指向ディスプレイを規定。,1
+src_kanda,Kanda et al. 2022 (eLife),source,d4,プロセス制御・自律最適化,自律ロボット×バッチベイズ最適化でiPSC-RPE分化を最適化した記念碑的論文。プロトコルの5段階定式化とパラメータ探索、コード公開を含む。,2
+src_krause2023,Krause 2023 capacitance review,source,d7,センサ・環境モニタリング,"Krause et al. 2023, Curr Opin Biotechnol, biocapacitance online biomass monitoring.",0
+src_kropp,Kropp/Lipsitz et al. 2015 (BMC Proceedings),source,d4,プロセス制御・自律最適化,hPSC撹拌懸濁のBox-Behnken DoE。pH7.3/37℃、毎日給餌で高密度、播種2×10⁵が最適、DOは本研究で非有意。注: HES2(ESC)・Micro-24振盪式(400rpm=振盪周波数)でiPSC/インペラ槽への転用に注意。,1
+src_lads,OPC UA LADS v1.0.0 (OPC Foundation),source,d5,ソフトウェア基盤・相互運用,"Laboratory and Analytical Device Standard。OPC-UAコンパニオン規格(2024-01, OPC Foundation+Spectaris+VDMA, OPC 30500-1)。Functional Unit/Function(sensor analog/discrete/multi-state, controller, actuator)＋Program/Result管理＋Asset/保守。バイオリアクタを明示例として槽=Functional Unit(温度センサ+モータ+program)でモデル化。auto_cellのDomainVertical面に直対応。",3
+src_manstein,Manstein & Zweigerdt 2021（plant_model 原典）,source,d4,プロセス制御・自律最適化,"auto_cell Tier2 plant_modelの真の原典。hPSC灌流撹拌槽培養をpH7.1/DO40%/浸透圧ピーク抑制/灌流で制御し、7日で70倍・35×10⁶ cells/mL(150mLで52.5億細胞)を達成。Monod型in silicoモデル(Table1: µ=1.35/d, KGlc=1.5mM, KLac=50mM, KGln=0.01mM, KOsm=500mOsm/kg, KAgg=350/2=175µm)はplant_modelの6定数と完全一致。撹拌80rpm(150mLスケール)。",2
+src_mqtt5,MQTT Version 5.0 | OASIS Standard,source,d5,ソフトウェア基盤・相互運用,MQTT 5.0 標準仕様。Response Topic、Correlation Data、Message Expiry Interval、Reason Code 等により request-response とエラーハンドリングを規定。,0
+src_mqtt5_reqresp,,source,d5,ソフトウェア基盤・相互運用,,0
+src_nist_ai_rmf,NIST AI Risk Management Framework,source,d4,プロセス制御・自律最適化,NIST が公開する AI リスク管理フレームワーク。Human-on-the-loop / human-in-the-loop による AI システムのガバナンスと監視を含む。,1
+src_nova_flex2,Nova BioProfile FLEX2,source,d7,センサ・環境モニタリング,"16-parameter at-line analyzer for metabolites, osmolality, viability, cell diameter.
+
+[merged from multiple agents]
+Nova Biomedical, BioProfile FLEX2 cell culture analyzer.",0
+src_ovizio_ilinef,Ovizio iLINE-F PRO press release,source,d7,センサ・環境モニタリング,"Ovizio Imaging Systems, iLINE-F PRO holographic in-line cell monitoring.",0
+src_part11,21 CFR Part 11,source,d6,GMP・規制・データインテグリティ,FDA regulation 'Electronic Records; Electronic Signatures'。電子記録・電子署名・監査証跡の技術的要件を定める。,1
+src_pics041,PIC/S PI 041-1,source,d6,GMP・規制・データインテグリティ,PIC/S PI 041-1 — Good Practices for Data Management and Integrity in Regulated GMP/GDP Environments (2021)。ALCOA+運用の国際的実務指針。,1
+src_raman_graf2022,Graf/Wei 2022 in-line Raman PID glucose,source,d7,センサ・環境モニタリング,"Graf/Wei et al. 2022, Frontiers in Bioengineering, in-line Raman closed-loop glucose control.",0
+src_riken2020,理研 自律培養 2020,source,d2,画像取得・コンピュータビジョン,人型ロボット×AIで12h観察→増殖予測→至適継代を9日間自律実行。閉ループ自律培養の国内先行実証。,1
+src_sartorius_viamass,Sartorius BioPAT ViaMass,source,d7,センサ・環境モニタリング,"Sartorius, BioPAT ViaMass inline biomass measurement system.",0
+src_scipy,SciPy（数値積分）,source,d5,ソフトウェア基盤・相互運用,Python の科学技術計算ライブラリ。plant_model の ODE 数値積分（solve_ivp 等）に使用。,0
+src_sila,SiLA 2 標準群,source,d5,ソフトウェア基盤・相互運用,デバイス相互運用の標準。Tecan SDK・SiLA2 Manager・cell culture autopilot事例まで、実装に直接使える資源群。,4
+src_sila_comm,,source,d5,ソフトウェア基盤・相互運用,,0
+src_susp,浮遊培養 一貫化（eLife）,source,d1,細胞生物学・培養プロトコル,樹立→大量培養→直接凍結まで浮遊系で一貫。量産・自動化の生物学的基盤。財団・理研・カネカ共同。,2
+src_traj,Nogueira 2019 / Olmer 2012（到達密度 実測）,source,d1,細胞生物学・培養プロトコル,バッチ vs 灌流の到達密度差。標準バッチはNogueira(Vertical-Wheel)=peak 2.3×10⁶、Olmer(撹拌槽)=2.4×10⁶ cells/mL止まり。plant_modelの検証目標35×10⁶はManstein 2021の灌流プロセス(src_manstein)で達成される値で、バッチでは到達しない。,2
+src_who_gdrp,WHO Good Data and Record Management Practice,source,d6,GMP・規制・データインテグリティ,WHO Good Data and Record Management Practice。ALCOA+とデータライフサイクルのWHO解釈。,1
+src_xing2008,Xing et al. 2008 (Biotechnol Prog),source,d1,細胞生物学・培養プロトコル,CHO osmolality threshold reference; iPSC-native value not established.,0
+src_yehya2024,Yehya et al. 2024 (Stem Cell Res Ther),source,d4,プロセス制御・自律最適化,Vertical-Wheel agitation DoE supporting lower optimum rpm (40-60 rpm).,0
+state_machine_l1,L1 状態機械,concept,d4,プロセス制御・自律最適化,L1 レシピ実行器内のフェーズ遷移（seed → perfusion_ramp → passage_ready → hold 等）を明確に管理する状態機械。,0
+sterility,無菌性・コンタミ監視,concept,d7,センサ・環境モニタリング,菌混入や逸脱の検知。閉鎖系では更衣簡略化と引換えに監視設計が重要で、9日連続運転でも重大エラー/汚染ゼロが品質目標水準。,2
+suspension,浮遊・懸濁培養（量産）,concept,d1,細胞生物学・培養プロトコル,3次元浮遊撹拌で容積当たり密度を上げ量産する方式。突発的分化を化合物で抑制し、樹立→大量培養→直接凍結まで一貫化。自動化・スケールアップの基盤形態。,2
+take_sample_l1,take_sample (L1),concept,d4,プロセス制御・自律最適化,定期または条件起動で at-line サンプリングを行う L1 アクション。cpv へデータを供給する。,0
+tech_control,技術的統制,concept,d6,GMP・規制・データインテグリティ,R&D一次でありつつ将来GMP移行を妨げないよう、ソフトウェアに織り込むALCOA+/Part11/CSV/CSA/EBR/CAPAの実装上の統制群。,1
+terumo,Terumo BCT / Quantum Flex,system,d8,エコシステム・プレイヤー,2024年に財団と提携。Quantum Flex Cell Expansion System上で閉鎖・自動・統合プロセスを構築し、デジタル技術で効率と制御を高める。【P3】Quantum FlexはCPAソフト(プロトコルビルダ/最大100台フリート/cGMP)の閉鎖ターンキーで、公開デバイスAPIは確認できず＝自前ブレインの閉ループ制御対象ではなく商用/臨床エンドポイント(連携するなら監視のみ)。,1
+tier2_plant_model,Tier2 plant_model（in-silico 検証リグ）,concept,d4,プロセス制御・自律最適化,auto_cell の Tier2 シミュレーション層。Manstein 2021 の 6 項 Monod 型 ODE を step(actuators)->sensors IF で実装し、L1 制御ループの回帰検証と L2 BO の低忠実度評価に使う。,0
+tool_set_agitation_rpm,tool: set_agitation_rpm,concept,d5,ソフトウェア基盤・相互運用,LADS controller Function / DomainVertical tool for agitation setpoint.,0
+tool_set_perfusion_rate,tool: set_perfusion_rate,concept,d5,ソフトウェア基盤・相互運用,LADS controller Function / DomainVertical tool for perfusion rate. Maps to devprofile.,0
+tool_trigger_passage,tool: trigger_passage,concept,d5,ソフトウェア基盤・相互運用,LADS Program / DomainVertical tool for dissociation passage with Y-27632.,0
+transport,プレート搬送・把持,concept,d3,ロボティクス・液体ハンドリング,インキュベータ⇄顕微鏡⇄作業台間のプレート/容器搬送とグリッパ制御。スケジュールに沿う物流が自律運転の連続性を支える。,2
+trigger_passage_l1,trigger_passage (L1),concept,d4,プロセス制御・自律最適化,VCD 目標到達または凝集体径逸脱時に継代を要求する L1 アクション。実行には原則として Human-on-the-loop 承認が必要。,0
+validate_tool_call,ツール呼び出し検証,concept,d6,GMP・規制・データインテグリティ,副作用ツール呼び出し前に CPP 包絡線・変化率制限・競合を決定的に検証する仕組み。,0
+y_27632,Y-27632 ROCK inhibitor,concept,d1,細胞生物学・培養プロトコル,Standard ROCK inhibitor added during dissociation passage to improve iPSC survival.,0

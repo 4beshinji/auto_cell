@@ -1,0 +1,384 @@
+{
+  "meta": {
+    "title": "MPC for iPSC perfusion/suspension — additional KG diff",
+    "description": "auto_cell A 層における MPC（Model Predictive Control）将来拡張に関する差分ノード・エッジ・ソース。iPSC 浮遊灌流プロセスを対象とし、L1 ルールエンジンからの段階的導入路線図を記述する。",
+    "generated": "2026-06-16",
+    "base_kg": "docs/knowledge_graph/knowledge_graph_v2.json",
+    "scope": "A 層 iPSC 浮遊/凝集体バイオリアクター制御"
+  },
+  "nodes": [
+    {
+      "id": "mpc",
+      "label": "Model Predictive Control",
+      "type": "concept",
+      "domain": "d4",
+      "content": "プロセスモデルを用いて未来の挙動を予測し、制約内で最適な操作変数を逐次計算する制御手法。A 層では灌流率・feed bolus を操作変数とする将来拡張候補。",
+      "sources": [
+        {
+          "title": "Model Predictive Controller Design for Bioprocesses (Rashedi et al., DYCOPS-2022)",
+          "url": "https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf"
+        },
+        {
+          "title": "フィジカルAI包括調査レポート §6.1",
+          "url": "/home/sin/Downloads/report/report.md"
+        }
+      ]
+    },
+    {
+      "id": "mpc_ipsc_perfusion",
+      "label": "iPSC 浮遊灌流 MPC",
+      "type": "concept",
+      "domain": "d4",
+      "content": "iPSC 浮遊凝集体灌流プロセスに特化した MPC。状態 = VCD/viability/glucose/lactate/glutamine/osmolality/aggregate diameter、操作変数 = perfusion rate/feed bolus、制約 = CPP 包絡線・pump ramp・凝集体シア。現時点で直接実証例は限定的。",
+      "sources": [
+        {
+          "title": "Process development and scale-up of pluripotent stem cell manufacturing (Huang et al. 2020)",
+          "url": "https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/"
+        },
+        {
+          "title": "Manstein & Zweigerdt 2021, STAR Protocols Table 1",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/"
+        }
+      ]
+    },
+    {
+      "id": "mpc_lactate_feedback",
+      "label": "乳酸フィードバック MPC",
+      "type": "concept",
+      "domain": "d4",
+      "content": "累積乳酸濃度を細胞成長の soft sensor として、培地交換量を入力とする MPC。MSC 培養で実証されており、iPSC 浮遊灌流への転用可能性がある。",
+      "sources": [
+        {
+          "title": "Van Beylen et al. 2020, Lactate-Based Model Predictive Control Strategy of Cell Growth for Cell Therapy Applications",
+          "url": "https://doi.org/10.3390/bioengineering7030078"
+        }
+      ]
+    },
+    {
+      "id": "mpc_model_types",
+      "label": "MPC モデルタイプ",
+      "type": "concept",
+      "domain": "d4",
+      "content": "線形 MPC（LMPC）、非線形 MPC（NMPC）、経済 MPC（EMPC）、ハイブリッド MPC（PINN+ODE）、データ駆動 MPC（DARX/サブスペース）の分類。A 層では plant_model（Manstein ODE）起点で NMPC → ハイブリッド MPC へ段階拡大。",
+      "sources": [
+        {
+          "title": "Model Predictive Controller Design for Bioprocesses (Rashedi et al., DYCOPS-2022)",
+          "url": "https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf"
+        },
+        {
+          "title": "Van Beylen et al. 2020, Bioengineering",
+          "url": "https://doi.org/10.3390/bioengineering7030078"
+        }
+      ]
+    },
+    {
+      "id": "mpc_constraints",
+      "label": "MPC 制約集合",
+      "type": "concept",
+      "domain": "d4",
+      "content": "MPC で考慮する制約群：CPP 包絡線（glucose/lactate/osmolality/aggregate diameter）、perfusion rate 範囲（0–7 vvd）、pump ramp 制限、凝集体シア上限、培地コスト。",
+      "sources": [
+        {
+          "title": "Manstein & Zweigerdt 2021, STAR Protocols Table 1",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/"
+        },
+        {
+          "title": "Process development and scale-up of pluripotent stem cell manufacturing (Huang et al. 2020)",
+          "url": "https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/"
+        }
+      ]
+    },
+    {
+      "id": "mpc_prediction_horizon",
+      "label": "MPC 予測ホライズン",
+      "type": "concept",
+      "domain": "d4",
+      "content": "MPC が未来のプロセス挙動を予測する時間幅。iPSC 培養ではバッチ尺が数日～数週間のため、時間単位～日単位の予測ホライズンが妥当。CHO fed-batch 例では 30 日が報告されているが、iPSC では未確定。",
+      "sources": [
+        {
+          "title": "Model Predictive Controller Design for Bioprocesses (Rashedi et al., DYCOPS-2022)",
+          "url": "https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf"
+        }
+      ]
+    },
+    {
+      "id": "mpc_control_horizon",
+      "label": "MPC 制御ホライズン",
+      "type": "concept",
+      "domain": "d4",
+      "content": "MPC が最適化する未来の操作変数系列の長さ。予測ホライズン以下。iPSC では求解コストと制御性能のトレードオフで選定。CHO 例では 8 日。",
+      "sources": [
+        {
+          "title": "Model Predictive Controller Design for Bioprocesses (Rashedi et al., DYCOPS-2022)",
+          "url": "https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf"
+        }
+      ]
+    },
+    {
+      "id": "mpc_adaptive_update",
+      "label": "MPC 適応更新",
+      "type": "concept",
+      "domain": "d4",
+      "content": "オンライン/at-line データを用いて MPC 内部モデルのパラメータを逐次更新する機構。プロセス・モデルミスマッチ、細胞株変動、ドナー変動に対応。",
+      "sources": [
+        {
+          "title": "Van Beylen et al. 2020, Bioengineering",
+          "url": "https://doi.org/10.3390/bioengineering7030078"
+        }
+      ]
+    },
+    {
+      "id": "mpc_fail_safe",
+      "label": "MPC フェイルセーフ",
+      "type": "concept",
+      "domain": "d4",
+      "content": "MPC ソルバー非収束・異常予測・制約違反時に、L1 が最後の検証済 setpoint または安全側デフォルト灌流率を保持する機構。",
+      "sources": [
+        {
+          "title": "ADR-0001 Control architecture",
+          "url": "docs/design/adr/0001-control-architecture.md"
+        }
+      ]
+    },
+    {
+      "id": "mpc_human_on_the_loop",
+      "label": "MPC Human-on-the-loop",
+      "type": "concept",
+      "domain": "d6",
+      "content": "MPC の提案軌道・包絡線外 setpoint・低信頼度予測に対して研究者が承認/調整/却下する仕組み。Annex 22 対応の決定論的下位制御器としての位置づけと両立。",
+      "sources": [
+        {
+          "title": "requirements.md FR-4",
+          "url": "docs/design/requirements.md"
+        },
+        {
+          "title": "PIC/S GMP Annex 22 AI applicability (CiRA/Sugihara PMC11975184)",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11975184/"
+        }
+      ]
+    },
+    {
+      "id": "mpc_implementation_libraries",
+      "label": "MPC 実装ライブラリ群",
+      "type": "concept",
+      "domain": "d5",
+      "content": "A 層 MPC 実装候補ライブラリ：CasADi（記号計算）、do-mpc（プロトタイプ・OPC-UA 接続例あり）、acados（高速組み込み C コード生成）。",
+      "sources": [
+        {
+          "title": "CasADi",
+          "url": "https://web.casadi.org/"
+        },
+        {
+          "title": "do-mpc batch reactor example",
+          "url": "https://www.do-mpc.com/en/latest/example_gallery/batch_reactor.html"
+        },
+        {
+          "title": "acados documentation",
+          "url": "https://docs.acados.org/"
+        }
+      ]
+    },
+    {
+      "id": "dynamic_perfusion_ipsc",
+      "label": "iPSC 動的灌流戦略",
+      "type": "concept",
+      "domain": "d1",
+      "content": "pH トリガー等で perfusion rate を動的に増加させる iPSC 浮遊培養戦略。Huang et al. 2020 で pH 6.8 トリガー + 30%/日増加により固定灌流比 25% 向上。MPC で多変数化・最適化可能。",
+      "sources": [
+        {
+          "title": "Process development and scale-up of pluripotent stem cell manufacturing (Huang et al. 2020)",
+          "url": "https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/"
+        }
+      ]
+    },
+    {
+      "id": "cpsr_control",
+      "label": "Cell-Specific Perfusion Rate 制御",
+      "type": "concept",
+      "domain": "d4",
+      "content": "生存細胞数あたりの灌流率（CSPR）を一定に保つ制御戦略。培地利用効率と安定的基質濃度を両立。high cell density perfusion の標準的アプローチ。",
+      "sources": [
+        {
+          "title": "Konstantinov et al. 2006, CSPR concept",
+          "url": "https://pure.mpg.de/rest/items/item_3395904_4/component/file_3432420/content"
+        }
+      ]
+    },
+    {
+      "id": "mpc_vs_rule_engine",
+      "label": "MPC vs ルールエンジン比較",
+      "type": "concept",
+      "domain": "d4",
+      "content": "v1 の L1 決定的ルールと将来 MPC との比較軸：実装コスト、検証性、最適性、柔軟性、Annex 22 対応、Human-on-the-loop。v1 はルール、Phase 2 以降は MPC 拡張。",
+      "sources": [
+        {
+          "title": "additional_mpc_for_ipsc.md",
+          "url": "docs/design/ground_knowledge/additional_mpc_for_ipsc.md"
+        }
+      ]
+    },
+    {
+      "id": "mpc_roadmap_l1",
+      "label": "L1 MPC 導入ロードマップ",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Phase 1: ルールベース L1。Phase 2: plant_model ベース MPC シミュレーション・単一操作変数（perfusion rate）。Phase 3: 多変数・適応・経済 MPC の実機適用。",
+      "sources": [
+        {
+          "title": "additional_mpc_for_ipsc.md",
+          "url": "docs/design/ground_knowledge/additional_mpc_for_ipsc.md"
+        }
+      ]
+    },
+    {
+      "id": "src_rashedi2022",
+      "label": "Rashedi et al. 2022 (DYCOPS-2022)",
+      "type": "source",
+      "domain": "d4",
+      "content": "Amgen の fed-batch CHO プロセスへの線形 MPC 実機適用。VCD 最大化、30 日予測ホライズン、8 日制御ホライズン、タイトル 2% 向上。",
+      "sources": [
+        {
+          "title": "Model Predictive Controller Design for Bioprocesses",
+          "url": "https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf"
+        }
+      ]
+    },
+    {
+      "id": "src_van_beylen2020",
+      "label": "Van Beylen et al. 2020 (Bioengineering)",
+      "type": "source",
+      "domain": "d4",
+      "content": "Lactate-Based Model Predictive Control Strategy of Cell Growth for Cell Therapy Applications. hBM-MSC 培養で累積乳酸を soft sensor とする適応 DARX-MPC。",
+      "sources": [
+        {
+          "title": "Lactate-Based Model Predictive Control Strategy",
+          "url": "https://doi.org/10.3390/bioengineering7030078"
+        }
+      ]
+    },
+    {
+      "id": "src_huang2020",
+      "label": "Huang et al. 2020 (Cell Gene Therapy Insights)",
+      "type": "source",
+      "domain": "d1",
+      "content": "PSC 10 L スケールアップ。動的灌流で pH 6.8 トリガー + 30%/日増加、固定灌流比 25% 向上、乳酸 15 mM 未満抑制。",
+      "sources": [
+        {
+          "title": "Process development and scale-up of pluripotent stem cell manufacturing",
+          "url": "https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/"
+        }
+      ]
+    },
+    {
+      "id": "src_do_mpc",
+      "label": "do-mpc",
+      "type": "source",
+      "domain": "d5",
+      "content": "CasADi ベースの Python MPC ライブラリ。非線形 MPC、ロバスト MPC、OPC-UA 接続例あり。",
+      "sources": [
+        {
+          "title": "do-mpc batch reactor example",
+          "url": "https://www.do-mpc.com/en/latest/example_gallery/batch_reactor.html"
+        }
+      ]
+    },
+    {
+      "id": "src_acados",
+      "label": "acados",
+      "type": "source",
+      "domain": "d5",
+      "content": "高速組み込み非線形 MPC ソルバー。C コード生成、HPIPM QP ソルバー、CasADi 記号モデル入力。",
+      "sources": [
+        {
+          "title": "acados documentation",
+          "url": "https://docs.acados.org/"
+        }
+      ]
+    },
+    {
+      "id": "src_casadi",
+      "label": "CasADi",
+      "type": "source",
+      "domain": "d5",
+      "content": "非線形最適化と自動微分のためのオープンソース記号計算フレームワーク。MPC モデリングの基盤。",
+      "sources": [
+        {
+          "title": "CasADi",
+          "url": "https://web.casadi.org/"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    { "source": "d4", "rel": "has", "target": "mpc" },
+    { "source": "mpc", "rel": "specializes", "target": "mpc_ipsc_perfusion" },
+    { "source": "mpc", "rel": "implements", "target": "loop" },
+    { "source": "mpc_ipsc_perfusion", "rel": "controls", "target": "set_perfusion_rate" },
+    { "source": "mpc_ipsc_perfusion", "rel": "controls", "target": "cpp_perfusion_rate" },
+    { "source": "mpc_ipsc_perfusion", "rel": "constrains", "target": "cpp_glucose" },
+    { "source": "mpc_ipsc_perfusion", "rel": "constrains", "target": "cpp_lactate" },
+    { "source": "mpc_ipsc_perfusion", "rel": "constrains", "target": "cpp_glutamine" },
+    { "source": "mpc_ipsc_perfusion", "rel": "constrains", "target": "cpp_osmolality" },
+    { "source": "mpc_ipsc_perfusion", "rel": "constrains", "target": "cpp_aggregate_diameter" },
+    { "source": "mpc", "rel": "uses", "target": "tier2_plant_model" },
+    { "source": "mpc_ipsc_perfusion", "rel": "uses", "target": "measurement_vcd_capacitance" },
+    { "source": "mpc_ipsc_perfusion", "rel": "uses", "target": "measurement_raman_inline" },
+    { "source": "mpc_ipsc_perfusion", "rel": "uses", "target": "measurement_atline_nova" },
+    { "source": "mpc_ipsc_perfusion", "rel": "uses", "target": "measurement_aggregate_imaging" },
+    { "source": "mpc_lactate_feedback", "rel": "uses", "target": "cpp_lactate" },
+    { "source": "mpc_lactate_feedback", "rel": "demonstrated_by", "target": "src_van_beylen2020" },
+    { "source": "mpc", "rel": "uses", "target": "mpc_model_types" },
+    { "source": "mpc", "rel": "uses", "target": "mpc_constraints" },
+    { "source": "mpc", "rel": "uses", "target": "mpc_prediction_horizon" },
+    { "source": "mpc", "rel": "uses", "target": "mpc_control_horizon" },
+    { "source": "mpc", "rel": "uses", "target": "mpc_adaptive_update" },
+    { "source": "mpc", "rel": "requires", "target": "mpc_fail_safe" },
+    { "source": "mpc", "rel": "requires", "target": "mpc_human_on_the_loop" },
+    { "source": "mpc", "rel": "implemented_by", "target": "mpc_implementation_libraries" },
+    { "source": "mpc_implementation_libraries", "rel": "includes", "target": "src_casadi" },
+    { "source": "mpc_implementation_libraries", "rel": "includes", "target": "src_do_mpc" },
+    { "source": "mpc_implementation_libraries", "rel": "includes", "target": "src_acados" },
+    { "source": "dynamic_perfusion_ipsc", "rel": "demonstrated_by", "target": "src_huang2020" },
+    { "source": "dynamic_perfusion_ipsc", "rel": "optimizable_by", "target": "mpc_ipsc_perfusion" },
+    { "source": "cpsr_control", "rel": "related_to", "target": "mpc_ipsc_perfusion" },
+    { "source": "mpc", "rel": "compared_to", "target": "mpc_vs_rule_engine" },
+    { "source": "mpc_vs_rule_engine", "rel": "contrasts", "target": "rule_engine" },
+    { "source": "mpc_roadmap_l1", "rel": "plans", "target": "mpc" },
+    { "source": "mpc_roadmap_l1", "rel": "extends", "target": "recipe_executor" },
+    { "source": "mpc", "rel": "demonstrated_by", "target": "src_rashedi2022" },
+    { "source": "mpc_human_on_the_loop", "rel": "oversees", "target": "mpc" },
+    { "source": "mpc_fail_safe", "rel": "preserves", "target": "loop" }
+  ],
+  "sources": [
+    {
+      "id": "src_rashedi2022",
+      "title": "Rashedi et al. 2022, Model Predictive Controller Design for Bioprocesses (DYCOPS-2022)",
+      "url": "https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf"
+    },
+    {
+      "id": "src_van_beylen2020",
+      "title": "Van Beylen et al. 2020, Lactate-Based Model Predictive Control Strategy of Cell Growth for Cell Therapy Applications (Bioengineering 7:78)",
+      "url": "https://doi.org/10.3390/bioengineering7030078"
+    },
+    {
+      "id": "src_huang2020",
+      "title": "Huang et al. 2020, Process development and scale-up of pluripotent stem cell manufacturing (Cell Gene Therapy Insights)",
+      "url": "https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/"
+    },
+    {
+      "id": "src_do_mpc",
+      "title": "do-mpc — Model Predictive Control in Python",
+      "url": "https://www.do-mpc.com/en/latest/example_gallery/batch_reactor.html"
+    },
+    {
+      "id": "src_acados",
+      "title": "acados — Fast Embedded Optimal Control",
+      "url": "https://docs.acados.org/"
+    },
+    {
+      "id": "src_casadi",
+      "title": "CasADi — Symbolic framework for nonlinear optimization and algorithmic differentiation",
+      "url": "https://web.casadi.org/"
+    }
+  ]
+}

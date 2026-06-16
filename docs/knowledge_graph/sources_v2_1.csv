@@ -1,0 +1,100 @@
+source_url,source_title,referenced_by_nodes
+https://aberinstruments.com/application/optimized-perfusion-by-capacitance-process-measurement-control/,Aber FUTURA — optimized perfusion by capacitance,
+https://health.ec.europa.eu/document/download/2c252435-6383-4ced-8206-8fef57024cc1_en,EudraLex Volume 4 Annex 11 — Computerised Systems,ebr_derivation;src_annex11
+https://ax.dev/,Ax Adaptive Experimentation Platform,
+https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/,"Borys et al. 2021, Stem Cell Res Ther 12:55（PMC7805206）",add_aggimg_aggregate_imaging_survey;add_aggimg_aggregate_size_pluripotency;add_aggimg_src_borys_2021;src_borys
+https://botorch.org/,BoTorch: Bayesian Optimization in PyTorch,
+https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc,"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",alcoa;audit;audit_ui;capa;contamination_response;cpv;csv;ctrl_split;d6;ebr;lims;part11;src_cgt
+https://opencobra.github.io/cobrapy/,COBRApy — COnstraints-Based Reconstruction and Analysis for Python,
+https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures,Deep learning for label-free monitoring of iPSC & organoids,bf;conf;d2;diffdet;dlmodel;moldev;src_cxa
+https://www.mt.com/my/en/home/products/L1_AutochemProducts/particle-size-analyzers/particletrack-fbrm.html,Mettler Toledo ParticleTrack with FBRM,add_aggimg_fbrm_cld_detail;add_aggimg_src_fbrm_g400
+https://www.fda.gov/regulatory-information/search-fda-guidance-documents/computer-software-assurance-production-and-quality-system-software,FDA Guidance: Computer Software Assurance for Production and Quality System Software,src_fda_csa
+https://www.fda.gov/regulatory-information/search-fda-guidance-documents/data-integrity-and-compliance-drug-cgmp-questions-and-answers,FDA Guidance for Industry: Data Integrity and Compliance With Drug CGMP Questions and Answers (2018),src_fda_data_integrity;tech_control
+https://www.fluidimaging.com/blog/what-is-the-flowcam,FlowCam — What is FlowCam?,add_aggimg_flowcam_atline;add_aggimg_src_flowcam
+https://pubmed.ncbi.nlm.nih.gov/31890771/,PubMed 31890771,src_galv
+https://ispe.org/publications/guidance-documents/gamp-5-guide-2nd-edition,ISPE GAMP 5 Guide 2nd Edition (2022),src_gamp5
+https://ispe.org/publications/guidance-documents/gamp-guide-artificial-intelligence,ISPE GAMP Guide: Artificial Intelligence (2025),gamp_ai_lifecycle;llm_validation;src_gamp5_ai
+https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html,GCTP適合性調査（PMDA）,d6;gctp;src_gctp
+https://www.hamiltoncompany.com/sensors/cell-density-sensors/incyte,Hamilton Incyte Arc Viable Cell Density Sensor,
+https://www.iso.org/standard/63179.html,IEC 62366-1 Medical devices — Application of usability engineering,hmi_dashboard;src_iec62366
+https://www.isa.org/standards-and-publications/isa-standards/isa-101,ISA-101 HMI Design Standards,alert_matrix;hmi_dashboard;src_isa101
+https://github.com/labauto/LabDroid_optimizer,LabDroid_optimizer（GitHub / GPyOpt）,bbo;src_kanda
+https://doi.org/10.1016/j.copbio.2023.102979,"Krause et al. 2023, Curr Opin Biotechnol — biocapacitance online biomass",
+https://pmc.ncbi.nlm.nih.gov/articles/PMC4685349/,"Kropp et al. 2015, BMC Proceedings（PMC4685349）",src_kropp
+https://reference.opcfoundation.org/specs/OPC-30500-1/4.1,OPC UA for Laboratory & Analytical Device Standard (LADS) Part 1: Basics (OPC 30500-1),src_lads
+https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/,"Manstein et al. 2021, STAR Protocols 2(4):100988 — in silico model Table 1（PMC8666714）",mpc_constraints;mpc_ipsc_perfusion;src_manstein
+https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html,MQTT Version 5.0 | OASIS Standard,
+https://www.emqx.com/en/blog/mqtt5-request-response,MQTT Request / Response Explained and Example (MQTT 5.0),
+https://www.nist.gov/itl/ai-risk-management-framework,NIST AI Risk Management Framework,approval_workflow;src_nist_ai_rmf
+https://www.novabiomedical.com/cell-culture-analyzers/bioprofile-flex2-basic/,Nova Biomedical BioProfile FLEX2 (16-parameter at-line analyzer),cpv
+https://www.bioprocessonline.com/doc/ovizio-imaging-systems-is-entering-into-a-commercial-partnership-with-merck-to-promote-its-iline-f-pro-solution-for-the-cell-gene-therapy-market-0001,Ovizio iLINE-F PRO (BioProcess Online),add_aggimg_dhm_ovizio;add_aggimg_src_ovizio_ilinef
+https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11,21 CFR Part 11 — Electronic Records; Electronic Signatures,approval_log;audit_schema;esignature;src_part11
+https://picscheme.org/en/publications,PIC/S PI 041-1 — Good Practices for Data Management and Integrity in Regulated GMP/GDP Environments (2021),src_pics041
+https://doi.org/10.3389/fbioe.2022.719614,"Graf/Wei et al. 2022, Front Bioeng — in-line Raman closed-loop glucose (PID)",
+https://www.riken.jp/press/2020/20201204_1/index.html,ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）,d4;dualarm;growth;loop;sched;src_riken2020;sterility;transport
+https://shop.sartorius.com.cn/us/p/biopatviamass/BioPAT_Viamass,Sartorius BioPAT ViaMass,
+https://scipy.org/,SciPy — Fundamental algorithms for scientific computing in Python,
+https://sila-standard.com/faq/,SiLA 2 FAQ（HTTP/2 + Protocol Buffers）,d5;mtp;sila;src_sila
+https://www.nuget.org/packages/SiLA2.Communication,SiLA2.Communication — Runtime Dynamic Protobuf Generation for SiLA2 Features,
+https://stemcells.or.jp/ips-9/,"iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）",kaneka;src_susp;suspension
+https://pmc.ncbi.nlm.nih.gov/articles/PMC3460618/,"Olmer et al. 2012, Tissue Eng Part C（PMC3460618）",src_traj
+docs/design/adr/0001-control-architecture.md,ADR-0001（L0-L3 分離、C4 縮退運転）,add_aggimg_human_approval_imaging;degraded_mode;mpc_fail_safe
+https://www.who.int/teams/regulation-prequalification/regulation-and-safety/good-data-and-record-management-practice,WHO Good Data and Record Management Practice,data_lifecycle;src_who_gdrp
+https://pubmed.ncbi.nlm.nih.gov/18422365/,"Xing et al. 2008, Biotechnol Prog 24:675 — CHO osmolality threshold (PMID 18422365)",
+https://pmc.ncbi.nlm.nih.gov/articles/PMC11218057/,"Yehya et al. 2024, Stem Cell Res Ther 15:191 — Vertical-Wheel agitation DoE (PMC11218057)",
+https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf,"Rashedi et al. 2022, Model Predictive Controller Design for Bioprocesses (DYCOPS-2022)",mpc;mpc_control_horizon;mpc_model_types;mpc_prediction_horizon;src_rashedi2022
+https://doi.org/10.3390/bioengineering7030078,"Van Beylen et al. 2020, Lactate-Based Model Predictive Control Strategy of Cell Growth for Cell Therapy Applications (Bioengineering 7:78)",mpc_adaptive_update;mpc_lactate_feedback;mpc_model_types;src_van_beylen2020
+https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/,"Huang et al. 2020, Process development and scale-up of pluripotent stem cell manufacturing (Cell Gene Therapy Insights)",dynamic_perfusion_ipsc;mpc_constraints;mpc_ipsc_perfusion;src_huang2020
+https://www.do-mpc.com/en/latest/example_gallery/batch_reactor.html,do-mpc — Model Predictive Control in Python,mpc_implementation_libraries;src_do_mpc
+https://docs.acados.org/,acados — Fast Embedded Optimal Control,mpc_implementation_libraries;src_acados
+https://web.casadi.org/,CasADi — Symbolic framework for nonlinear optimization and algorithmic differentiation,mpc_implementation_libraries;src_casadi
+https://doi.org/10.1016/j.compchemeng.2025.109354,"Thirugnanasambandam et al. 2025, Comput Chem Eng 203:109354 — A Physics-Informed Neural Network (PINN) framework for generic bioreactor modelling",
+https://doi.org/10.1021/acs.iecr.4c01459,"Yang et al. 2024, Ind Eng Chem Res 63(39) — Hybrid Modeling of Fed-Batch Cell Culture Using Physics-Informed Neural Network",
+https://doi.org/10.1016/j.jprocont.2025.103594,"Catalão et al. 2025, J Process Control 156:103594 — Bioprocess model-predictive control with physics-informed neural networks",
+https://skoge.folk.ntnu.no/prost/proceedings/adchem-2024/files/0042.pdf,"Patel et al. 2024, ADCHEM — Model Predictive Control Using Physics Informed Neural Networks",
+https://arxiv.org/abs/2505.19136,"Shih, Jiang & Liang 2025, NeurIPS / arXiv — Uncertainty Quantification for Physics-Informed Neural Networks with Extended Fiducial Inference",
+https://arxiv.org/abs/2509.17952,"Nobar et al. 2025, arXiv — Guided Multi-Fidelity Bayesian Optimization for Data-driven Controller Tuning with Digital Twins",
+https://bioprocesstools.com/blog/ai-machine-learning-bioprocess-optimization/,Bioprocesstools 2026 — AI and Machine Learning for Bioprocess Optimization (data requirements survey),
+https://www.bioprocessintl.com/qa-qc/doing-more-with-less-multifidelity-optimization-in-the-biopharmaceutical-industry/,Bioprocess International 2026 — Doing More with Less: Multifidelity Optimization in the Biopharmaceutical Industry,
+https://www.yokogawa.com/library/resources/media-publications/building-intelligent-processes-for-pharma-40/,Yokogawa — Building Intelligent processes for Pharma 4.0 (digital twin hybrid model),
+https://www.pharmamanufacturing.com/home/article/21437943/pharma-innovation-awards-2022,Pharma Manufacturing 2022 — Pharma Innovation Awards (Yokogawa Insilico Digital Twin Factory),
+https://doi.org/10.1002/bit.23023,"Abu-Absi et al. 2011, Biotechnol Bioeng",
+https://doi.org/10.1002/bit.26018,"Matthews et al. 2016, Biotechnol Bioeng",
+https://doi.org/10.1002/btpr.2035,"Berry et al. 2015, Biotechnol Prog",
+https://doi.org/10.1002/biot.202300395,"Yan et al. 2024, Biotechnol J",
+https://doi.org/10.1016/j.biotechadv.2024.108166,"Costa et al. 2024, Biotechnol Adv",
+https://doi.org/10.1016/j.jbiotec.2024.10.007,"Yang et al. 2024, J Biotechnol",
+https://doi.org/10.1002/eng2.12230,"Pétillot et al. 2020, Eng Rep",
+https://doi.org/10.1002/biot.202300289,"Machleidt et al. 2024, Biotechnol J",
+https://doi.org/10.1002/btpr.3074,"Rowland-Jones et al. 2021, Biotechnol Prog",
+https://bioprocesstools.com/blog/raman-spectroscopy-bioprocess-monitoring/,Bioprocess Tools: Raman spectroscopy bioprocess monitoring,
+https://www.metrohm.com/en/applications/application-notes/prozess-applikationen-anpan/an-pan-1065.html,Metrohm AN-PAN-1065,
+https://www.repligen.com/Products/analytics/maverick/Resources/DOC043_1.PDF,Repligen MAVERICK technical note DOC043_1,
+https://www.spectroscopyonline.com/view/using-a-new-raman-method-for-real-time-inline-cell-culture-monitoring,Spectroscopy Online: Yokogawa Raman calibration model,
+https://pubmed.ncbi.nlm.nih.gov/33660952/,"Manstein et al. 2021, Stem Cells Transl Med 10(7):1063-1080 — high density hiPSC perfusion (DOI 10.1002/sctm.20-0453, PMID 33660952)",src_manstein
+https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/,"Borys et al. 2021, Stem Cell Res Ther 12:55 — Vertical-Wheel hiPSC aggregate expansion (DOI 10.1186/s13287-020-02109-4)",add_aggimg_aggregate_imaging_survey;add_aggimg_aggregate_size_pluripotency;add_aggimg_src_borys_2021;src_borys
+https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/Process-development-and-scale-up-of-pluripotent-stem-cell-manufacturing,"Huang et al. 2020, Cell Gene Ther Insights — 10 L PSC stirred tank manufacturing",
+https://pubmed.ncbi.nlm.nih.gov/18422365/,"Xing et al. 2008, Biotechnol Prog 24:675 — CHO metabolite inhibition thresholds (DOI 10.1021/bp070466m)",
+https://www.sciencedirect.com/science/article/pii/S0168165615011794,"Toussaint et al. 2016, J Biotechnol 217:122-131 — CHO lactate metabolism engineering (DOI 10.1016/j.jbiotec.2015.11.010)",
+https://www.mabion.eu/science-hub/articles/metabolite-nutrient-analysis-upstream-process-optimization/,Mabion 2025 — Optimizing CHO Cell Cultures via Metabolite Analysis,
+https://gfi.org/wp-content/uploads/2025/10/Technical-report-Optimizing-CM-Technoeconomics-2025.pdf,GFI 2025 — Technical Report: Optimizing CM Techno-economics (lactate/osmolality thresholds),
+https://cdn.prod.website-files.com/62cc627d7fe73059b1484e97/67ef1e98493a7a613f404a2a_Bioreactor_iPSC_aggregate_stability_publication.pdf,Seo et al. 2021 — Addressing bioreactor hiPSC aggregate stability using DoE,
+https://cdn.stemcell.com/media/files/pis/10000031886-PIS_01.pdf,STEMCELL Technologies PIS 10000031886 — hPSC aggregate culture (50–200 µm target),
+https://www.amsbio.com/research-areas/stem-cell/stem-cells-quality-control,Amsbio — Quality Control of Stem Cells (pluripotency markers),
+https://www.cell.com/cell-stem-cell/fulltext/S1934-5909(13)00677-7,"Chen et al. 2014, Cell Stem Cell 14:13-26 — hPSC culture considerations (oxygen diffusion)",
+https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf,EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025),annex22;confidence_score;critical_ai;data_segregation;deterministic_output;drift_monitoring;dynamic_model;feature_attribution;generative_ai;hitl;noncritical_ai;probabilistic_model;src_pics_annex22_draft;staff_independence;static_deterministic_proof;static_model;test_data_independence;xai
+https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689,Regulation (EU) 2024/1689 — Artificial Intelligence Act,src_eu_ai_act
+https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/,"Borys et al. 2021, Stem Cell Res Ther 12:55 (Vertical-Wheel hiPSC)",add_aggimg_aggregate_imaging_survey;add_aggimg_aggregate_size_pluripotency;add_aggimg_src_borys_2021;src_borys
+https://www.eppendorf.com/product-media/doc/en/11804882/Fermentors-Bioreactors_Application-Note_485_SciVario_Human-Induced-Pluripotent-Stem-Cell-hiPSC-Aggregate-Expansion-Stirred-tank-Bioreactors-SciVario-twin-Bioprocess-Controller.pdf,Eppendorf App Note 485: hiPSC Aggregate Expansion in Stirred-tank Bioreactors,add_aggimg_aggregate_imaging_survey;add_aggimg_brightfield_atline;add_aggimg_src_eppendorf_485
+https://cdn.stemcell.com/media/files/manual/10000005520-Expansion_of_Human_Pluripotent_Stem_Cells_as_Aggregates_in_Suspension_Culture_Using_mTeSR_3D.pdf,"StemCell Technologies, Expansion of hPSCs as Aggregates in Suspension Culture Using mTeSR 3D",add_aggimg_aggregate_size_pluripotency;add_aggimg_src_stemcell_mtesr3d
+https://www.nature.com/articles/s41598-019-48814-w,"Kropp/Lipsitz et al. 2019, Sci Rep — at-line bypass imaging of hiPSC aggregates",add_aggimg_brightfield_atline;add_aggimg_src_kropp_2019;cpv
+https://www.bioprocessonline.com/doc/ovizio-imaging-systems-is-entering-into-a-commercial-partnership-with-merck-to-promote-its-iline-f-pro-solution-for-the-cell-gene-therapy-market-0001,Ovizio iLINE-F PRO commercial partnership (BioProcess Online),add_aggimg_dhm_ovizio;add_aggimg_src_ovizio_ilinef
+https://www.mt.com/my/en/home/products/L1_AutochemProducts/particle-size-analyzers/particletrack-fbrm.html,Mettler Toledo ParticleTrack with FBRM technology,add_aggimg_fbrm_cld_detail;add_aggimg_src_fbrm_g400
+https://www.fluidimaging.com/blog/what-is-the-flowcam,FlowCam — What is FlowCam?,add_aggimg_flowcam_atline;add_aggimg_src_flowcam
+https://doi.org/10.1016/j.cmpb.2022.107264,"Chu et al. 2023, Comput Methods Programs Biomed 229:107264",add_aggimg_dl_morphology_pluripotency;add_aggimg_src_chu_2023
+https://www.krcp-ksn.org/upload/pdf/j-krcp-22-017.pdf,"Park et al. 2022, Deep learning predicts kidney organoid differentiation",add_aggimg_aggregate_quality_proxy;add_aggimg_src_park_2022
+https://doi.org/10.1016/j.compbiomed.2020.104172,"Piotrowski et al. 2021, Comput Biol Med 129:104172",add_aggimg_aggregate_quality_proxy;add_aggimg_src_piotrowski_2021
+https://doi.org/10.1016/j.stemcr.2019.02.004,"Waisman et al. 2019, Stem Cell Rep 12:845–859",add_aggimg_dl_morphology_pluripotency;add_aggimg_src_waisman_2019
+https://doi.org/10.1177/2211068214529287,"Maddah et al. 2014, J Lab Autom 19:454–460",add_aggimg_src_maddah_2014
+https://doi.org/10.1038/srep34009,"Kato et al. 2016, Sci Rep 6:34009",add_aggimg_src_kato_2016
+https://www.intechopen.com/online-first/87934,"Gursky 2023, How Morphology of hPSCs Determines Clone Selection (IntechOpen)",add_aggimg_2d_to_aggregate_transfer;add_aggimg_src_gursky_2023

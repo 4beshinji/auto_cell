@@ -1,0 +1,250 @@
+{
+  "nodes": [
+    {
+      "id": "approval_workflow",
+      "label": "Human-on-the-loop 承認ワークフロー",
+      "type": "concept",
+      "domain": "d4",
+      "content": "L1/L2/L3 が自律実行しようとする包絡線外・重大アクションに対し、研究者の明示承認を得てから実行する状態遷移機構。requested → approved/rejected/pending_timeout → executed/cancelled。承認結果は監査証跡に不変ログ化される。",
+      "sources": [
+        {
+          "title": "auto_cell A 層要求仕様（Human-on-the-loop）",
+          "url": "docs/design/requirements.md"
+        },
+        {
+          "title": "NIST AI Risk Management Framework（human-in-the-loop 概念）",
+          "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+        }
+      ]
+    },
+    {
+      "id": "hmi_dashboard",
+      "label": "HMI ダッシュボード",
+      "type": "concept",
+      "domain": "d4",
+      "content": "研究者が培養状態・承認待ち・アラート・BO 提案を一目で把握するメイン画面。CPP 現在値・トレンド・phase・承認キューを表示し、on-the-loop の接点となる。",
+      "sources": [
+        {
+          "title": "ISA-101 HMI Design Standards（プロセス制御 HMI）",
+          "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-101"
+        },
+        {
+          "title": "IEC 62366-1 Medical devices — Application of usability engineering",
+          "url": "https://www.iso.org/standard/63179.html"
+        }
+      ]
+    },
+    {
+      "id": "alert_matrix",
+      "label": "アラート/通知マトリクス",
+      "type": "concept",
+      "domain": "d4",
+      "content": "各イベントの優先度（P0-P3）、抑制窓、通知チャネル、既定動作を定義したマトリクス。contamination_suspected は抑制不可（0 s）、BO 提案は run 単位（86400 s）など。",
+      "sources": [
+        {
+          "title": "auto_cell A 層要求仕様（NFR-T, NFR-S）",
+          "url": "docs/design/requirements.md"
+        },
+        {
+          "title": "ISA-101 HMI Design Standards",
+          "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-101"
+        }
+      ]
+    },
+    {
+      "id": "escalation_policy",
+      "label": "承認エスカレーションポリシー",
+      "type": "concept",
+      "domain": "d4",
+      "content": "承認要求がタイムアウト・却下・実行失敗した場合のエスカレーションルール。安全側へ倒す（キャンセル/ホールド）を基本とし、リトライ上限超過時は人間介入待ち。",
+      "sources": [
+        {
+          "title": "auto_cell A 層要求仕様（FR-4, NFR-S）",
+          "url": "docs/design/requirements.md"
+        }
+      ]
+    },
+    {
+      "id": "contamination_response",
+      "label": "汚染疑い応答フロー",
+      "type": "concept",
+      "domain": "d7",
+      "content": "contamination_suspected 検知時の P0 即時対応。ブレインは安全系へのホールド要求を出し、デバイス局所が強制停止。研究者確認・誤検知記録・CAPA 起票の分岐。",
+      "sources": [
+        {
+          "title": "KG → auto_cell 設計ブリッジ（sterility/capa 節）",
+          "url": "docs/design/kg_to_auto_cell.md"
+        },
+        {
+          "title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",
+          "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"
+        }
+      ]
+    },
+    {
+      "id": "degraded_mode",
+      "label": "縮退運転モード",
+      "type": "concept",
+      "domain": "d4",
+      "content": "ブレイン/LLM/通信断時にも L0 局所 PID と L1 最終検証済レシピで培養を継続するモード。再起動耐性・冪等性・安全を担保。",
+      "sources": [
+        {
+          "title": "ADR-0001（L0-L3 分離、C4 縮退運転）",
+          "url": "docs/design/adr/0001-control-architecture.md"
+        },
+        {
+          "title": "auto_cell A 層要求仕様（NFR-S, NFR-R）",
+          "url": "docs/design/requirements.md"
+        }
+      ]
+    },
+    {
+      "id": "human_on_the_loop",
+      "label": "Human-on-the-loop",
+      "type": "concept",
+      "domain": "d4",
+      "content": "監視・判断・包絡線内アクションは自律、包絡線外や重大アクションは人の承認を要する運転形態。auto_cell A 層の自律度。",
+      "sources": [
+        {
+          "title": "auto_cell A 層要求仕様",
+          "url": "docs/design/requirements.md"
+        }
+      ]
+    },
+    {
+      "id": "audit_ui",
+      "label": "監査/EBR UI",
+      "type": "concept",
+      "domain": "d6",
+      "content": "event_store から 1 培養ランの操作ログ・イベント・承認履歴を検索/エクスポートするビュー。ALCOA+ と EBR 再構成を支援。",
+      "sources": [
+        {
+          "title": "KG → auto_cell 設計ブリッジ（ALCOA+/EBR 節）",
+          "url": "docs/design/kg_to_auto_cell.md"
+        },
+        {
+          "title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",
+          "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"
+        }
+      ]
+    },
+    {
+      "id": "approval_request_event",
+      "label": "承認要求イベント",
+      "type": "concept",
+      "domain": "d4",
+      "content": "承認ワークフローで発行されるイベント型。request_id、提案アクション、根拠、要求時刻、レビュー、決定、実行結果を含む。event_store に append-only で記録。",
+      "sources": [
+        {
+          "title": "auto_cell A 層要求仕様（FR-4, FR-9）",
+          "url": "docs/design/requirements.md"
+        }
+      ]
+    },
+    {
+      "id": "notification_suppression",
+      "label": "通知抑制（suppression_defaults）",
+      "type": "concept",
+      "domain": "d4",
+      "content": "同一イベントの短時間再発を抑制し HMI/push のフラッディングを防ぐ仕組み。contamination_suspected は抑制不可とする。",
+      "sources": [
+        {
+          "title": "KG → auto_cell 設計ブリッジ（DomainVertical slot 節）",
+          "url": "docs/design/kg_to_auto_cell.md"
+        }
+      ]
+    },
+    {
+      "id": "src_nist_ai_rmf",
+      "label": "NIST AI Risk Management Framework",
+      "type": "source",
+      "domain": "d4",
+      "content": "NIST が公開する AI リスク管理フレームワーク。Human-on-the-loop / human-in-the-loop による AI システムのガバナンスと監視を含む。",
+      "sources": [
+        {
+          "title": "NIST AI Risk Management Framework",
+          "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+        }
+      ]
+    },
+    {
+      "id": "src_iec62366",
+      "label": "IEC 62366-1（医療機器ユーザビリティ）",
+      "type": "source",
+      "domain": "d4",
+      "content": "医療機器のユーザビリティエンジニアリングを規定する国際標準。HMI 設計の人因工学基準。",
+      "sources": [
+        {
+          "title": "IEC 62366-1:2015+AMD1:2020",
+          "url": "https://www.iso.org/standard/63179.html"
+        }
+      ]
+    },
+    {
+      "id": "src_isa101",
+      "label": "ISA-101（プロセス制御 HMI 設計）",
+      "type": "source",
+      "domain": "d4",
+      "content": "ISA-101 標準群。プロセス産業向け HMI の視覚設計、アラーム管理、パフォーマンス指向ディスプレイを規定。",
+      "sources": [
+        {
+          "title": "ISA-101 HMI Design Standards",
+          "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-101"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {"source": "loop", "rel": "requires_approval", "target": "approval_workflow"},
+    {"source": "sched", "rel": "triggers", "target": "approval_workflow"},
+    {"source": "bbo", "rel": "proposes_to", "target": "approval_workflow"},
+    {"source": "human_on_the_loop", "rel": "approves", "target": "approval_workflow"},
+    {"source": "approval_workflow", "rel": "logs_to", "target": "audit"},
+    {"source": "approval_workflow", "rel": "produces", "target": "ebr"},
+    {"source": "approval_workflow", "rel": "escalates_via", "target": "escalation_policy"},
+    {"source": "approval_workflow", "rel": "emits", "target": "approval_request_event"},
+    {"source": "approval_request_event", "rel": "stored_in", "target": "datamodel"},
+    {"source": "escalation_policy", "rel": "governs", "target": "approval_workflow"},
+    {"source": "hmi_dashboard", "rel": "displays", "target": "loop"},
+    {"source": "hmi_dashboard", "rel": "displays", "target": "envmon"},
+    {"source": "hmi_dashboard", "rel": "displays", "target": "cpv"},
+    {"source": "hmi_dashboard", "rel": "displays", "target": "bbo"},
+    {"source": "hmi_dashboard", "rel": "displays", "target": "approval_workflow"},
+    {"source": "qccrit", "rel": "informs", "target": "hmi_dashboard"},
+    {"source": "growth", "rel": "informs", "target": "hmi_dashboard"},
+    {"source": "alert_matrix", "rel": "manages", "target": "loop"},
+    {"source": "alert_matrix", "rel": "suppresses", "target": "notification_suppression"},
+    {"source": "notification_suppression", "rel": "applies_to", "target": "loop"},
+    {"source": "sterility", "rel": "triggers", "target": "contamination_response"},
+    {"source": "contamination_response", "rel": "activates", "target": "capa"},
+    {"source": "contamination_response", "rel": "requests_hold", "target": "ctrl_split"},
+    {"source": "ctrl_split", "rel": "preserves", "target": "degraded_mode"},
+    {"source": "degraded_mode", "rel": "preserves", "target": "loop"},
+    {"source": "degraded_mode", "rel": "preserves", "target": "sched"},
+    {"source": "audit_ui", "rel": "reads", "target": "audit"},
+    {"source": "audit_ui", "rel": "reads", "target": "ebr"},
+    {"source": "audit_ui", "rel": "reads", "target": "datamodel"},
+    {"source": "src_nist_ai_rmf", "rel": "informs", "target": "approval_workflow"},
+    {"source": "src_nist_ai_rmf", "rel": "informs", "target": "human_on_the_loop"},
+    {"source": "src_iec62366", "rel": "informs", "target": "hmi_dashboard"},
+    {"source": "src_isa101", "rel": "informs", "target": "hmi_dashboard"},
+    {"source": "src_isa101", "rel": "informs", "target": "alert_matrix"}
+  ],
+  "sources": [
+    {
+      "id": "src_nist_ai_rmf",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "title": "NIST AI Risk Management Framework"
+    },
+    {
+      "id": "src_iec62366",
+      "url": "https://www.iso.org/standard/63179.html",
+      "title": "IEC 62366-1 Medical devices — Application of usability engineering"
+    },
+    {
+      "id": "src_isa101",
+      "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-101",
+      "title": "ISA-101 HMI Design Standards"
+    }
+  ]
+}

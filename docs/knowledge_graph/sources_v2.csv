@@ -1,0 +1,73 @@
+source_url,source_title,referenced_by_nodes
+https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11,21 CFR Part 11 — Electronic Records; Electronic Signatures,approval_log;audit_schema;src_part11
+docs/design/adr/0001-control-architecture.md,ADR-0001（L0-L3 分離、C4 縮退運転）,degraded_mode
+https://aberinstruments.com/application/optimized-perfusion-by-capacitance-process-measurement-control/,Aber FUTURA — optimized perfusion by capacitance,src_aber_futura
+https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system,Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）,conf;diffdet;growth;loop;moldev;src_cxa
+https://ax.dev/,Ax Adaptive Experimentation Platform,src_ax
+https://botorch.org/,BoTorch: Bayesian Optimization in PyTorch,src_botorch
+https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/,"Borys et al. 2021, Stem Cell Res Ther 12:55（PMC7805206）",src_borys
+https://opencobra.github.io/cobrapy/,COBRApy — COnstraints-Based Reconstruction and Analysis for Python,src_cobrapy
+https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc,"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",alcoa;audit;audit_ui;capa;contamination_response;cpv;csv;ctrl_split;d6;ebr;lims;part11;src_cgt
+https://www.cira.kyoto-u.ac.jp/j/research/protocol.html,CiRA ヒトiPS細胞 培養プロトコール集,d1;feeder;maint;passage
+https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures,Deep learning for label-free monitoring of iPSC & organoids,bf;conf;d2;diffdet;dlmodel;moldev;src_cxa
+https://health.ec.europa.eu/document/download/2c252435-6383-4ced-8206-8fef57024cc1_en,EudraLex Volume 4 Annex 11 — Computerised Systems,ebr_derivation;src_annex11
+https://www.fda.gov/regulatory-information/search-fda-guidance-documents/data-integrity-and-compliance-drug-cgmp-questions-and-answers,FDA Guidance for Industry: Data Integrity and Compliance With Drug CGMP Questions and Answers (2018),src_fda_data_integrity;tech_control
+https://www.fda.gov/regulatory-information/search-fda-guidance-documents/computer-software-assurance-production-and-quality-system-software,FDA Guidance: Computer Software Assurance for Production and Quality System Software,src_fda_csa
+https://www.fluidimaging.com/blog/what-is-the-flowcam,FlowCam — What is FlowCam?,src_flowcam
+https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html,GCTP適合性調査（PMDA）,d6;gctp;src_gctp
+https://doi.org/10.3389/fbioe.2022.719614,"Graf/Wei et al. 2022, Front Bioeng — in-line Raman closed-loop glucose (PID)",src_raman_graf2022
+https://www.frontiersin.org/journals/bioengineering-and-biotechnology/articles/10.3389/fbioe.2022.719614/full,"Graf/Wei et al. 2022, Front Bioeng — in-line Raman closed-loop glucose (PID)",cpv
+https://www.hamiltoncompany.com/sensors/cell-density-sensors/incyte,Hamilton Incyte Arc Viable Cell Density Sensor,src_hamilton_incytes
+https://www.iso.org/standard/63179.html,IEC 62366-1 Medical devices — Application of usability engineering,hmi_dashboard;src_iec62366
+https://www.isa.org/standards-and-publications/isa-standards/isa-101,ISA-101 HMI Design Standards,alert_matrix;hmi_dashboard;src_isa101
+https://ispe.org/publications/guidance-documents/gamp-5-guide-2nd-edition,ISPE GAMP 5 Guide 2nd Edition (2022),src_gamp5
+https://ispe.org/publications/guidance-documents/gamp-guide-artificial-intelligence,ISPE GAMP Guide: Artificial Intelligence (2025),llm_validation;src_gamp5_ai
+https://elifesciences.org/articles/80609,Implementing robotics and AI（eLife digest）,rl;sdl
+docs/design/kg_to_auto_cell.md,KG → auto_cell 設計ブリッジ（sterility/capa 節）,audit_ui;contamination_response;notification_suppression
+https://pmc.ncbi.nlm.nih.gov/articles/PMC6933447/,Kinetic modeling of hiPSC expansion in suspension culture（PMC6933447）,kinetics;src_galv
+https://doi.org/10.1016/j.copbio.2023.102979,"Krause et al. 2023, Curr Opin Biotechnol — biocapacitance online biomass",src_krause2023
+https://www.sciencedirect.com/science/article/pii/S0958166923000897,"Krause et al. 2023, Curr Opin Biotechnol — biocapacitance online biomass",cpv
+https://pmc.ncbi.nlm.nih.gov/articles/PMC4685349/,"Kropp et al. 2015, BMC Proceedings（PMC4685349）",src_kropp
+https://www.nature.com/articles/s41598-019-48814-w,"Kropp et al. 2019, Sci Rep — at-line bypass imaging of hiPSC aggregates",cpv
+https://github.com/labauto/LabDroid_optimizer,LabDroid_optimizer（GitHub / GPyOpt）,bbo;src_kanda
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/,Long-term iPSC maintenance by automated culture system（Konagaya 2015）,closeddev;d3;d7;dispense;envmon;maint;qccrit
+https://www.nature.com/articles/s41598-017-13680-x,ML label-free iPSC colony formation detection（Sci Rep）,reprog
+https://www.emqx.com/en/blog/mqtt5-request-response,MQTT Request / Response Explained and Example (MQTT 5.0),src_mqtt5_reqresp
+https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html,MQTT Version 5.0 | OASIS Standard,src_mqtt5
+https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/,"Manstein et al. 2021, STAR Protocols 2(4):100988 — in silico model Table 1（PMC8666714）",src_manstein
+https://pubmed.ncbi.nlm.nih.gov/33660952/,"Manstein et al. 2021, Stem Cells Transl Med 10(7):1063-1080（DOI 10.1002/sctm.20-0453, PMID 33660952）",src_manstein
+https://www.mt.com/my/en/home/products/L1_AutochemProducts/particle-size-analyzers/particletrack-fbrm.html,Mettler Toledo ParticleTrack with FBRM,src_fbrm_g400
+https://www.nist.gov/itl/ai-risk-management-framework,NIST AI Risk Management Framework,approval_workflow;src_nist_ai_rmf
+https://pmc.ncbi.nlm.nih.gov/articles/PMC6744632/,"Nogueira et al. 2019, J Biol Eng（PMC6744632）",src_traj
+https://www.novabiomedical.com/cell-culture-analyzers/bioprofile-flex2-basic/,Nova Biomedical BioProfile FLEX2 (16-parameter at-line analyzer),cpv
+https://www.slas.org/resources/standards/opc-ua-lads/,OPC UA LADS (SLAS standards),src_lads
+https://reference.opcfoundation.org/LADS/v100/docs/,OPC UA for LADS Part 1 Basics (OPC 30500-1) — reference.opcfoundation.org,devprofile;event_store;src_lads
+https://reference.opcfoundation.org/specs/OPC-30500-1/4.1,OPC UA for Laboratory & Analytical Device Standard (LADS) Part 1: Basics (OPC 30500-1),src_lads
+https://pmc.ncbi.nlm.nih.gov/articles/PMC3460618/,"Olmer et al. 2012, Tissue Eng Part C（PMC3460618）",src_traj
+https://www.bioprocessonline.com/doc/ovizio-imaging-systems-is-entering-into-a-commercial-partnership-with-merck-to-promote-its-iline-f-pro-solution-for-the-cell-gene-therapy-market-0001,Ovizio iLINE-F PRO (BioProcess Online),src_ovizio_ilinef
+https://picscheme.org/en/publications,PIC/S PI 041-1 — Good Practices for Data Management and Integrity in Regulated GMP/GDP Environments (2021),src_pics041
+https://www.nature.com/articles/srep34009,Parametric analysis of hPSC colony morphology for QC（Sci Rep）,morphcls;qccrit
+https://pubmed.ncbi.nlm.nih.gov/31890771/,PubMed 31890771,src_galv
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9820636/,QC of hPSC colonies by CNN image analysis,dlmodel;morphcls
+https://elifesciences.org/articles/77007,"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",bbo;d3;d4;diff;doe;dualarm;epistra;passage;rbi;sdl;signal;src_kanda
+https://shop.sartorius.com.cn/us/p/biopatviamass/BioPAT_Viamass,Sartorius BioPAT ViaMass,src_sartorius_viamass
+https://scipy.org/,SciPy — Fundamental algorithms for scientific computing in Python,src_scipy
+https://sila-standard.com/faq/,SiLA 2 FAQ（HTTP/2 + Protocol Buffers）,d5;mtp;sila;src_sila
+https://www.nuget.org/packages/SiLA2.Communication,SiLA2.Communication — Runtime Dynamic Protobuf Generation for SiLA2 Features,src_sila_comm
+https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard,SiLA2: cell culture autopilot / vendor-agnostic,datamodel;orch;src_sila;transport
+https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext,"Tecan SiLA2 SDK（royalty-free, open-source）",opcua;sila;src_sila
+https://www.terumo.com/newsrelease/detail/20240319/6146,Terumo BCT × CiRA Foundation 自動化提携（Quantum Flex）,d8;terumo
+https://www.sciencedirect.com/science/article/pii/S2352711022000103,The SiLA 2 Manager（device discovery / data integrity）,d5;datamodel;edge;gateway;lims;src_sila
+https://www.who.int/teams/regulation-prequalification/regulation-and-safety/good-data-and-record-management-practice,WHO Good Data and Record Management Practice,data_lifecycle;src_who_gdrp
+https://pubmed.ncbi.nlm.nih.gov/18422365/,"Xing et al. 2008, Biotechnol Prog 24:675 — CHO osmolality threshold (PMID 18422365)",src_xing2008
+https://pmc.ncbi.nlm.nih.gov/articles/PMC11218057/,"Yehya et al. 2024, Stem Cell Res Ther 15:191 — Vertical-Wheel agitation DoE (PMC11218057)",src_yehya2024
+docs/design/requirements.md,auto_cell A 層要求仕様（Human-on-the-loop）,alert_matrix;approval_request_event;approval_workflow;degraded_mode;escalation_policy;human_on_the_loop
+https://stemcells.or.jp/ips-9/,"iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）",kaneka;src_susp;suspension
+https://www.nikkei.com/article/DGKKZO75692350Z21C23A0TB0000/,"iPS細胞をロボが培養（アステラス, 日経）",astellas
+https://www.riken.jp/press/2024/20241120_1/index.html,"iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）",kaneka;src_susp;suspension
+https://www.nikkan.co.jp/articles/view/00745986,iPS財団 My iPSプロジェクト（自家細胞を自動作製）,cira;closeddev;d8;root
+https://www.cira-foundation.or.jp/j/about/project/myips/,my iPSプロジェクト（iPS財団 公式）,cira;root
+https://news.panasonic.com/jp/stories/17100,がん治療に役立つ細胞の分化・培養を自動化（Panasonic）,motioncap;pana
+https://prtimes.jp/main/html/rd/p/000006702.000003442.html,パナソニックHD iPS樹立工程の自動化 実証実験（2026/4）,pana;reprog
+https://www.riken.jp/press/2020/20201204_1/index.html,ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）,d4;dualarm;growth;loop;sched;src_riken2020;sterility;transport
+https://scienceportal.jst.go.jp/newsflash/20250403_n01/,免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）,cira;motioncap;ramlaw;sterility

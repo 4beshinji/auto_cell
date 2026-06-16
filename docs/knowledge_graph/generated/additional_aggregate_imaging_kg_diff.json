@@ -1,0 +1,598 @@
+{
+  "meta": {
+    "title": "Aggregate imaging for iPSC suspension — KG diff",
+    "description": "additional_tasks_memo.md §6 および alignment_with_downloaded_report.md §4.9 に基づき、浮遊凝集体画像解析に関する追加 KG 差分。A 層スコープ内。",
+    "generated": "2026-06-16",
+    "base_graph": "docs/knowledge_graph/knowledge_graph_v2.json",
+    "node_count": 24,
+    "edge_count": 35,
+    "source_count": 14
+  },
+  "nodes": [
+    {
+      "id": "add_aggimg_aggregate_imaging_survey",
+      "label": "浮遊凝集体画像解析調査",
+      "type": "concept",
+      "domain": "d2",
+      "content": "iPSC 浮遊/凝集体の径・形態を at-line/in-line で計測し、label-free DL で品質代理指標を推定する技術群。v1 では at-line 明視野/位相差画像を主軸とし、DHM/FBRM/FlowCam はオプション〜後段。",
+      "sources": [
+        {
+          "title": "Borys et al. 2021, Stem Cell Res Ther 12:55",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/"
+        },
+        {
+          "title": "Eppendorf App Note 485: hiPSC Aggregate Expansion in Stirred-tank Bioreactors",
+          "url": "https://www.eppendorf.com/product-media/doc/en/11804882/Fermentors-Bioreactors_Application-Note_485_SciVario_Human-Induced-Pluripotent-Stem-Cell-hiPSC-Aggregate-Expansion-Stirred-tank-Bioreactors-SciVario-twin-Bioprocess-Controller.pdf"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_dhm_ovizio",
+      "label": "DHM / Ovizio iLINE-F PRO",
+      "type": "system",
+      "domain": "d7",
+      "content": "差分デジタルホログラフィー（D3HM）による in-line ラベルフリー細胞/凝集体モニタリング。VCD・viability・形態パラメータを連続計測。OPC UA 対応・cGMP 対応。iPSC 凝集体の個別径絶対精度には校正が必要。",
+      "sources": [
+        {
+          "title": "Ovizio iLINE-F PRO commercial partnership (BioProcess Online)",
+          "url": "https://www.bioprocessonline.com/doc/ovizio-imaging-systems-is-entering-into-a-commercial-partnership-with-merck-to-promote-its-iline-f-pro-solution-for-the-cell-gene-therapy-market-0001"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_fbrm_cld_detail",
+      "label": "FBRM 弦長分布（CLD）解析",
+      "type": "concept",
+      "domain": "d7",
+      "content": "Focused Beam Reflectance Measurement による in-line chord length distribution。0.5–1000 µm のトレンド監視が可能。CLD は真の粒径分布ではなく、凝集体の非球形・透光性により径換算に誤差。画像法で補正が必要。",
+      "sources": [
+        {
+          "title": "Mettler Toledo ParticleTrack with FBRM technology",
+          "url": "https://www.mt.com/my/en/home/products/L1_AutochemProducts/particle-size-analyzers/particletrack-fbrm.html"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_flowcam_atline",
+      "label": "FlowCam at-line 凝集体画像",
+      "type": "system",
+      "domain": "d7",
+      "content": "フローイメージング顕微鏡による at-line 粒子/凝集体解析。2 µm–1 mm の径・面積・円形度・アスペクト比を画像ベースで出力。高濃度・重なり凝集体では計数漏れあり。日次運用が現実的。",
+      "sources": [
+        {
+          "title": "FlowCam — What is FlowCam?",
+          "url": "https://www.fluidimaging.com/blog/what-is-the-flowcam"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_brightfield_atline",
+      "label": "明視野/位相差 at-line 凝集体画像",
+      "type": "concept",
+      "domain": "d7",
+      "content": "iPSC 浮遊凝集体で最も普及している at-line 画像計測。サンプリング＋光学顕微鏡＋ImageJ 等で径・形態を手動/半自動計測。Kropp 型バイパス顕微鏡または自動サンプリング＋顕微鏡で自動化可能。",
+      "sources": [
+        {
+          "title": "Kropp/Lipsitz et al. 2019, Sci Rep — at-line bypass imaging of hiPSC aggregates",
+          "url": "https://www.nature.com/articles/s41598-019-48814-w"
+        },
+        {
+          "title": "Eppendorf App Note 485: hiPSC Aggregate Expansion in Stirred-tank Bioreactors",
+          "url": "https://www.eppendorf.com/product-media/doc/en/11804882/Fermentors-Bioreactors_Application-Note_485_SciVario_Human-Induced-Pluripotent-Stem-Cell-hiPSC-Aggregate-Expansion-Stirred-tank-Bioreactors-SciVario-twin-Bioprocess-Controller.pdf"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_aggregate_quality_proxy",
+      "label": "凝集体品質代理指標",
+      "type": "concept",
+      "domain": "d2",
+      "content": "凝集体画像特徴量（径分布、円形度、内部輝度勾配、輪郭粗さ等）から OCT4/SOX2/NANOG/SSEA4/TRA-1-60 等の offline 品質マーカーを推定する代理指標。v1 では未導入、v2 以降の DL 化候補。",
+      "sources": [
+        {
+          "title": "Park et al. 2022, Deep learning predicts kidney organoid differentiation",
+          "url": "https://www.krcp-ksn.org/upload/pdf/j-krcp-22-017.pdf"
+        },
+        {
+          "title": "Piotrowski et al. 2021, Comput Biol Med 129:104172",
+          "url": "https://doi.org/10.1016/j.compbiomed.2020.104172"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_dl_morphology_pluripotency",
+      "label": "DL 形態から多能性予測",
+      "type": "concept",
+      "domain": "d2",
+      "content": "明視野/位相差画像から CNN/U-Net/DenseNet 等で未分化/自発分化を予測する技術。2D コロニー・organoid で実証多数。iPSC 浮遊凝集体への転移は有望だが、教師データ・細胞株汎化が未解決。",
+      "sources": [
+        {
+          "title": "Chu et al. 2023, Comput Methods Programs Biomed 229:107264",
+          "url": "https://doi.org/10.1016/j.cmpb.2022.107264"
+        },
+        {
+          "title": "Waisman et al. 2019, Stem Cell Rep 12:845–859",
+          "url": "https://doi.org/10.1016/j.stemcr.2019.02.004"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_aggregate_size_pluripotency",
+      "label": "凝集体径と多能性維持",
+      "type": "concept",
+      "domain": "d1",
+      "content": "凝集体径が大きくなると拡散制限により内部の酸素/栄養濃度が低下し、未分化性マーカー（OCT4 等）が低下・壊死が増大する。Borys 2021 では >400 µm で壊死リスク。細胞株・培地による変動あり。",
+      "sources": [
+        {
+          "title": "Borys et al. 2021, Stem Cell Res Ther 12:55",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/"
+        },
+        {
+          "title": "StemCell Technologies, Expansion of hPSCs as Aggregates in Suspension Culture Using mTeSR 3D",
+          "url": "https://cdn.stemcell.com/media/files/manual/10000005520-Expansion_of_Human_Pluripotent_Stem_Cells_as_Aggregates_in_Suspension_Culture_Using_mTeSR_3D.pdf"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_2d_to_aggregate_transfer",
+      "label": "2D 画像解析→凝集体解析転移",
+      "type": "concept",
+      "domain": "d2",
+      "content": "2D confluency は浮遊凝集体に不適用。コロニー形態分類・分化領域検出・増殖曲線予測の技術スタックは転移可能だが、教師ラベルと特徴量を凝集体の径・形態・内部構造に読み替える必要がある。",
+      "sources": [
+        {
+          "title": "Gursky 2023, How Morphology of hPSCs Determines Clone Selection (IntechOpen)",
+          "url": "https://www.intechopen.com/online-first/87934"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_human_approval_imaging",
+      "label": "画像品質代理指標の Human-on-the-loop",
+      "type": "concept",
+      "domain": "d6",
+      "content": "DL 品質代理指標を BO 目的関数や passage トリガに使う場合、予測不確実性・OOD 検出により低信頼度の場合は研究者承認を必須とする。GAMP5 AI/ML Appendix D11 に準拠したモデル管理が前提。",
+      "sources": [
+        {
+          "title": "auto_cell A 層要求仕様（Human-on-the-loop）",
+          "url": "docs/design/requirements.md"
+        },
+        {
+          "title": "ADR-0001: thin LLM orchestrator over deterministic tools + Bayesian optimization",
+          "url": "docs/design/adr/0001-control-architecture.md"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_src_borys_2021",
+      "label": "Borys et al. 2021 (hiPSC Vertical-Wheel)",
+      "type": "source",
+      "domain": "d4",
+      "content": "Vertical-Wheel 撹拌槽での hiPSC 凝集体培養。40–80 rpm で day 5 径 169–275 µm、>400 µm で壊死リスク。PMC7805206。",
+      "sources": [
+        {
+          "title": "Borys et al. 2021, Stem Cell Res Ther 12:55",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_src_eppendorf_485",
+      "label": "Eppendorf App Note 485 (hiPSC stirred-tank)",
+      "type": "source",
+      "domain": "d7",
+      "content": "1 L DASGIP Spinner Vessel での hiPSC 凝集体拡大。day 0–5 で 0.5×10⁶ → 8×10⁶ cells/mL。凝集体径は at-line 明視野画像＋ImageJ で手動測定。",
+      "sources": [
+        {
+          "title": "Eppendorf App Note 485",
+          "url": "https://www.eppendorf.com/product-media/doc/en/11804882/Fermentors-Bioreactors_Application-Note_485_SciVario_Human-Induced-Pluripotent-Stem-Cell-hiPSC-Aggregate-Expansion-Stirred-tank-Bioreactors-SciVario-twin-Bioprocess-Controller.pdf"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_src_stemcell_mtesr3d",
+      "label": "StemCell mTeSR 3D suspension manual",
+      "type": "source",
+      "domain": "d1",
+      "content": "hPSC 浮遊凝集体培養マニュアル。>400 µm で core が栄養欠乏・分化/細胞死。3–4 日ごとの継代を推奨。",
+      "sources": [
+        {
+          "title": "StemCell Technologies, Expansion of hPSCs as Aggregates in Suspension Culture Using mTeSR 3D",
+          "url": "https://cdn.stemcell.com/media/files/manual/10000005520-Expansion_of_Human_Pluripotent_Stem_Cells_as_Aggregates_in_Suspension_Culture_Using_mTeSR_3D.pdf"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_src_kropp_2019",
+      "label": "Kropp/Lipsitz et al. 2019 (hiPSC bypass imaging)",
+      "type": "source",
+      "domain": "d7",
+      "content": "hiPSC 撹拌懸濁培養の at-line バイパス顕微鏡画像。凝集体径・形態の自動計測への先行例。DOI 10.1038/s41598-019-48814-w。",
+      "sources": [
+        {
+          "title": "Kropp/Lipsitz et al. 2019, Sci Rep",
+          "url": "https://www.nature.com/articles/s41598-019-48814-w"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_src_ovizio_ilinef",
+      "label": "Ovizio iLINE-F PRO ベンダ資料",
+      "type": "source",
+      "domain": "d7",
+      "content": "D3HM ベースの in-line ラベルフリー細胞/凝集体モニタリング。VCD・viability・形態パラメータ・OPC UA 対応。",
+      "sources": [
+        {
+          "title": "Ovizio iLINE-F PRO commercial partnership",
+          "url": "https://www.bioprocessonline.com/doc/ovizio-imaging-systems-is-entering-into-a-commercial-partnership-with-merck-to-promote-its-iline-f-pro-solution-for-the-cell-gene-therapy-market-0001"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_src_fbrm_g400",
+      "label": "Mettler Toledo FBRM 技術資料",
+      "type": "source",
+      "domain": "d7",
+      "content": "FBRM 原理：回転レーザー後方散乱による chord length distribution。iPSC 凝集体では CLD→径換算に注意。",
+      "sources": [
+        {
+          "title": "ParticleTrack with FBRM technology",
+          "url": "https://www.mt.com/my/en/home/products/L1_AutochemProducts/particle-size-analyzers/particletrack-fbrm.html"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_src_flowcam",
+      "label": "FlowCam 技術資料",
+      "type": "source",
+      "domain": "d7",
+      "content": "フローイメージング顕微鏡。2 µm–1 mm の粒子/凝集体画像解析。高濃度・重なり時は計数漏れ。",
+      "sources": [
+        {
+          "title": "FlowCam — What is FlowCam?",
+          "url": "https://www.fluidimaging.com/blog/what-is-the-flowcam"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_src_chu_2023",
+      "label": "Chu et al. 2023 (iPSC reprogramming DL)",
+      "type": "source",
+      "domain": "d2",
+      "content": "明視野時系列画像から hiPSC 形成・コロニー形態を予測。CNN+U-Net+RNN。accuracy 0.8。DOI 10.1016/j.cmpb.2022.107264。",
+      "sources": [
+        {
+          "title": "Chu et al. 2023, Comput Methods Programs Biomed 229:107264",
+          "url": "https://doi.org/10.1016/j.cmpb.2022.107264"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_src_park_2022",
+      "label": "Park et al. 2022 (kidney organoid DL differentiation)",
+      "type": "source",
+      "domain": "d2",
+      "content": "明視野画像から DenseNet121 で kidney organoid 分化を予測。qPCR 発現予測 PCC 0.783。",
+      "sources": [
+        {
+          "title": "Park et al. 2022, Korean J Intern Med supplement",
+          "url": "https://www.krcp-ksn.org/upload/pdf/j-krcp-22-017.pdf"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_src_piotrowski_2021",
+      "label": "Piotrowski et al. 2021 (hPSC DL segmentation)",
+      "type": "source",
+      "domain": "d2",
+      "content": "hPSC 2D 培養のマルチクラス DL セグメンテーションによる培養状態自動評価。DOI 10.1016/j.compbiomed.2020.104172。",
+      "sources": [
+        {
+          "title": "Piotrowski et al. 2021, Comput Biol Med 129:104172",
+          "url": "https://doi.org/10.1016/j.compbiomed.2020.104172"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_src_waisman_2019",
+      "label": "Waisman et al. 2019 (early differentiation DL)",
+      "type": "source",
+      "domain": "d2",
+      "content": "mESC の非常早期分化を DL で高精度予測。Stem Cell Rep 12:845–859。",
+      "sources": [
+        {
+          "title": "Waisman et al. 2019, Stem Cell Rep 12:845–859",
+          "url": "https://doi.org/10.1016/j.stemcr.2019.02.004"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_src_maddah_2014",
+      "label": "Maddah et al. 2014 (morphology-based iPSC evaluation)",
+      "type": "source",
+      "domain": "d2",
+      "content": "time-lapse + 形態特徴量による iPSC コロニー品質自動評価。6 特徴量で accuracy 0.80–0.89。",
+      "sources": [
+        {
+          "title": "Maddah et al. 2014, J Lab Autom 19:454–460",
+          "url": "https://doi.org/10.1177/2211068214529287"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_src_kato_2016",
+      "label": "Kato et al. 2016 (colony morphology & gene expression)",
+      "type": "source",
+      "domain": "d2",
+      "content": "hPSC コロニー形態のパラメトリック解析。形態カテゴリと遺伝子発現プロファイルが対応。Sci Rep 6:34009。",
+      "sources": [
+        {
+          "title": "Kato et al. 2016, Sci Rep 6:34009",
+          "url": "https://doi.org/10.1038/srep34009"
+        }
+      ]
+    },
+    {
+      "id": "add_aggimg_src_gursky_2023",
+      "label": "Gursky 2023 (hPSC morphology review)",
+      "type": "source",
+      "domain": "d2",
+      "content": "hPSC 形態と自動評価のレビュー。培地・マトリックス・細胞株による形態変動を指摘。",
+      "sources": [
+        {
+          "title": "Gursky 2023, How Morphology of hPSCs Determines Clone Selection (IntechOpen)",
+          "url": "https://www.intechopen.com/online-first/87934"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "d2",
+      "target": "add_aggimg_aggregate_imaging_survey",
+      "rel": "has"
+    },
+    {
+      "source": "d7",
+      "target": "add_aggimg_dhm_ovizio",
+      "rel": "has"
+    },
+    {
+      "source": "d7",
+      "target": "add_aggimg_fbrm_cld_detail",
+      "rel": "has"
+    },
+    {
+      "source": "d7",
+      "target": "add_aggimg_flowcam_atline",
+      "rel": "has"
+    },
+    {
+      "source": "d7",
+      "target": "add_aggimg_brightfield_atline",
+      "rel": "has"
+    },
+    {
+      "source": "add_aggimg_aggregate_imaging_survey",
+      "target": "add_aggimg_dhm_ovizio",
+      "rel": "uses"
+    },
+    {
+      "source": "add_aggimg_aggregate_imaging_survey",
+      "target": "add_aggimg_fbrm_cld_detail",
+      "rel": "uses"
+    },
+    {
+      "source": "add_aggimg_aggregate_imaging_survey",
+      "target": "add_aggimg_flowcam_atline",
+      "rel": "uses"
+    },
+    {
+      "source": "add_aggimg_aggregate_imaging_survey",
+      "target": "add_aggimg_brightfield_atline",
+      "rel": "uses"
+    },
+    {
+      "source": "add_aggimg_aggregate_imaging_survey",
+      "target": "qccrit",
+      "rel": "evaluates"
+    },
+    {
+      "source": "add_aggimg_aggregate_imaging_survey",
+      "target": "passage",
+      "rel": "triggers"
+    },
+    {
+      "source": "add_aggimg_aggregate_imaging_survey",
+      "target": "cpp_aggregate_diameter",
+      "rel": "informs"
+    },
+    {
+      "source": "add_aggimg_aggregate_quality_proxy",
+      "target": "qccrit",
+      "rel": "predicts"
+    },
+    {
+      "source": "add_aggimg_dl_morphology_pluripotency",
+      "target": "add_aggimg_aggregate_quality_proxy",
+      "rel": "implements"
+    },
+    {
+      "source": "add_aggimg_aggregate_size_pluripotency",
+      "target": "add_aggimg_aggregate_quality_proxy",
+      "rel": "informs"
+    },
+    {
+      "source": "add_aggimg_aggregate_size_pluripotency",
+      "target": "cpp_aggregate_diameter",
+      "rel": "constrains"
+    },
+    {
+      "source": "add_aggimg_2d_to_aggregate_transfer",
+      "target": "dlmodel",
+      "rel": "transfers"
+    },
+    {
+      "source": "add_aggimg_2d_to_aggregate_transfer",
+      "target": "add_aggimg_aggregate_quality_proxy",
+      "rel": "adapts"
+    },
+    {
+      "source": "add_aggimg_2d_to_aggregate_transfer",
+      "target": "conf",
+      "rel": "differs_from"
+    },
+    {
+      "source": "add_aggimg_human_approval_imaging",
+      "target": "add_aggimg_aggregate_quality_proxy",
+      "rel": "oversees"
+    },
+    {
+      "source": "add_aggimg_human_approval_imaging",
+      "target": "approval_workflow",
+      "rel": "requires_approval"
+    },
+    {
+      "source": "add_aggimg_src_borys_2021",
+      "target": "add_aggimg_aggregate_size_pluripotency",
+      "rel": "demonstrates"
+    },
+    {
+      "source": "add_aggimg_src_eppendorf_485",
+      "target": "add_aggimg_brightfield_atline",
+      "rel": "illustrates"
+    },
+    {
+      "source": "add_aggimg_src_stemcell_mtesr3d",
+      "target": "add_aggimg_aggregate_size_pluripotency",
+      "rel": "guides"
+    },
+    {
+      "source": "add_aggimg_src_kropp_2019",
+      "target": "add_aggimg_brightfield_atline",
+      "rel": "demonstrates"
+    },
+    {
+      "source": "add_aggimg_src_ovizio_ilinef",
+      "target": "add_aggimg_dhm_ovizio",
+      "rel": "specifies"
+    },
+    {
+      "source": "add_aggimg_src_fbrm_g400",
+      "target": "add_aggimg_fbrm_cld_detail",
+      "rel": "specifies"
+    },
+    {
+      "source": "add_aggimg_src_flowcam",
+      "target": "add_aggimg_flowcam_atline",
+      "rel": "specifies"
+    },
+    {
+      "source": "add_aggimg_src_chu_2023",
+      "target": "add_aggimg_dl_morphology_pluripotency",
+      "rel": "demonstrates"
+    },
+    {
+      "source": "add_aggimg_src_park_2022",
+      "target": "add_aggimg_dl_morphology_pluripotency",
+      "rel": "demonstrates"
+    },
+    {
+      "source": "add_aggimg_src_piotrowski_2021",
+      "target": "add_aggimg_dl_morphology_pluripotency",
+      "rel": "demonstrates"
+    },
+    {
+      "source": "add_aggimg_src_waisman_2019",
+      "target": "add_aggimg_dl_morphology_pluripotency",
+      "rel": "demonstrates"
+    },
+    {
+      "source": "add_aggimg_src_maddah_2014",
+      "target": "add_aggimg_dl_morphology_pluripotency",
+      "rel": "demonstrates"
+    },
+    {
+      "source": "add_aggimg_src_kato_2016",
+      "target": "add_aggimg_dl_morphology_pluripotency",
+      "rel": "demonstrates"
+    },
+    {
+      "source": "add_aggimg_src_gursky_2023",
+      "target": "add_aggimg_2d_to_aggregate_transfer",
+      "rel": "informs"
+    }
+  ],
+  "sources": [
+    {
+      "id": "add_aggimg_src_borys_2021",
+      "title": "Borys et al. 2021, Stem Cell Res Ther 12:55 (Vertical-Wheel hiPSC)",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/"
+    },
+    {
+      "id": "add_aggimg_src_eppendorf_485",
+      "title": "Eppendorf App Note 485: hiPSC Aggregate Expansion in Stirred-tank Bioreactors",
+      "url": "https://www.eppendorf.com/product-media/doc/en/11804882/Fermentors-Bioreactors_Application-Note_485_SciVario_Human-Induced-Pluripotent-Stem-Cell-hiPSC-Aggregate-Expansion-Stirred-tank-Bioreactors-SciVario-twin-Bioprocess-Controller.pdf"
+    },
+    {
+      "id": "add_aggimg_src_stemcell_mtesr3d",
+      "title": "StemCell Technologies, Expansion of hPSCs as Aggregates in Suspension Culture Using mTeSR 3D",
+      "url": "https://cdn.stemcell.com/media/files/manual/10000005520-Expansion_of_Human_Pluripotent_Stem_Cells_as_Aggregates_in_Suspension_Culture_Using_mTeSR_3D.pdf"
+    },
+    {
+      "id": "add_aggimg_src_kropp_2019",
+      "title": "Kropp/Lipsitz et al. 2019, Sci Rep — at-line bypass imaging of hiPSC aggregates",
+      "url": "https://www.nature.com/articles/s41598-019-48814-w"
+    },
+    {
+      "id": "add_aggimg_src_ovizio_ilinef",
+      "title": "Ovizio iLINE-F PRO commercial partnership (BioProcess Online)",
+      "url": "https://www.bioprocessonline.com/doc/ovizio-imaging-systems-is-entering-into-a-commercial-partnership-with-merck-to-promote-its-iline-f-pro-solution-for-the-cell-gene-therapy-market-0001"
+    },
+    {
+      "id": "add_aggimg_src_fbrm_g400",
+      "title": "Mettler Toledo ParticleTrack with FBRM technology",
+      "url": "https://www.mt.com/my/en/home/products/L1_AutochemProducts/particle-size-analyzers/particletrack-fbrm.html"
+    },
+    {
+      "id": "add_aggimg_src_flowcam",
+      "title": "FlowCam — What is FlowCam?",
+      "url": "https://www.fluidimaging.com/blog/what-is-the-flowcam"
+    },
+    {
+      "id": "add_aggimg_src_chu_2023",
+      "title": "Chu et al. 2023, Comput Methods Programs Biomed 229:107264",
+      "url": "https://doi.org/10.1016/j.cmpb.2022.107264"
+    },
+    {
+      "id": "add_aggimg_src_park_2022",
+      "title": "Park et al. 2022, Deep learning predicts kidney organoid differentiation",
+      "url": "https://www.krcp-ksn.org/upload/pdf/j-krcp-22-017.pdf"
+    },
+    {
+      "id": "add_aggimg_src_piotrowski_2021",
+      "title": "Piotrowski et al. 2021, Comput Biol Med 129:104172",
+      "url": "https://doi.org/10.1016/j.compbiomed.2020.104172"
+    },
+    {
+      "id": "add_aggimg_src_waisman_2019",
+      "title": "Waisman et al. 2019, Stem Cell Rep 12:845–859",
+      "url": "https://doi.org/10.1016/j.stemcr.2019.02.004"
+    },
+    {
+      "id": "add_aggimg_src_maddah_2014",
+      "title": "Maddah et al. 2014, J Lab Autom 19:454–460",
+      "url": "https://doi.org/10.1177/2211068214529287"
+    },
+    {
+      "id": "add_aggimg_src_kato_2016",
+      "title": "Kato et al. 2016, Sci Rep 6:34009",
+      "url": "https://doi.org/10.1038/srep34009"
+    },
+    {
+      "id": "add_aggimg_src_gursky_2023",
+      "title": "Gursky 2023, How Morphology of hPSCs Determines Clone Selection (IntechOpen)",
+      "url": "https://www.intechopen.com/online-first/87934"
+    }
+  ]
+}

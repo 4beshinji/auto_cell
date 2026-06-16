@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iPS自動培養ソフトウェア｜ドメイン知識マップ v2.1</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<style>
+  :root{
+    --bg:#0F1422; --panel:#151C2D; --panel2:#1B2438; --line:#28324A;
+    --ink:#E8ECF2; --mut:#8A94A8; --mut2:#5E687E;
+    --d1:#E2728A; --d2:#54C5D9; --d3:#E0A24E; --d4:#9B86E0;
+    --d5:#3FB58F; --d6:#C9B85A; --d7:#9FD356; --d8:#D96EB0;
+    --src:#C5CDDC;
+    --mono: ui-monospace,"SF Mono","JetBrains Mono","Roboto Mono",Menlo,Consolas,monospace;
+    --sans: "Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    overflow:hidden;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{display:grid;grid-template-columns:300px 1fr;height:100vh}
+
+  /* ---- left rail ---- */
+  .rail{background:linear-gradient(180deg,#131A29,#0F1422);border-right:1px solid var(--line);
+    padding:18px 16px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+  .brand{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--mut);text-transform:uppercase}
+  h1{font-size:18px;line-height:1.35;margin:6px 0 2px;font-weight:600;letter-spacing:.01em}
+  h1 .em{color:var(--d2)}
+  .sub{font-size:11.5px;color:var(--mut);line-height:1.6}
+  .field{position:relative}
+  .field input{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--ink);
+    border-radius:7px;padding:9px 10px 9px 30px;font-size:13px;font-family:var(--sans);outline:none}
+  .field input:focus{border-color:var(--d2);box-shadow:0 0 0 2px rgba(84,197,217,.18)}
+  .field svg{position:absolute;left:9px;top:9px;width:14px;height:14px;stroke:var(--mut2);fill:none}
+  .legend{display:flex;flex-direction:column;gap:2px}
+  .legend .lh{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--mut2);
+    text-transform:uppercase;margin-bottom:6px}
+  .leg{display:flex;align-items:center;gap:9px;padding:6px 7px;border-radius:6px;cursor:pointer;
+    font-size:12.5px;color:var(--ink);transition:background .12s;border:1px solid transparent;user-select:none}
+  .leg:hover{background:var(--panel)}
+  .leg.off{opacity:.34}
+  .leg.solo{border-color:var(--line);background:var(--panel)}
+  .dot{width:11px;height:11px;border-radius:50%;flex:0 0 auto;box-shadow:0 0 0 3px rgba(255,255,255,.04)}
+  .leg .cnt{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--mut2)}
+  .stats{display:flex;gap:14px;font-family:var(--mono);font-size:11px;color:var(--mut);
+    border-top:1px solid var(--line);padding-top:12px}
+  .stats b{color:var(--ink);font-weight:600}
+  .btns{display:flex;gap:8px;margin-top:auto}
+  .btn{flex:1;background:var(--panel);border:1px solid var(--line);color:var(--ink);
+    font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:9px;border-radius:7px;cursor:pointer;
+    transition:.12s;text-align:center}
+  .btn:hover{border-color:var(--d2);color:var(--d2)}
+  .hint{font-size:10.5px;color:var(--mut2);line-height:1.6}
+
+  /* ---- canvas ---- */
+  .stage{position:relative;overflow:hidden}
+  svg.graph{width:100%;height:100%;display:block;cursor:grab}
+  svg.graph:active{cursor:grabbing}
+  .link{stroke:#3A465F;stroke-opacity:.55}
+  .node circle.core{stroke-width:1.4px}
+  .node text{font-family:var(--sans);fill:var(--ink);pointer-events:none;
+    paint-order:stroke;stroke:rgba(15,20,34,.85);stroke-width:3px;stroke-linejoin:round}
+  .node{cursor:pointer}
+  .relbadge{font-family:var(--mono);fill:var(--mut2);font-size:8px;letter-spacing:.04em}
+
+  /* ---- detail panel ---- */
+  .detail{position:absolute;top:0;right:0;height:100%;width:380px;max-width:88vw;background:var(--panel);
+    border-left:1px solid var(--line);transform:translateX(102%);transition:transform .26s cubic-bezier(.4,0,.2,1);
+    display:flex;flex-direction:column;z-index:20;box-shadow:-24px 0 48px rgba(0,0,0,.35)}
+  .detail.open{transform:none}
+  .dt-top{padding:18px 20px 14px;border-bottom:1px solid var(--line)}
+  .dt-type{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+  .dt-type .dot{width:9px;height:9px}
+  .dt-name{font-size:19px;font-weight:600;margin:9px 0 4px;line-height:1.3}
+  .dt-dom{font-size:11.5px;color:var(--mut)}
+  .dt-body{padding:16px 20px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:18px}
+  .sec h3{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--mut2);margin:0 0 8px;font-weight:600}
+  .content{font-size:13.5px;line-height:1.72;color:#D6DCE6}
+  .srcs{display:flex;flex-direction:column;gap:8px}
+  .src{display:block;text-decoration:none;background:var(--panel2);border:1px solid var(--line);
+    border-radius:7px;padding:9px 11px;transition:.12s}
+  .src:hover{border-color:var(--src);transform:translateX(2px)}
+  .src .t{font-size:12.5px;color:var(--ink);line-height:1.4}
+  .src .u{font-family:var(--mono);font-size:10px;color:var(--mut2);margin-top:3px;word-break:break-all}
+  .rels{display:flex;flex-direction:column;gap:6px}
+  .rel{display:flex;align-items:center;gap:8px;font-size:12.5px;cursor:pointer;padding:5px 7px;
+    border-radius:6px;transition:.1s}
+  .rel:hover{background:var(--panel2)}
+  .rel .verb{font-family:var(--mono);font-size:9.5px;color:var(--mut);background:var(--panel2);
+    padding:2px 6px;border-radius:4px;flex:0 0 auto;letter-spacing:.03em}
+  .rel .tgt{color:#D6DCE6}
+  .rel .arrowin .verb{color:var(--d3)}
+  .dt-close{position:absolute;top:14px;right:16px;width:26px;height:26px;border:1px solid var(--line);
+    background:var(--panel2);border-radius:6px;color:var(--mut);cursor:pointer;font-size:15px;line-height:1;
+    display:flex;align-items:center;justify-content:center}
+  .dt-close:hover{color:var(--ink);border-color:var(--src)}
+
+  /* modal */
+  .modal{position:absolute;inset:0;background:rgba(8,11,19,.74);display:none;align-items:center;
+    justify-content:center;z-index:40;padding:30px}
+  .modal.open{display:flex}
+  .mbox{background:var(--panel);border:1px solid var(--line);border-radius:10px;width:640px;max-width:100%;
+    max-height:80vh;display:flex;flex-direction:column;overflow:hidden}
+  .mhd{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+  .mhd .mt{font-size:14px;font-weight:600}
+  .mhd .mc{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--mut)}
+  .mbox textarea{flex:1;min-height:320px;background:var(--bg);color:#CBD3E0;border:none;border-bottom:1px solid var(--line);
+    font-family:var(--mono);font-size:11px;line-height:1.55;padding:14px 16px;resize:none;outline:none}
+  .mft{padding:12px 16px;display:flex;gap:10px;justify-content:flex-end}
+  .mft .btn{flex:0 0 auto;padding:9px 16px}
+  .legtitle{font-size:12px;color:var(--ink);font-weight:600}
+
+  /* responsive */
+  @media (max-width:760px){
+    .wrap{grid-template-columns:1fr}
+    .rail{position:absolute;z-index:30;width:280px;height:100%;transform:translateX(-101%);transition:transform .24s}
+    .rail.open{transform:none}
+    .menutoggle{display:flex}
+  }
+  .menutoggle{display:none;position:absolute;top:12px;left:12px;z-index:25;width:38px;height:38px;
+    background:var(--panel);border:1px solid var(--line);border-radius:8px;color:var(--ink);
+    align-items:center;justify-content:center;cursor:pointer}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  :focus-visible{outline:2px solid var(--d2);outline-offset:2px}
+  ::-webkit-scrollbar{width:9px;height:9px}
+  ::-webkit-scrollbar-thumb{background:#2A3654;border-radius:5px}
+  ::-webkit-scrollbar-track{background:transparent}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- LEFT RAIL -->
+  <aside class="rail" id="rail">
+    <div>
+      <div class="brand">Knowledge Map · v1</div>
+      <h1>iPS自動培養ソフトウェアの<span class="em">ドメイン知識マップ</span></h1>
+      <div class="sub">京都大学iPS細胞研究財団と関連研究を起点に、自動化ソフトウェアを実装するために必要なドメイン知識を、ナレッジグラフのシードとして構造化。ノード＝ドメイン/概念/情報源/プレイヤー、エッジ＝型付き関係。</div>
+    </div>
+
+    <div class="field">
+      <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="search" type="text" placeholder="ノードを検索（例: ベイズ, GCTP, SiLA）" autocomplete="off">
+    </div>
+
+    <div class="legend" id="legend">
+      <div class="lh">ドメイン（クリックで分離表示）</div>
+    </div>
+
+    <div class="stats">
+      <div><b id="nNodes">0</b> nodes</div>
+      <div><b id="nEdges">0</b> edges</div>
+    </div>
+
+    <div class="hint">ノードをクリック → 内容・情報源・関係を表示。ドラッグで移動、ホイールでズーム。ホバーで近傍にフォーカス。</div>
+
+    <div class="btns">
+      <button class="btn" id="exportBtn">EXPORT JSON</button>
+      <button class="btn" id="resetBtn">RESET VIEW</button>
+    </div>
+  </aside>
+
+  <!-- STAGE -->
+  <div class="stage" id="stage">
+    <button class="menutoggle" id="menuToggle" aria-label="メニュー">☰</button>
+    <svg class="graph" id="graph"></svg>
+
+    <!-- DETAIL -->
+    <aside class="detail" id="detail" aria-hidden="true">
+      <button class="dt-close" id="dtClose" aria-label="閉じる">✕</button>
+      <div class="dt-top">
+        <div class="dt-type" id="dtType"></div>
+        <div class="dt-name" id="dtName"></div>
+        <div class="dt-dom" id="dtDom"></div>
+      </div>
+      <div class="dt-body">
+        <div class="sec"><h3>内容 / Content</h3><div class="content" id="dtContent"></div></div>
+        <div class="sec" id="dtSrcSec"><h3>情報源 / Sources</h3><div class="srcs" id="dtSrcs"></div></div>
+        <div class="sec" id="dtRelSec"><h3>関係 / Relations</h3><div class="rels" id="dtRels"></div></div>
+      </div>
+    </aside>
+
+    <!-- MODAL -->
+    <div class="modal" id="modal">
+      <div class="mbox">
+        <div class="mhd"><span class="mt">ナレッジグラフ・シード (JSON)</span><span class="mc" id="modalCount"></span></div>
+        <textarea id="jsonOut" readonly spellcheck="false"></textarea>
+        <div class="mft">
+          <button class="btn" id="copyBtn">COPY</button>
+          <button class="btn" id="modalClose">CLOSE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   KNOWLEDGE GRAPH DATA  (= the seed you can export & ingest)
+   node: {id,label,type,domain,content,sources:[{t,u}]}
+   types: root|domain|concept|system|player|source
+   edge:  {s,t,rel}   rel = typed relationship (verb)
+   ===================================================================== */
+const DOMAINS = [
+  {id:"d1",label:"細胞生物学・培養プロトコル",color:"--d1"},
+  {id:"d2",label:"画像取得・コンピュータビジョン",color:"--d2"},
+  {id:"d3",label:"ロボティクス・液体ハンドリング",color:"--d3"},
+  {id:"d4",label:"プロセス制御・自律最適化",color:"--d4"},
+  {id:"d5",label:"ソフトウェア基盤・相互運用",color:"--d5"},
+  {id:"d6",label:"GMP・規制・データインテグリティ",color:"--d6"},
+  {id:"d7",label:"センサ・環境モニタリング",color:"--d7"},
+  {id:"d8",label:"エコシステム・プレイヤー",color:"--d8"}
+];
+
+const S = { // reusable sources
+  myips:{t:'iPS財団 My iPSプロジェクト（自家細胞を自動作製）',u:'https://www.nikkan.co.jp/articles/view/00745986'},
+  myips2:{t:'免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）',u:'https://scienceportal.jst.go.jp/newsflash/20250403_n01/'},
+  myipsproj:{t:'my iPSプロジェクト（iPS財団 公式）',u:'https://www.cira-foundation.or.jp/j/about/project/myips/'},
+  terumo:{t:'Terumo BCT × CiRA Foundation 自動化提携（Quantum Flex）',u:'https://www.terumo.com/newsrelease/detail/20240319/6146'},
+  pana_est:{t:'パナソニックHD iPS樹立工程の自動化 実証実験（2026/4）',u:'https://prtimes.jp/main/html/rd/p/000006702.000003442.html'},
+  pana_story:{t:'がん治療に役立つ細胞の分化・培養を自動化（Panasonic）',u:'https://news.panasonic.com/jp/stories/17100'},
+  riken_susp:{t:'iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）',u:'https://www.riken.jp/press/2024/20241120_1/index.html'},
+  susp2:{t:'iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）',u:'https://stemcells.or.jp/ips-9/'},
+  kanda:{t:'Robotic search for optimal cell culture（Kanda et al., eLife 2022）',u:'https://elifesciences.org/articles/77007'},
+  kanda_dig:{t:'Implementing robotics and AI（eLife digest）',u:'https://elifesciences.org/articles/80609'},
+  kanda_code:{t:'LabDroid_optimizer（GitHub / GPyOpt）',u:'https://github.com/labauto/LabDroid_optimizer'},
+  riken2020:{t:'ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）',u:'https://www.riken.jp/press/2020/20201204_1/index.html'},
+  cxa:{t:'Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）',u:'https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system'},
+  dl:{t:'Deep learning for label-free monitoring of iPSC & organoids',u:'https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures'},
+  cnnqc:{t:'QC of hPSC colonies by CNN image analysis',u:'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9820636/'},
+  colform:{t:'ML label-free iPSC colony formation detection（Sci Rep）',u:'https://www.nature.com/articles/s41598-017-13680-x'},
+  morph:{t:'Parametric analysis of hPSC colony morphology for QC（Sci Rep）',u:'https://www.nature.com/articles/srep34009'},
+  konagaya:{t:'Long-term iPSC maintenance by automated culture system（Konagaya 2015）',u:'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/'},
+  protocol:{t:'CiRA ヒトiPS細胞 培養プロトコール集',u:'https://www.cira.kyoto-u.ac.jp/j/research/protocol.html'},
+  sila_sdk:{t:'Tecan SiLA2 SDK（royalty-free, open-source）',u:'https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext'},
+  sila_cc:{t:'SiLA2: cell culture autopilot / vendor-agnostic',u:'https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard'},
+  sila_faq:{t:'SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）',u:'https://sila-standard.com/faq/'},
+  sila_mgr:{t:'The SiLA 2 Manager（device discovery / data integrity）',u:'https://www.sciencedirect.com/science/article/pii/S2352711022000103'},
+  gctp:{t:'GCTP適合性調査（PMDA）',u:'https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html'},
+  cgtqc:{t:'Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）',u:'https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc'},
+  kitano:{t:'細胞培養の自動化に取り組むユニット長 北野優子（リケラボ）',u:'https://www.rikelab.jp/post/11588.html'},
+  ramlaw:{t:'再生医療等安全性確保法 関連（Science Portal）',u:'https://scienceportal.jst.go.jp/newsflash/20250403_n01/'},
+  astellas:{t:'iPS細胞をロボが培養（アステラス, 日経）',u:'https://www.nikkei.com/article/DGKKZO75692350Z21C23A0TB0000/'},
+  // ---- P1 拡張 (2026-06-14, deep-research): 浮遊速度論ODE原典 + CPP文献 ----
+  galv_reth:{t:'Kinetic modeling of hiPSC expansion in suspension culture（Galvanauskas et al., Regen Therapy 2019;12:88-93）',u:'https://pmc.ncbi.nlm.nih.gov/articles/PMC6933447/'},
+  galv_pubmed:{t:'PubMed 31890771（Galvanauskas et al. 2019）',u:'https://pubmed.ncbi.nlm.nih.gov/31890771/'},
+  borys:{t:'Borys et al. 2021, Stem Cell Res Ther 12:55（PMC7805206）',u:'https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/'},
+  kropp:{t:'Kropp et al. 2015, BMC Proceedings（PMC4685349）',u:'https://pmc.ncbi.nlm.nih.gov/articles/PMC4685349/'},
+  nogueira:{t:'Nogueira et al. 2019, J Biol Eng（PMC6744632）',u:'https://pmc.ncbi.nlm.nih.gov/articles/PMC6744632/'},
+  olmer:{t:'Olmer et al. 2012, Tissue Eng Part C（PMC3460618）',u:'https://pmc.ncbi.nlm.nih.gov/articles/PMC3460618/'},
+  // ---- P1 続報 (2026-06-14): plant_model の真の原典 = Manstein & Zweigerdt 2021 ----
+  manstein_sctm:{t:'Manstein et al. 2021, Stem Cells Transl Med 10(7):1063-1080（DOI 10.1002/sctm.20-0453, PMID 33660952）',u:'https://pubmed.ncbi.nlm.nih.gov/33660952/'},
+  manstein_star:{t:'Manstein et al. 2021, STAR Protocols 2(4):100988 — in silico model Table 1（PMC8666714）',u:'https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/'},
+  // ---- P3 (2026-06-14): デバイス IF ----
+  lads_ref:{t:'OPC UA for LADS Part 1 Basics (OPC 30500-1) — reference.opcfoundation.org',u:'https://reference.opcfoundation.org/LADS/v100/docs/'},
+  lads_slas:{t:'OPC UA LADS (SLAS standards)',u:'https://www.slas.org/resources/standards/opc-ua-lads/'},
+  // ---- P5 (2026-06-15): 観測性スタック ----
+  krause:{t:'Krause et al. 2023, Curr Opin Biotechnol — biocapacitance online biomass',u:'https://www.sciencedirect.com/science/article/pii/S0958166923000897'},
+  graf:{t:'Graf/Wei et al. 2022, Front Bioeng — in-line Raman closed-loop glucose (PID)',u:'https://www.frontiersin.org/journals/bioengineering-and-biotechnology/articles/10.3389/fbioe.2022.719614/full'},
+  nova:{t:'Nova Biomedical BioProfile FLEX2 (16-parameter at-line analyzer)',u:'https://www.novabiomedical.com/cell-culture-analyzers/bioprofile-flex2-basic/'},
+  kropp2019:{t:'Kropp et al. 2019, Sci Rep — at-line bypass imaging of hiPSC aggregates',u:'https://www.nature.com/articles/s41598-019-48814-w'},
+};
+
+const NODES = [
+  {id:"root",label:"iPS自動培養ソフトウェア",type:"root",domain:null,content:"患者血液→iPS樹立→維持/拡大→分化誘導→品質評価までを、画像判断・ロボット操作・規制対応を統合して自動制御するソフトウェアスタック。本マップはその実装に必要なドメイン知識の地図。",sources:[{t:"iPS財団 My iPSプロジェクト（自家細胞を自動作製）",u:"https://www.nikkan.co.jp/articles/view/00745986"},{t:"my iPSプロジェクト（iPS財団 公式）",u:"https://www.cira-foundation.or.jp/j/about/project/myips/"}]},
+  {id:"d1",label:"細胞生物学・培養プロトコル",type:"domain",domain:"d1",content:"自動化の対象そのもの。iPS細胞の樹立・維持・継代・分化誘導・量産の生物学的手順群で、各操作のパラメータが下流の制御変数になる。",sources:[{t:"CiRA ヒトiPS細胞 培養プロトコール集",u:"https://www.cira.kyoto-u.ac.jp/j/research/protocol.html"}]},
+  {id:"d2",label:"画像取得・コンピュータビジョン",type:"domain",domain:"d2",content:"ラベルフリー画像から細胞状態を定量し、意思決定の入力を生成する層。コンフルエンシー・形態・分化の判定が中核。",sources:[{t:"Deep learning for label-free monitoring of iPSC & organoids",u:"https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"}]},
+  {id:"d3",label:"ロボティクス・液体ハンドリング",type:"domain",domain:"d3",content:"培養操作を物理的に実行する装置・ロボット層。汎用双腕と閉鎖型専用機の二系統がある。",sources:[{t:"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",u:"https://elifesciences.org/articles/77007"},{t:"Long-term iPSC maintenance by automated culture system（Konagaya 2015）",u:"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"}]},
+  {id:"d4",label:"プロセス制御・自律最適化",type:"domain",domain:"d4",content:"観察→判断→操作の閉ループと、プロトコル最適化（ベイズ最適化等）を担う制御知能の層。",sources:[{t:"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",u:"https://elifesciences.org/articles/77007"},{t:"ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）",u:"https://www.riken.jp/press/2020/20201204_1/index.html"}]},
+  {id:"d5",label:"ソフトウェア基盤・相互運用",type:"domain",domain:"d5",content:"デバイス統合標準・ワークフローオーケストレーション・データ基盤。異種機器を跨ぐ統合の土台。",sources:[{t:"SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）",u:"https://sila-standard.com/faq/"},{t:"The SiLA 2 Manager（device discovery / data integrity）",u:"https://www.sciencedirect.com/science/article/pii/S2352711022000103"}]},
+  {id:"d6",label:"GMP・規制・データインテグリティ",type:"domain",domain:"d6",content:"製造ソフトが満たすべき規制・品質・電子記録の要件群。設計の制約条件を規定する。",sources:[{t:"GCTP適合性調査（PMDA）",u:"https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html"},{t:"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",u:"https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}]},
+  {id:"d7",label:"センサ・環境モニタリング",type:"domain",domain:"d7",content:"培養環境・無菌性の連続計測と、閉ループ制御への状態量供給。エッジ実装で分散計測。",sources:[{t:"Long-term iPSC maintenance by automated culture system（Konagaya 2015）",u:"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"}]},
+  {id:"d8",label:"エコシステム・プレイヤー",type:"domain",domain:"d8",content:"財団・企業・装置など実在の担い手と製品。技術選定とパートナリングの地図。",sources:[{t:"iPS財団 My iPSプロジェクト（自家細胞を自動作製）",u:"https://www.nikkan.co.jp/articles/view/00745986"},{t:"Terumo BCT × CiRA Foundation 自動化提携（Quantum Flex）",u:"https://www.terumo.com/newsrelease/detail/20240319/6146"}]},
+  {id:"maint",label:"iPSC維持培養",type:"concept",domain:"d1",content:"未分化状態を保つ日々の培地交換と環境維持。ヒトiPSは毎日の培地交換と約3日ごとの継代が必要で、熟練手技に依存する点が自動化の主対象。",sources:[{t:"CiRA ヒトiPS細胞 培養プロトコール集",u:"https://www.cira.kyoto-u.ac.jp/j/research/protocol.html"},{t:"Long-term iPSC maintenance by automated culture system（Konagaya 2015）",u:"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"}]},
+  {id:"passage",label:"継代（剥離・分散）",type:"concept",domain:"d1",content:"コロニーを剥離し新プレートへ植え継ぐ工程。単一細胞分散かクランプ維持か、ROCK阻害剤(Y-27632)添加、シェアストレス管理が品質を左右する。",sources:[{t:"CiRA ヒトiPS細胞 培養プロトコール集",u:"https://www.cira.kyoto-u.ac.jp/j/research/protocol.html"},{t:"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",u:"https://elifesciences.org/articles/77007"}]},
+  {id:"feeder",label:"フィーダーフリー培養",type:"concept",domain:"d1",content:"フィーダー細胞を用いず基質コート上で培養する方式。臨床・自動化に適し、画像解析でも背景が単純化しやすい。",sources:[{t:"CiRA ヒトiPS細胞 培養プロトコール集",u:"https://www.cira.kyoto-u.ac.jp/j/research/protocol.html"}]},
+  {id:"diff",label:"分化誘導プロトコル",type:"concept",domain:"d1",content:"目的細胞へ誘導する多段階手順。iPSC→RPEは seeding / preconditioning / passage / induction / maintenance の5段階として定式化され、自動探索のテンプレになった。",sources:[{t:"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",u:"https://elifesciences.org/articles/77007"}]},
+  {id:"signal",label:"シグナル制御（添加因子）",type:"concept",domain:"d1",content:"分化方向を決める阻害剤の濃度・タイミング。RPE誘導では FGFR阻害剤・SB431542(TGFβ)・CKI-7(Wnt)・Y-27632 等が制御変数。これらが最適化の探索空間になる。",sources:[{t:"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",u:"https://elifesciences.org/articles/77007"}]},
+  {id:"suspension",label:"浮遊・懸濁培養（量産）",type:"concept",domain:"d1",content:"3次元浮遊撹拌で容積当たり密度を上げ量産する方式。突発的分化を化合物で抑制し、樹立→大量培養→直接凍結まで一貫化。自動化・スケールアップの基盤形態。",sources:[{t:"iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）",u:"https://www.riken.jp/press/2024/20241120_1/index.html"},{t:"iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）",u:"https://stemcells.or.jp/ips-9/"}]},
+  {id:"reprog",label:"iPSC樹立（初期化）",type:"concept",domain:"d1",content:"体細胞をRNA等で初期化しコロニーを得る最難関工程。形態が動的で良質コロニー選抜が職人技。財団・パナソニックが2026年に樹立工程の自動化実証に着手。",sources:[{t:"パナソニックHD iPS樹立工程の自動化 実証実験（2026/4）",u:"https://prtimes.jp/main/html/rd/p/000006702.000003442.html"},{t:"ML label-free iPSC colony formation detection（Sci Rep）",u:"https://www.nature.com/articles/s41598-017-13680-x"}]},
+  {id:"qccrit",label:"細胞品質基準",type:"concept",domain:"d1",content:"未分化マーカー発現・三胚葉分化能・核型など、製造物が満たすべき生物学的基準。自動判定の「正解ラベル」を定義し、画像代理指標と紐づける必要がある。",sources:[{t:"Parametric analysis of hPSC colony morphology for QC（Sci Rep）",u:"https://www.nature.com/articles/srep34009"},{t:"Long-term iPSC maintenance by automated culture system（Konagaya 2015）",u:"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"}]},
+  {id:"bf",label:"明視野/位相差イメージング",type:"concept",domain:"d2",content:"低光毒性で非侵襲なラベルフリー観察。一方で低コントラスト・不均一背景・ハロー/エッジ効果があり、頑健なセグメンテーションが難所。",sources:[{t:"Deep learning for label-free monitoring of iPSC & organoids",u:"https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"}]},
+  {id:"conf",label:"コンフルエンシー算出",type:"concept",domain:"d2",content:"セグメンテーションで占有面積/コロニー面積を定量。継代や次工程移行の判断指標（例: 70-80%）として閾値化される中核メトリクス。",sources:[{t:"Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）",u:"https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"},{t:"Deep learning for label-free monitoring of iPSC & organoids",u:"https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"}]},
+  {id:"morphcls",label:"コロニー形態分類",type:"concept",domain:"d2",content:"良/不良フェノタイプをCNN等で識別。形態パラメータが未分化性・クローン性維持能と相関し、選抜・除外の自動判断に使う。",sources:[{t:"QC of hPSC colonies by CNN image analysis",u:"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9820636/"},{t:"Parametric analysis of hPSC colony morphology for QC（Sci Rep）",u:"https://www.nature.com/articles/srep34009"}]},
+  {id:"diffdet",label:"分化領域検出",type:"concept",domain:"d2",content:"未分化コロニー内の自発分化領域を検出・定量。分化率の閾値超過ウェルを除外したり、誘導の進行度評価に用いる専用DLモデル。",sources:[{t:"Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）",u:"https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"},{t:"Deep learning for label-free monitoring of iPSC & organoids",u:"https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"}]},
+  {id:"growth",label:"増殖曲線予測→継代トリガ",type:"concept",domain:"d2",content:"定期観察から面積値の増殖曲線を推定し、目標密度到達の至適時刻を予測。これがスケジューラと継代操作のトリガになる閉ループの起点。",sources:[{t:"ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）",u:"https://www.riken.jp/press/2020/20201204_1/index.html"},{t:"Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）",u:"https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"}]},
+  {id:"dlmodel",label:"DLモデル（分割/分類）",type:"concept",domain:"d2",content:"セグメンテーション(面積/コンフルエンシー)と分類(形態・分化)の学習モデル群。ラベルフリー前提・低コントラスト対応・施設間汎化が実装課題。",sources:[{t:"Deep learning for label-free monitoring of iPSC & organoids",u:"https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"},{t:"QC of hPSC colonies by CNN image analysis",u:"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9820636/"}]},
+  {id:"dualarm",label:"双腕ヒューマノイド",type:"concept",domain:"d3",content:"汎用器具をそのまま扱える人型双腕（例: LabDroid Maholo）。プロトコル変更に柔軟で、パラメータ探索や手作業の写像に向く。",sources:[{t:"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",u:"https://elifesciences.org/articles/77007"},{t:"ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）",u:"https://www.riken.jp/press/2020/20201204_1/index.html"}]},
+  {id:"closeddev",label:"閉鎖型専用培養装置",type:"concept",domain:"d3",content:"装置内で取り出さず培養するクローズド機。無菌性・更衣簡略化・人為ミス低減に優れ、財団のmy iPS製造の中核アーキテクチャ。",sources:[{t:"iPS財団 My iPSプロジェクト（自家細胞を自動作製）",u:"https://www.nikkan.co.jp/articles/view/00745986"},{t:"Long-term iPSC maintenance by automated culture system（Konagaya 2015）",u:"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"}]},
+  {id:"dispense",label:"自動分注・ピペッティング",type:"concept",domain:"d3",content:"培地・試薬の精密分注と吸引。液面追従・体積制御・無菌チップ運用が再現性を決める。リキッドハンドラ統合の基本ユニット。",sources:[{t:"Long-term iPSC maintenance by automated culture system（Konagaya 2015）",u:"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"}]},
+  {id:"transport",label:"プレート搬送・把持",type:"concept",domain:"d3",content:"インキュベータ⇄顕微鏡⇄作業台間のプレート/容器搬送とグリッパ制御。スケジュールに沿う物流が自律運転の連続性を支える。",sources:[{t:"ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）",u:"https://www.riken.jp/press/2020/20201204_1/index.html"},{t:"SiLA2: cell culture autopilot / vendor-agnostic",u:"https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard"}]},
+  {id:"motioncap",label:"熟練手技のモーション再現",type:"concept",domain:"d3",content:"熟練者の作業を動作解析し数値化してロボットで再現する思想。「誰でもできるよう数値化して自動化」が財団の自動化方針の核。",sources:[{t:"免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）",u:"https://scienceportal.jst.go.jp/newsflash/20250403_n01/"},{t:"がん治療に役立つ細胞の分化・培養を自動化（Panasonic）",u:"https://news.panasonic.com/jp/stories/17100"}]},
+  {id:"sched",label:"スケジューリング",type:"concept",domain:"d4",content:"12時間ごとの観察など定期タスクと、至適継代時刻のような条件起動タスクを編成。多細胞株・多バッチの並行運転を破綻なく回す制御層。",sources:[{t:"ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）",u:"https://www.riken.jp/press/2020/20201204_1/index.html"}]},
+  {id:"loop",label:"クローズドループ判断",type:"concept",domain:"d4",content:"観察→判断→操作のサイクルを人手介入なしで回す。画像メトリクスを意思決定点に変換し、通知か次工程実行かを分岐する制御ロジック。",sources:[{t:"ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）",u:"https://www.riken.jp/press/2020/20201204_1/index.html"},{t:"Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）",u:"https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"}]},
+  {id:"bbo",label:"バッチベイズ最適化",type:"concept",domain:"d4",content:"数百万通りの培養条件を、ガウス過程＋バッチ取得関数で効率探索。RPE分化率を反復改善した自律実験の中核解法（GPyOptベース）。",sources:[{t:"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",u:"https://elifesciences.org/articles/77007"},{t:"LabDroid_optimizer（GitHub / GPyOpt）",u:"https://github.com/labauto/LabDroid_optimizer"}]},
+  {id:"doe",label:"実験計画の定式化",type:"concept",domain:"d4",content:"プロトコルをパラメータ空間に写像し、最適化問題として定義する工程。各操作を変数化（濃度・日数・剥離強度等）し探索可能にする前処理。",sources:[{t:"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",u:"https://elifesciences.org/articles/77007"}]},
+  {id:"sdl",label:"自律実験 / Self-driving Lab",type:"concept",domain:"d4",content:"ロボットが自ら結果を評価し次実験を計画する枠組み。再現性ある細胞製造に向け、探索空間の系統的・無バイアス探索を加速する。",sources:[{t:"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",u:"https://elifesciences.org/articles/77007"},{t:"Implementing robotics and AI（eLife digest）",u:"https://elifesciences.org/articles/80609"}]},
+  {id:"rl",label:"強化学習（発展領域）",type:"concept",domain:"d4",content:"方策学習による操作・条件最適化。製造GMP文脈では検証可能性が壁で、現状は画像判断・BOが主流、RLは研究段階。",sources:[{t:"Implementing robotics and AI（eLife digest）",u:"https://elifesciences.org/articles/80609"}]},
+  {id:"sila",label:"SiLA 2（デバイス標準）",type:"concept",domain:"d5",content:"HTTP/2＋Protocol BuffersとFeature Definition Languageで意味的に同一なデバイスIFを標準化。ベンダロックイン回避と統合工数削減の中核。",sources:[{t:"SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）",u:"https://sila-standard.com/faq/"},{t:"Tecan SiLA2 SDK（royalty-free, open-source）",u:"https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext"}]},
+  {id:"opcua",label:"OPC-UA / LADS",type:"concept",domain:"d5",content:"産業で普及するM2M標準OPC-UAと、その研究室向けコンパニオン規格LADS。SiLA2と並ぶデバイス通信の選択肢で、製造ライン連携に強い。【P3】LADS v1.0.0(2024年1月, OPC Foundation+Spectaris+VDMA)はバイオリアクタを明示的にモデル化—Functional Unit×Function(analogセンサ/controller/program)構成で、auto_cellのchannel_config/tool_schemas/EBRに直接対応。Eppendorf DASware等プロセス制御機はOPC公開。A層バイオリアクタ制御のデバイスIF第一候補。",sources:[{t:"Tecan SiLA2 SDK（royalty-free, open-source）",u:"https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext"}]},
+  {id:"mtp",label:"MTP（モジュール型パッケージ）",type:"concept",domain:"d5",content:"モジュール式・柔軟自動化を可能にする記述。SiLA2と組み合わせ、R&Dから製造へのスケールを支える構成管理の枠組み。",sources:[{t:"SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）",u:"https://sila-standard.com/faq/"}]},
+  {id:"orch",label:"ワークフロー・オーケストレーション",type:"concept",domain:"d5",content:"タスクとデータと物理ハードを途切れなく統合する制御フレーム（AlabOS, Helao 等）。各機器をサービス化し横断ワークフローを管理。",sources:[{t:"SiLA2: cell culture autopilot / vendor-agnostic",u:"https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard"}]},
+  {id:"gateway",label:"レガシーデバイス・ゲートウェイ",type:"concept",domain:"d5",content:"独自IFしか持たない既存機器を標準IFへ橋渡しするゲートウェイ層。GPIO/USB/シリアル接続と遠隔監視で「スマート化」する。",sources:[{t:"The SiLA 2 Manager（device discovery / data integrity）",u:"https://www.sciencedirect.com/science/article/pii/S2352711022000103"}]},
+  {id:"lims",label:"LIMS / LES（情報・実行系）",type:"concept",domain:"d5",content:"検体・試薬・手順・結果を記録/指図する上位システム。デバイス層からのデータを集約し、バッチ記録・トレーサビリティに接続する。",sources:[{t:"The SiLA 2 Manager（device discovery / data integrity）",u:"https://www.sciencedirect.com/science/article/pii/S2352711022000103"},{t:"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",u:"https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}]},
+  {id:"datamodel",label:"データモデル / インジェスト",type:"concept",domain:"d5",content:"画像・センサ・操作ログの標準化された取り込み。新旧機器の異種IFを跨いだ「データ取り込みギャップ」の解消が自律運転の前提。",sources:[{t:"SiLA2: cell culture autopilot / vendor-agnostic",u:"https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard"},{t:"The SiLA 2 Manager（device discovery / data integrity）",u:"https://www.sciencedirect.com/science/article/pii/S2352711022000103"}]},
+  {id:"gctp",label:"GCTP（再生医療等製品製造管理）",type:"concept",domain:"d6",content:"再生医療等製品の製造・品質管理基準。製造設備に加え管理手法の適合性をPMDAが調査。製造ソフトの設計境界を規定する。",sources:[{t:"GCTP適合性調査（PMDA）",u:"https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html"}]},
+  {id:"ramlaw",label:"再生医療等安全性確保法 / 施設基準",type:"concept",domain:"d6",content:"細胞培養加工施設の構造設備基準と適合性調査の根拠法。my iPS製造施設はこの枠組みでPMDA適合性調査を受け稼働を目指す。",sources:[{t:"再生医療等安全性確保法 関連（Science Portal）",u:"https://scienceportal.jst.go.jp/newsflash/20250403_n01/"},{t:"免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）",u:"https://scienceportal.jst.go.jp/newsflash/20250403_n01/"}]},
+  {id:"alcoa",label:"ALCOA+ データインテグリティ",type:"concept",domain:"d6",content:"帰属性・判読性・同時性・原本性・正確性＋αを全ライフサイクルで満たす原則。製造/解析で生成する全データが従うべき設計要件。",sources:[{t:"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",u:"https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}]},
+  {id:"csv",label:"CSV / CSA（システムバリデーション）",type:"concept",domain:"d6",content:"計算機システムが目的適合かつALCOA+準拠であることを文書化した証拠。技術的統制で担保するのは複雑で時間を要するが必須工程。",sources:[{t:"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",u:"https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}]},
+  {id:"part11",label:"21 CFR Part 11 / Annex 11",type:"concept",domain:"d6",content:"電子記録・電子署名の監査性と安全な取扱いを求めるFDA/EU規制。電子系の設計（権限・署名・改ざん防止）の直接要件。",sources:[{t:"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",u:"https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}]},
+  {id:"ebr",label:"電子バッチ記録（EBR）",type:"concept",domain:"d6",content:"製造工程で生成される改ざん不能な電子記録。前工程データの検証で次工程の整合を担保し、逸脱時の是正を可能にする。",sources:[{t:"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",u:"https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}]},
+  {id:"audit",label:"監査証跡（Audit Trail）",type:"concept",domain:"d6",content:"誰が・いつ・何を変更したかを追える記録。データインテグリティとPart11準拠の中核で、全操作のロギング設計が必要。",sources:[{t:"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",u:"https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}]},
+  {id:"capa",label:"CAPA / リスク管理（FMEA）",type:"concept",domain:"d6",content:"逸脱・品質事象の根本原因分析と是正/予防措置。FMEA等のリスク評価が製品・工程設計の判断を導く。ソフトの逸脱検知設計に直結。",sources:[{t:"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",u:"https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}]},
+  {id:"envmon",label:"環境モニタリング（DO/pH/CO₂/温度）",type:"concept",domain:"d7",content:"培養環境の連続計測。維持培養や量産の安定性を支え、閉ループ制御の状態量を供給する。エッジ実装（ESP32等）で分散計測が可能。",sources:[{t:"Long-term iPSC maintenance by automated culture system（Konagaya 2015）",u:"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"}]},
+  {id:"sterility",label:"無菌性・コンタミ監視",type:"concept",domain:"d7",content:"菌混入や逸脱の検知。閉鎖系では更衣簡略化と引換えに監視設計が重要で、9日連続運転でも重大エラー/汚染ゼロが品質目標水準。",sources:[{t:"ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）",u:"https://www.riken.jp/press/2020/20201204_1/index.html"},{t:"免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）",u:"https://scienceportal.jst.go.jp/newsflash/20250403_n01/"}]},
+  {id:"cpv",label:"インライン/アットライン分析（CPV）",type:"concept",domain:"d7",content:"工程内・近接でのリアルタイム計測で工程性能を継続検証(CPV)。AI/自動化が高スループットQCと工程安定性監視を可能にする。【P5】具体スタック(2026-06-15調査): VCD=in-line capacitance(Aber FUTURA/Hamilton Incyte, Manstein iPSCで定性検証), 代謝物=in-line Raman(CHOで閉ループglucose制御実証)＋at-line Nova BioProfile FLEX2(16項＋osmolality/viability), 凝集体径=in-line DHM(Ovizio)/FBRM(CLD≠径) or at-line画像(Kropp2019/FlowCam, 日次)。品質(未分化/同一性)・無菌はoffline=BO目的関数専用。",sources:[{t:"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",u:"https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"},{t:"Krause et al. 2023, Curr Opin Biotechnol — biocapacitance online biomass",u:"https://www.sciencedirect.com/science/article/pii/S0958166923000897"},{t:"Graf/Wei et al. 2022, Front Bioeng — in-line Raman closed-loop glucose (PID)",u:"https://www.frontiersin.org/journals/bioengineering-and-biotechnology/articles/10.3389/fbioe.2022.719614/full"},{t:"Nova Biomedical BioProfile FLEX2 (16-parameter at-line analyzer)",u:"https://www.novabiomedical.com/cell-culture-analyzers/bioprofile-flex2-basic/"},{t:"Kropp et al. 2019, Sci Rep — at-line bypass imaging of hiPSC aggregates",u:"https://www.nature.com/articles/s41598-019-48814-w"}]},
+  {id:"edge",label:"エッジセンサ統合",type:"concept",domain:"d7",content:"マイコン/IoTによる多点センサ取得とデバイス層への配信。標準IF（SiLA2/OPC-UA）やゲートウェイ経由で上位へ集約する接点。",sources:[{t:"The SiLA 2 Manager（device discovery / data integrity）",u:"https://www.sciencedirect.com/science/article/pii/S2352711022000103"}]},
+  {id:"cira",label:"CiRA財団 / my iPS",type:"player",domain:"d8",content:"自家iPSの閉鎖系フル自動製造を推進。約3週間・原材料費約100万円/人を掲げ、PMDA適合性調査・非臨床を経て2028年度の治験開始を目標。",sources:[{t:"iPS財団 My iPSプロジェクト（自家細胞を自動作製）",u:"https://www.nikkan.co.jp/articles/view/00745986"},{t:"免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）",u:"https://scienceportal.jst.go.jp/newsflash/20250403_n01/"},{t:"my iPSプロジェクト（iPS財団 公式）",u:"https://www.cira-foundation.or.jp/j/about/project/myips/"}]},
+  {id:"terumo",label:"Terumo BCT / Quantum Flex",type:"system",domain:"d8",content:"2024年に財団と提携。Quantum Flex Cell Expansion System上で閉鎖・自動・統合プロセスを構築し、デジタル技術で効率と制御を高める。【P3】Quantum FlexはCPAソフト(プロトコルビルダ/最大100台フリート/cGMP)の閉鎖ターンキーで、公開デバイスAPIは確認できず＝自前ブレインの閉ループ制御対象ではなく商用/臨床エンドポイント(連携するなら監視のみ)。",sources:[{t:"Terumo BCT × CiRA Foundation 自動化提携（Quantum Flex）",u:"https://www.terumo.com/newsrelease/detail/20240319/6146"}]},
+  {id:"pana",label:"パナソニックHD",type:"player",domain:"d8",content:"岩田研由来の閉鎖型自動培養の系譜。2026年4月、中之島クロスでiPS樹立工程の自動化実証を開始し、最難関の樹立に踏み込む。",sources:[{t:"パナソニックHD iPS樹立工程の自動化 実証実験（2026/4）",u:"https://prtimes.jp/main/html/rd/p/000006702.000003442.html"},{t:"がん治療に役立つ細胞の分化・培養を自動化（Panasonic）",u:"https://news.panasonic.com/jp/stories/17100"}]},
+  {id:"kaneka",label:"カネカ × 理研（林洋平ら）",type:"player",domain:"d8",content:"財団研究開発センターと共同で、樹立から大量培養までを一貫させた浮遊培養をeLifeに報告。量産・自動化の基盤形態を提供。",sources:[{t:"iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）",u:"https://www.riken.jp/press/2024/20241120_1/index.html"},{t:"iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）",u:"https://stemcells.or.jp/ips-9/"}]},
+  {id:"rbi",label:"Robotic Biology Institute / Maholo",type:"system",domain:"d8",content:"双腕ヒューマノイドLabDroid Maholoの提供元。汎用器具操作と高再現性で、自律探索プラットフォームの物理基盤を担う。",sources:[{t:"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",u:"https://elifesciences.org/articles/77007"}]},
+  {id:"epistra",label:"Epistra（自律最適化）",type:"player",domain:"d8",content:"Maholo×AIの自律実験を支えた企業の一つ。実験計画・ベイズ最適化など最適化エンジン側で関与。",sources:[{t:"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",u:"https://elifesciences.org/articles/77007"}]},
+  {id:"moldev",label:"Molecular Devices / CellXpress.ai",type:"system",domain:"d8",content:"イメージングベースのAI判断で給餌・継代を自動化する商用システム。DLで形態/分化を識別し、24/365運転で複数株を拡大。",sources:[{t:"Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）",u:"https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"},{t:"Deep learning for label-free monitoring of iPSC & organoids",u:"https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"}]},
+  {id:"astellas",label:"アステラス製薬（双腕ロボ）",type:"player",domain:"d8",content:"双腕ロボットでiPS培養を自動化し、治験用供給を企図。製薬側からの製造自動化プレイヤー。",sources:[{t:"iPS細胞をロボが培養（アステラス, 日経）",u:"https://www.nikkei.com/article/DGKKZO75692350Z21C23A0TB0000/"}]},
+  {id:"src_kanda",label:"Kanda et al. 2022 (eLife)",type:"source",domain:"d4",content:"自律ロボット×バッチベイズ最適化でiPSC-RPE分化を最適化した記念碑的論文。プロトコルの5段階定式化とパラメータ探索、コード公開を含む。",sources:[{t:"Robotic search for optimal cell culture（Kanda et al., eLife 2022）",u:"https://elifesciences.org/articles/77007"},{t:"LabDroid_optimizer（GitHub / GPyOpt）",u:"https://github.com/labauto/LabDroid_optimizer"}]},
+  {id:"src_riken2020",label:"理研 自律培養 2020",type:"source",domain:"d2",content:"人型ロボット×AIで12h観察→増殖予測→至適継代を9日間自律実行。閉ループ自律培養の国内先行実証。",sources:[{t:"ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）",u:"https://www.riken.jp/press/2020/20201204_1/index.html"}]},
+  {id:"src_sila",label:"SiLA 2 標準群",type:"source",domain:"d5",content:"デバイス相互運用の標準。Tecan SDK・SiLA2 Manager・cell culture autopilot事例まで、実装に直接使える資源群。",sources:[{t:"Tecan SiLA2 SDK（royalty-free, open-source）",u:"https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext"},{t:"The SiLA 2 Manager（device discovery / data integrity）",u:"https://www.sciencedirect.com/science/article/pii/S2352711022000103"},{t:"SiLA2: cell culture autopilot / vendor-agnostic",u:"https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard"},{t:"SiLA 2 FAQ（HTTP/2 + Protocol Buffers）",u:"https://sila-standard.com/faq/"}]},
+  {id:"src_gctp",label:"PMDA GCTP / 適合性調査",type:"source",domain:"d6",content:"再生医療等製品の製造・品質管理の適合性を定める一次情報。製造ソフトの規制要件の出発点。",sources:[{t:"GCTP適合性調査（PMDA）",u:"https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html"}]},
+  {id:"src_cgt",label:"CGT QC/QA（ALCOA・Part11）",type:"source",domain:"d6",content:"データインテグリティ・CSV・CAPA・CPVを横断する実務解説。電子系設計の要件マップとして有用。",sources:[{t:"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",u:"https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}]},
+  {id:"src_cxa",label:"CellXpress.ai 適用ノート",type:"source",domain:"d2",content:"コンフルエンシー/分化のDL2モデルと閾値起動の自動継代を具体記述。画像→意思決定の設計参照。",sources:[{t:"Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）",u:"https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"},{t:"Deep learning for label-free monitoring of iPSC & organoids",u:"https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"}]},
+  {id:"src_susp",label:"浮遊培養 一貫化（eLife）",type:"source",domain:"d1",content:"樹立→大量培養→直接凍結まで浮遊系で一貫。量産・自動化の生物学的基盤。財団・理研・カネカ共同。",sources:[{t:"iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）",u:"https://www.riken.jp/press/2024/20241120_1/index.html"},{t:"iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）",u:"https://stemcells.or.jp/ips-9/"}]},
+  {id:"kinetics",label:"浮遊培養速度論モデル（Tier2 plant 原典）",type:"concept",domain:"d1",content:"iPSC浮遊培養の比増殖速度をMonod型で表すin silicoモデル。auto_cell Tier2 plant_modelの原典はManstein & Zweigerdt 2021（SCTM/STAR Protocols, src_manstein）で、グルコース・乳酸・グルタミン・浸透圧・凝集体径の阻害項を持ち、灌流で7日35×10⁶ cells/mLを達成した過程制御モデル。Table1定数(µ=1.35/d, KGlc=1.5mM, KLac=50mM, KGln=0.01mM, KOsm=500mOsm/kg, KAgg=350/2=175µm径)はplant_modelと完全一致。Galvanauskas 2019(src_galv)は3項のみの近縁別モデル。",sources:[{t:"Kinetic modeling of hiPSC expansion in suspension culture（Galvanauskas et al., Regen Therapy 2019;12:88-93）",u:"https://pmc.ncbi.nlm.nih.gov/articles/PMC6933447/"}]},
+  {id:"src_galv",label:"Galvanauskas et al. 2019 (近縁の3項モデル)",type:"source",domain:"d1",content:"iPSC浮遊培養速度論の近縁モデル(Galvanauskas/Kino-Oka 2019, Regen Therapy 12:88-93)。グルコースMonod＋乳酸阻害＋凝集体体積阻害の3項のみで、グルタミン制限/浸透圧項は持たない(明示的に省略)。定数もplant_modelと異なる(µmax≈2.35/d, KG≈7mM, KAgg=5.6e6µm³体積)。deep-researchが一旦原典と誤推定したが、真の原典はManstein 2021(src_manstein)。",sources:[{t:"Kinetic modeling of hiPSC expansion in suspension culture（PMC6933447）",u:"https://pmc.ncbi.nlm.nih.gov/articles/PMC6933447/"},{t:"PubMed 31890771",u:"https://pubmed.ncbi.nlm.nih.gov/31890771/"}]},
+  {id:"src_borys",label:"Borys et al. 2021 (Stem Cell Res Ther)",type:"source",domain:"d4",content:"iPSC Vertical-Wheel(PBS Biotech)撹拌最適化。40rpmが最大増殖(day6で32.3±3.2倍)、day5凝集体径169-275µm、>400µmで壊死予想。撹拌CPPの文献アンカー(最適40-60rpm、auto_cellの50-120rpm上限は高め)。",sources:[{t:"Borys et al. 2021, Stem Cell Res Ther 12:55（PMC7805206）",u:"https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/"}]},
+  {id:"src_kropp",label:"Kropp/Lipsitz et al. 2015 (BMC Proceedings)",type:"source",domain:"d4",content:"hPSC撹拌懸濁のBox-Behnken DoE。pH7.3/37℃、毎日給餌で高密度、播種2×10⁵が最適、DOは本研究で非有意。注: HES2(ESC)・Micro-24振盪式(400rpm=振盪周波数)でiPSC/インペラ槽への転用に注意。",sources:[{t:"Kropp et al. 2015, BMC Proceedings（PMC4685349）",u:"https://pmc.ncbi.nlm.nih.gov/articles/PMC4685349/"}]},
+  {id:"src_traj",label:"Nogueira 2019 / Olmer 2012（到達密度 実測）",type:"source",domain:"d1",content:"バッチ vs 灌流の到達密度差。標準バッチはNogueira(Vertical-Wheel)=peak 2.3×10⁶、Olmer(撹拌槽)=2.4×10⁶ cells/mL止まり。plant_modelの検証目標35×10⁶はManstein 2021の灌流プロセス(src_manstein)で達成される値で、バッチでは到達しない。",sources:[{t:"Nogueira et al. 2019, J Biol Eng（PMC6744632）",u:"https://pmc.ncbi.nlm.nih.gov/articles/PMC6744632/"},{t:"Olmer et al. 2012, Tissue Eng Part C（PMC3460618）",u:"https://pmc.ncbi.nlm.nih.gov/articles/PMC3460618/"}]},
+  {id:"src_manstein",label:"Manstein & Zweigerdt 2021（plant_model 原典）",type:"source",domain:"d4",content:"auto_cell Tier2 plant_modelの真の原典。hPSC灌流撹拌槽培養をpH7.1/DO40%/浸透圧ピーク抑制/灌流で制御し、7日で70倍・35×10⁶ cells/mL(150mLで52.5億細胞)を達成。Monod型in silicoモデル(Table1: µ=1.35/d, KGlc=1.5mM, KLac=50mM, KGln=0.01mM, KOsm=500mOsm/kg, KAgg=350/2=175µm)はplant_modelの6定数と完全一致。撹拌80rpm(150mLスケール)。",sources:[{t:"Manstein et al. 2021, Stem Cells Transl Med 10(7):1063-1080（DOI 10.1002/sctm.20-0453, PMID 33660952）",u:"https://pubmed.ncbi.nlm.nih.gov/33660952/"},{t:"Manstein et al. 2021, STAR Protocols 2(4):100988 — in silico model Table 1（PMC8666714）",u:"https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/"}]},
+  {id:"src_lads",label:"OPC UA LADS v1.0.0 (OPC Foundation)",type:"source",domain:"d5",content:"Laboratory and Analytical Device Standard。OPC-UAコンパニオン規格(2024-01, OPC Foundation+Spectaris+VDMA, OPC 30500-1)。Functional Unit/Function(sensor analog/discrete/multi-state, controller, actuator)＋Program/Result管理＋Asset/保守。バイオリアクタを明示例として槽=Functional Unit(温度センサ+モータ+program)でモデル化。auto_cellのDomainVertical面に直対応。",sources:[{t:"OPC UA for LADS Part 1 Basics (OPC 30500-1) — reference.opcfoundation.org",u:"https://reference.opcfoundation.org/LADS/v100/docs/"},{t:"OPC UA LADS (SLAS standards)",u:"https://www.slas.org/resources/standards/opc-ua-lads/"},{t:"OPC UA for Laboratory & Analytical Device Standard (LADS) Part 1: Basics (OPC 30500-1)",u:"https://reference.opcfoundation.org/specs/OPC-30500-1/4.1"}]},
+  {id:"ctrl_split",label:"制御権限の二層分界",type:"concept",domain:"d4",content:"協業前提でデバイスを設計指定するとき、安全クリティカルな高速ループはデバイス局所コントローラ(検証済PID: 温度37℃/pH7.1/DO40%/撹拌rpm, 秒オーダ・決定的)に置き、ReActブレインは監督制御(設定点変更・灌流/給餌率・サンプリング/継代トリガ・アラーム応答, 30秒+オーダ)に限定する。LLMは高速ループを閉じない(安全/CSV)。緊急停止・無菌バリア・ハード保安連動は安全系のみが強制し、ブレインは読み取りのみ。",sources:[{t:"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",u:"https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}]},
+  {id:"devprofile",label:"デバイスプロファイル / ICD（協業の成果物）",type:"concept",domain:"d5",content:"協業でデバイス側に実装を指定する単一の情報モデル(Interface Control Document)。LADS/OPC-UAのFunctional Unit/Function/Programで表現し、これがdevice実装とauto_cellのDomainVertical(channel↔sensor Function, tool↔controller Function/method, EBR↔Program/Result, event↔alarm)を束ねる。setpoint範囲・単位・検証済包絡線を含み、second-source(別ベンダ実装)を可能にする。bespoke REST/gRPCを一次契約にしない。",sources:[{t:"OPC UA for LADS Part 1 Basics (OPC 30500-1) — reference.opcfoundation.org",u:"https://reference.opcfoundation.org/LADS/v100/docs/"}]},
+  {id:"recipe_executor",label:"L1 決定的レシピ実行器",type:"concept",domain:"d4",content:"ADR-0001 で採用された L1 層。レシピ DSL とルールエンジンに基づき、灌流/給餌/撹拌/サンプリング/継代要否を状態とレシピから決定的に実行する。LLM は per-cycle には入らない。",sources:[]},
+  {id:"recipe_dsl",label:"レシピ DSL",type:"concept",domain:"d4",content:"培養フェーズ・条件起動ロジック・setpoint 包絡線を宣言的に記述する軽量ドメイン特化言語（YAML/JSON 想定）。Manstein 型灌流 0→7 vvd の条件起動を記述可能。",sources:[]},
+  {id:"rule_engine",label:"ルールエンジン",type:"concept",domain:"d4",content:"イベント（glucose_low/lactate_high/osmolality_high/vcd_target_reached/contamination_suspected 等）からアクションへの決定的マッピングを実行するエンジン。",sources:[]},
+  {id:"state_machine_l1",label:"L1 状態機械",type:"concept",domain:"d4",content:"L1 レシピ実行器内のフェーズ遷移（seed → perfusion_ramp → passage_ready → hold 等）を明確に管理する状態機械。",sources:[]},
+  {id:"l0_local_pid",label:"L0 局所 PID",type:"concept",domain:"d4",content:"バイオリアクター本体の局所コントローラ。温度/pH/DO/撹拌の高速安全ループを秒オーダで決定的に制御する。",sources:[]},
+  {id:"l0_fail_safe",label:"L0 フェイルセーフ",type:"concept",domain:"d4",content:"ブレイン/通信断時に局所 PID が最終検証済 setpoint を保持し続ける設計。ブレイン停止時も培養を継続させる。",sources:[]},
+  {id:"ax_bayesian",label:"Ax Bayesian optimization",type:"system",domain:"d4",content:"Meta が開発する高レベルベイズ最適化プラットフォーム。制約付き BO、バッチ BO、多忠実度をサポートし、auto_cell L2 の実装候補。",sources:[]},
+  {id:"botorch",label:"BoTorch",type:"system",domain:"d4",content:"PyTorch ベースの低レベルベイズ最適化ライブラリ。qEI/qNEHVI、MultiFidelityGP、KnowledgeGradient 等を提供。",sources:[]},
+  {id:"multi_fidelity",label:"多忠実度 BO",type:"concept",domain:"d4",content:"Tier2 plant_model（低忠実度・低コスト）と実バイオリアクタ run（高忠実度・高コスト）を統合したベイズ最適化。",sources:[]},
+  {id:"safe_bo",label:"Safe BO",type:"concept",domain:"d4",content:"CPP 包絡線（pH/DO/乳酸/浸透圧/凝集体径等）を侵害しないよう制約を課したベイズ最適化。",sources:[]},
+  {id:"batch_bo",label:"バッチ BO",type:"concept",domain:"d4",content:"複数バイオリアクタを並行運転するためのバッチ取得関数（qEI/qNEHVI）に基づく実験計画。",sources:[]},
+  {id:"llm_orchestrator",label:"L3 薄い LLM オーケストレータ",type:"concept",domain:"d4",content:"ADR-0001 で採用された L3 層。ワークフロー dispatch、曖昧知覚解釈、新規例外処理、研究者対話・承認仲介をイベント駆動で実行。定常制御には関与しない。",sources:[]},
+  {id:"human_approval",label:"Human-on-the-loop 承認",type:"concept",domain:"d6",content:"包絡線を外れる setpoint 変更、継代実行、BO 提案採用、緊急停止/ホールド等に対する研究者/オペレータの承認。",sources:[]},
+  {id:"approval_workflow",label:"Human-on-the-loop 承認ワークフロー",type:"concept",domain:"d4",content:"requested → pending → approved/rejected/timeout → executed/cancelled の状態遷移。タイムアウト時は安全側に倒す。
+
+[merged from multiple agents]
+L1/L2/L3 が自律実行しようとする包絡線外・重大アクションに対し、研究者の明示承認を得てから実行する状態遷移機構。requested → approved/rejected/pending_timeout → executed/cancelled。承認結果は監査証跡に不変ログ化される。",sources:[{t:"auto_cell A 層要求仕様（Human-on-the-loop）",u:"docs/design/requirements.md"},{t:"NIST AI Risk Management Framework（human-in-the-loop 概念）",u:"https://www.nist.gov/itl/ai-risk-management-framework"}]},
+  {id:"idempotency",label:"冪等性",type:"concept",domain:"d5",content:"L1→L0 の setpoint 変更を idempotency key 付き request-response とし、ブレイン再起動後も同一コマンドを再発行可能にする性質。",sources:[]},
+  {id:"validate_tool_call",label:"ツール呼び出し検証",type:"concept",domain:"d6",content:"副作用ツール呼び出し前に CPP 包絡線・変化率制限・競合を決定的に検証する仕組み。",sources:[]},
+  {id:"set_perfusion_rate",label:"set_perfusion_rate",type:"concept",domain:"d4",content:"灌流率（0→7 vvd）を設定する L1 副作用ツール。glucose/lactate/osmolality トリガで条件起動する。",sources:[]},
+  {id:"set_agitation_rpm",label:"set_agitation_rpm",type:"concept",domain:"d4",content:"撹拌回転数（50–120 rpm）を設定する L1 副作用ツール。凝集体径制御とシアストレス管理に用いる。",sources:[]},
+  {id:"trigger_passage_l1",label:"trigger_passage (L1)",type:"concept",domain:"d4",content:"VCD 目標到達または凝集体径逸脱時に継代を要求する L1 アクション。実行には原則として Human-on-the-loop 承認が必要。",sources:[]},
+  {id:"take_sample_l1",label:"take_sample (L1)",type:"concept",domain:"d4",content:"定期または条件起動で at-line サンプリングを行う L1 アクション。cpv へデータを供給する。",sources:[]},
+  {id:"src_ax",label:"Ax Adaptive Experimentation Platform",type:"source",domain:"d4",content:"Facebook/Meta の実験最適化プラットフォーム。BoTorch 上に構築され、探索空間・制約・多忠実度の管理に向く。",sources:[]},
+  {id:"src_botorch",label:"BoTorch（ベイズ最適化）",type:"source",domain:"d4",content:"PyTorch ベースのベイズ最適化ライブラリ。多忠実度・制約付き BO に強く、L2 層の実装候補。",sources:[]},
+  {id:"cpp_ph",label:"CPP: pH",type:"concept",domain:"d7",content:"A-layer pH setpoint 7.1; L0 local PID maintains, L1 may shift within envelope.",sources:[]},
+  {id:"cpp_do",label:"CPP: dissolved oxygen",type:"concept",domain:"d7",content:"A-layer DO setpoint 40% -> 10% at high density; L0 local PID with agitation cascade.",sources:[]},
+  {id:"cpp_temp",label:"CPP: temperature",type:"concept",domain:"d7",content:"A-layer temperature setpoint 37 C; L0 local PID.",sources:[]},
+  {id:"cpp_agitation",label:"CPP: agitation rpm",type:"concept",domain:"d4",content:"A-layer agitation 50-120 rpm; Borys 2021 optimum 40-60 rpm for Vertical-Wheel iPSC.",sources:[]},
+  {id:"cpp_glucose",label:"CPP: glucose",type:"concept",domain:"d7",content:"A-layer glucose >1.5 mM; K_Glc=1.5 mM from Manstein 2021 Table 1; perfusion trigger source.",sources:[]},
+  {id:"cpp_lactate",label:"CPP: lactate",type:"concept",domain:"d7",content:"A-layer lactate <50 mM; K_Lac=50 mM from Manstein 2021 Table 1; perfusion trigger source.",sources:[]},
+  {id:"cpp_glutamine",label:"CPP: glutamine",type:"concept",domain:"d7",content:"A-layer glutamine >0.01 mM; K_Gln=0.01 mM from Manstein 2021 Table 1.",sources:[]},
+  {id:"cpp_osmolality",label:"CPP: osmolality",type:"concept",domain:"d7",content:"A-layer osmolality <500 mOsm/kg; K_Osm=500 mOsm/kg from Manstein 2021 Table 1; perfusion trigger source.",sources:[]},
+  {id:"cpp_ammonia",label:"CPP: ammonia (monitoring)",type:"concept",domain:"d7",content:"Ammonia monitoring-only CPP for v1; mammalian toxicity threshold 4-6 mM, iPSC-native threshold not yet established.",sources:[]},
+  {id:"cpp_aggregate_diameter",label:"CPP: aggregate diameter",type:"concept",domain:"d7",content:"A-layer aggregate diameter 150-350 um; Borys 2021 reports >400 um necrosis risk.",sources:[]},
+  {id:"cpp_vcd",label:"CPP: viable cell density",type:"concept",domain:"d7",content:"A-layer VCD target ~35e6 cells/mL; measured by in-line capacitance; triggers passage.",sources:[]},
+  {id:"cpp_viability",label:"CPP: viability",type:"concept",domain:"d7",content:"A-layer viability target >90%; primarily BO objective input, not L1 control target.",sources:[]},
+  {id:"cpp_perfusion_rate",label:"CPP: perfusion rate",type:"concept",domain:"d4",content:"A-layer main actuator 0->7 vvd (Manstein 2021 Table 3); conditionally triggered by glucose/lactate/osmolality.",sources:[]},
+  {id:"ramp_limit",label:"ramp rate limit",type:"concept",domain:"d4",content:"Maximum per-unit-time change for perfusion/agitation/DO setpoints to avoid shear/osmotic shock.",sources:[]},
+  {id:"perfusion_trigger",label:"perfusion ramp trigger",type:"concept",domain:"d4",content:"L1 rule event that raises perfusion rate when glucose/lactate/osmolality cross thresholds.",sources:[]},
+  {id:"y_27632",label:"Y-27632 ROCK inhibitor",type:"concept",domain:"d1",content:"Standard ROCK inhibitor added during dissociation passage to improve iPSC survival.",sources:[]},
+  {id:"tool_set_perfusion_rate",label:"tool: set_perfusion_rate",type:"concept",domain:"d5",content:"LADS controller Function / DomainVertical tool for perfusion rate. Maps to devprofile.",sources:[]},
+  {id:"tool_set_agitation_rpm",label:"tool: set_agitation_rpm",type:"concept",domain:"d5",content:"LADS controller Function / DomainVertical tool for agitation setpoint.",sources:[]},
+  {id:"tool_trigger_passage",label:"tool: trigger_passage",type:"concept",domain:"d5",content:"LADS Program / DomainVertical tool for dissociation passage with Y-27632.",sources:[]},
+  {id:"src_yehya2024",label:"Yehya et al. 2024 (Stem Cell Res Ther)",type:"source",domain:"d4",content:"Vertical-Wheel agitation DoE supporting lower optimum rpm (40-60 rpm).",sources:[]},
+  {id:"src_xing2008",label:"Xing et al. 2008 (Biotechnol Prog)",type:"source",domain:"d1",content:"CHO osmolality threshold reference; iPSC-native value not established.",sources:[]},
+  {id:"src_nova_flex2",label:"Nova BioProfile FLEX2",type:"source",domain:"d7",content:"16-parameter at-line analyzer for metabolites, osmolality, viability, cell diameter.
+
+[merged from multiple agents]
+Nova Biomedical, BioProfile FLEX2 cell culture analyzer.",sources:[]},
+  {id:"src_mqtt5",label:"MQTT Version 5.0 | OASIS Standard",type:"source",domain:"d5",content:"MQTT 5.0 標準仕様。Response Topic、Correlation Data、Message Expiry Interval、Reason Code 等により request-response とエラーハンドリングを規定。",sources:[]},
+  {id:"lads_functional_unit",label:"LADS Functional Unit",type:"concept",domain:"d5",content:"LADS v1.0.0 で定義される機能単位。バイオリアクタ槽を 1 つの仮想デバイスとして集約し、内部に Sensor/Controller/Actuator Function と ProgramManager を持つ。",sources:[]},
+  {id:"lads_sensor_function",label:"LADS Sensor Function",type:"concept",domain:"d5",content:"LADS Functional Unit に属するセンサ機能（analog/discrete/multi-state）。pH/DO/Temp/Agitation/Capacitance/Raman/Pressure/Level/Foam 等が該当。",sources:[]},
+  {id:"lads_controller_function",label:"LADS Controller Function",type:"concept",domain:"d5",content:"LADS Functional Unit に属する制御機能。局所 PID（pH/DO/Temp/Agitation）の制御ロジックを内包し、ブレインからの検証済設定点を受け取る。",sources:[]},
+  {id:"lads_actuator_function",label:"LADS Actuator Function",type:"concept",domain:"d5",content:"LADS Functional Unit に属する駆動機能。灌流ポンプ、給餌ポンプ、培地交換弁、サンプリング弁等の離散/連続駆動素子を表す。",sources:[]},
+  {id:"lads_program_result",label:"LADS Program/Result",type:"concept",domain:"d5",content:"LADS ProgramManager が管理するプログラム（seed/passage/perfusion_ramp/clean）とその実行結果。EBR 導出の原材料となる。",sources:[]},
+  {id:"sila_feature",label:"SiLA2 Feature",type:"concept",domain:"d5",content:"SiLA2 Feature Definition Language（FDL）で定義される機能単位。サンプリングロボ、分注、at-line 分析器等のコマンド/property を記述。",sources:[]},
+  {id:"mqtt_topic_contract",label:"MQTT topic contract",type:"concept",domain:"d5",content:"auto_cell brain と device_gateway 間の MQTT topic 命名規則。cell/{culture_unit_id}/{direction}/{category}/{device_id}/{function_id} の形式。",sources:[]},
+  {id:"gateway_cmd_ack",label:"Gateway command/ack correlation",type:"concept",domain:"d5",content:"MQTT 5.0 Response Topic + Correlation Data を使った非同期 request-response。冪等キーと Message Expiry Interval による重複/stale コマンド防止。",sources:[]},
+  {id:"icd_setpoint_envelope",label:"ICD setpoint envelope",type:"concept",domain:"d4",content:"協業 ICD に定義された設定点範囲・単位・変化率制限。validate_tool_call と gateway 側の二重検証に使われる。",sources:[]},
+  {id:"peripheral_sampler",label:"SiLA2 サンプリングロボ",type:"system",domain:"d8",content:"SiLA2 で統合される at-line サンプリングロボ。take_sample コマンドを提供。",sources:[]},
+  {id:"peripheral_dispenser",label:"SiLA2 自動分注器",type:"system",domain:"d8",content:"SiLA2 で統合される液体分注器。feed/exchange_media 等の培地操作を実行。",sources:[]},
+  {id:"peripheral_atline_analyzer",label:"SiLA2 at-line 分析器",type:"system",domain:"d8",content:"SiLA2 で統合される at-line 分析器（例: Nova BioProfile FLEX2）。代謝物パネル・浸透圧・生存率を提供。",sources:[]},
+  {id:"src_mqtt5_reqresp",label:"",type:"source",domain:"d5",content:"",sources:[]},
+  {id:"src_sila_comm",label:"",type:"source",domain:"d5",content:"",sources:[]},
+  {id:"measurement_vcd_capacitance",label:"in-line capacitance VCD",type:"concept",domain:"d7",content:"Aber/Hamilton/Sartorius 等の誘電分光/インピーダンスセンサによる生細胞密度の連続計測。iPSC 高密度では offline VCD・細胞径・生存率を用いた校正が必要。",sources:[]},
+  {id:"measurement_raman_inline",label:"in-line Raman 代謝物計測",type:"concept",domain:"d7",content:"in-line Raman 分光による glucose/lactate/glutamine/glutamate の同時推定。CHO で PID 閉ループ実証あり。iPSC では chemometric 再校正が必要。",sources:[]},
+  {id:"measurement_atline_nova",label:"at-line Nova FLEX2 マルチパラメータ",type:"concept",domain:"d7",content:"Nova BioProfile FLEX2 による 16 項目（代謝物/ガス/電解質/細胞密度/生存率/細胞径/浸透圧）のアットライン分析。Raman 校正・BO 入力の正解ラベル源。",sources:[]},
+  {id:"measurement_aggregate_imaging",label:"at-line 凝集体画像計測",type:"concept",domain:"d7",content:"FlowCam または Kropp 型バイパス顕微鏡による凝集体径・形態の画像解析。v1 では離散/日次運用が現実的。",sources:[]},
+  {id:"measurement_fbrm_cld",label:"FBRM 弦長分布計測",type:"concept",domain:"d7",content:"Mettler Toledo ParticleTrack による Focused Beam Reflectance Measurement。連続計測可能だが、CLD は真の粒径分布ではなく凝集体形状に依存。",sources:[]},
+  {id:"measurement_ovizio_dhm",label:"Ovizio D3HM ホログラフィ計測",type:"concept",domain:"d7",content:"Ovizio iLINE-F PRO の Double Differential Digital Holographic Microscopy。ラベルフリー連続細胞/凝集体モニタリング。iPSC 実証は限定的。",sources:[]},
+  {id:"monitoring_ammonia_atline",label:"at-line アンモニウムモニタリング",type:"concept",domain:"d7",content:"Nova FLEX2 による NH4+ のアットライン計測。CPP ではないが、代謝毒性早期発見のため監視。",sources:[]},
+  {id:"monitoring_quality_offline",label:"offline 品質マーカー計測",type:"concept",domain:"d7",content:"未分化/多能性マーカー（OCT4/SOX2/NANOG/SSEA/TRA）、核型/同一性、自発分化等の offline/run 単位計測。BO 目的関数専用。",sources:[]},
+  {id:"monitoring_sterility_offline",label:"offline/rapid 無菌性計測",type:"concept",domain:"d7",content:"汚染/無菌性の offline または rapid micro 検査。現時点で検証済み online 手段は未確認。CAPA トリガ源。",sources:[]},
+  {id:"instr_aber_futura",label:"Aber FUTURA",type:"system",domain:"d7",content:"Aber Instruments の in-line capacitance biomass センサ。580 kHz 線形モデルで VCD を推定。",sources:[]},
+  {id:"instr_hamilton_incytes",label:"Hamilton Incyte Arc",type:"system",domain:"d7",content:"Hamilton の in-line permittivity ベース VCD センサ。RS485 Modbus 出力、哺乳類 5e5–8e9 cells/mL レンジ。",sources:[]},
+  {id:"instr_sartorius_viamass",label:"Sartorius BioPAT ViaMass",type:"system",domain:"d7",content:"Sartorius の in-line capacitance biomass センサ。Aber 技術ベース、BioPAT MFCS/DCU 統合。",sources:[]},
+  {id:"instr_nova_flex2",label:"Nova BioProfile FLEX2",type:"system",domain:"d7",content:"Nova Biomedical の 16 項目 at-line 細胞培養分析器。275 µL・4.5 分、OLS による自動サンプリング対応。",sources:[]},
+  {id:"instr_ovizio_ilinef",label:"Ovizio iLINE-F PRO",type:"system",domain:"d7",content:"Ovizio の D3HM ベース in-line ホログラフィ細胞/凝集体モニタリングシステム。OPC UA 対応。",sources:[]},
+  {id:"instr_fbrm_g400",label:"Mettler Toledo ParticleTrack G400",type:"system",domain:"d7",content:"FBRM 技術による in-situ 弦長分布計測器。0.5–2000 µm レンジ。",sources:[]},
+  {id:"instr_flowcam",label:"FlowCam",type:"system",domain:"d7",content:"Fluid Imaging Technologies のフローイメージング顕微鏡。2 µm–1 mm の粒子/凝集体画像解析。",sources:[]},
+  {id:"src_aber_futura",label:"Aber FUTURA app note",type:"source",domain:"d7",content:"Aber Instruments, FUTURA capacitance perfusion monitoring.",sources:[]},
+  {id:"src_hamilton_incytes",label:"Hamilton Incyte Arc specs",type:"source",domain:"d7",content:"Hamilton Company, Incyte Arc Viable Cell Density Sensor specifications.",sources:[]},
+  {id:"src_sartorius_viamass",label:"Sartorius BioPAT ViaMass",type:"source",domain:"d7",content:"Sartorius, BioPAT ViaMass inline biomass measurement system.",sources:[]},
+  {id:"src_ovizio_ilinef",label:"Ovizio iLINE-F PRO press release",type:"source",domain:"d7",content:"Ovizio Imaging Systems, iLINE-F PRO holographic in-line cell monitoring.",sources:[]},
+  {id:"src_fbrm_g400",label:"Mettler Toledo ParticleTrack FBRM",type:"source",domain:"d7",content:"Mettler Toledo, ParticleTrack with FBRM technology.",sources:[]},
+  {id:"src_flowcam",label:"FlowCam overview",type:"source",domain:"d7",content:"Fluid Imaging Technologies, FlowCam imaging particle analyzer overview.",sources:[]},
+  {id:"src_raman_graf2022",label:"Graf/Wei 2022 in-line Raman PID glucose",type:"source",domain:"d7",content:"Graf/Wei et al. 2022, Frontiers in Bioengineering, in-line Raman closed-loop glucose control.",sources:[]},
+  {id:"src_krause2023",label:"Krause 2023 capacitance review",type:"source",domain:"d7",content:"Krause et al. 2023, Curr Opin Biotechnol, biocapacitance online biomass monitoring.",sources:[]},
+  {id:"tech_control",label:"技術的統制",type:"concept",domain:"d6",content:"R&D一次でありつつ将来GMP移行を妨げないよう、ソフトウェアに織り込むALCOA+/Part11/CSV/CSA/EBR/CAPAの実装上の統制群。",sources:[{t:"FDA Guidance for Industry: Data Integrity and Compliance With Drug CGMP Questions and Answers (2018)",u:"https://www.fda.gov/regulatory-information/search-fda-guidance-documents/data-integrity-and-compliance-drug-cgmp-questions-and-answers"}]},
+  {id:"audit_schema",label:"監査ログスキーマ",type:"concept",domain:"d6",content:"副作用ツール呼び出し、承認状態遷移、センサ取り込み、システム状態変化をALCOA+/Part11準拠で記録するための構造化ログスキーマ。",sources:[{t:"21 CFR Part 11 — Electronic Records; Electronic Signatures",u:"https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11"}]},
+  {id:"approval_log",label:"承認記録",type:"concept",domain:"d6",content:"Human-on-the-loopにおけるrequested→approved/rejected/timeout→executed/cancelledの承認状態遷移を記録する監査証跡。",sources:[{t:"21 CFR Part 11 — Electronic Records; Electronic Signatures",u:"https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11"}]},
+  {id:"data_lifecycle",label:"データライフサイクル管理",type:"concept",domain:"d6",content:"生データの生成・処理・レビュー・保存・検索・廃棄までのALCOA+/Endurable/Availableを担保するライフサイクル管理。",sources:[{t:"WHO Good Data and Record Management Practice",u:"https://www.who.int/teams/regulation-prequalification/regulation-and-safety/good-data-and-record-management-practice"}]},
+  {id:"llm_validation",label:"LLM層検証戦略",type:"concept",domain:"d6",content:"L3薄いLLMオーケストレータの非決定性を抑え、プロンプトバージョニング・出力根拠ログ・性能モニタリングでGAMP5 AI/ML要件に対応する戦略。",sources:[{t:"ISPE GAMP Guide: Artificial Intelligence (2025)",u:"https://ispe.org/publications/guidance-documents/gamp-guide-artificial-intelligence"}]},
+  {id:"ebr_derivation",label:"EBR導出ビュー",type:"concept",domain:"d6",content:"1培養ラン=1EBRをevent_storeから導出するためのビュー。R&D一次ではEBR-like実験プロビナンスレポートとして運用。",sources:[{t:"EudraLex Volume 4 Annex 11 — Computerised Systems",u:"https://health.ec.europa.eu/document/download/2c252435-6383-4ced-8206-8fef57024cc1_en"}]},
+  {id:"event_store",label:"イベントストア",type:"concept",domain:"d5",content:"時系列のイミュータブルイベントログを格納するデータ基盤。EBR導出、監査証跡、LADS Program/Result対応の基盤。",sources:[{t:"OPC UA for LADS Part 1 Basics (OPC 30500-1)",u:"https://reference.opcfoundation.org/LADS/v100/docs/"}]},
+  {id:"src_fda_data_integrity",label:"FDA 2018 Data Integrity Guidance",type:"source",domain:"d6",content:"FDA 'Data Integrity and Compliance With Drug CGMP Questions and Answers' (2018)。ALCOA+原則を医薬品製造のデータインテグリティに適用したガイダンス。",sources:[{t:"FDA Guidance for Industry: Data Integrity and Compliance With Drug CGMP Questions and Answers (2018)",u:"https://www.fda.gov/regulatory-information/search-fda-guidance-documents/data-integrity-and-compliance-drug-cgmp-questions-and-answers"}]},
+  {id:"src_part11",label:"21 CFR Part 11",type:"source",domain:"d6",content:"FDA regulation 'Electronic Records; Electronic Signatures'。電子記録・電子署名・監査証跡の技術的要件を定める。",sources:[{t:"21 CFR Part 11 — Electronic Records; Electronic Signatures",u:"https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11"}]},
+  {id:"src_fda_csa",label:"FDA CSA Guidance",type:"source",domain:"d6",content:"FDA 'Computer Software Assurance for Production and Quality System Software' (2022 draft / 2025 final)。リスクベースでソフトウェア保証活動を選定する現代的CSV/CSAアプローチ。",sources:[{t:"FDA Guidance: Computer Software Assurance for Production and Quality System Software",u:"https://www.fda.gov/regulatory-information/search-fda-guidance-documents/computer-software-assurance-production-and-quality-system-software"}]},
+  {id:"src_gamp5",label:"ISPE GAMP 5 2nd Edition",type:"source",domain:"d6",content:"ISPE GAMP 5 Guide: A Risk-Based Approach to Compliant GxP Computerized Systems, Second Edition (2022)。Cat.1/3/4/5とAI/ML Appendix D11を含む。",sources:[{t:"ISPE GAMP 5 Guide 2nd Edition (2022)",u:"https://ispe.org/publications/guidance-documents/gamp-5-guide-2nd-edition"}]},
+  {id:"src_gamp5_ai",label:"ISPE GAMP Guide: Artificial Intelligence",type:"source",domain:"d6",content:"ISPE GAMP Guide: Artificial Intelligence (2025)。AI有効化コンピュータ化システムのライフサイクル全体の検証・データガバナンス・モデルリスク管理を扱う。",sources:[{t:"ISPE GAMP Guide: Artificial Intelligence (2025)",u:"https://ispe.org/publications/guidance-documents/gamp-guide-artificial-intelligence"}]},
+  {id:"src_annex11",label:"EudraLex Annex 11",type:"source",domain:"d6",content:"EudraLex Volume 4 Annex 11 — Computerised Systems。EUのGMPデータコンピュータ化システム要件。",sources:[{t:"EudraLex Volume 4 Annex 11 — Computerised Systems",u:"https://health.ec.europa.eu/document/download/2c252435-6383-4ced-8206-8fef57024cc1_en"}]},
+  {id:"src_pics041",label:"PIC/S PI 041-1",type:"source",domain:"d6",content:"PIC/S PI 041-1 — Good Practices for Data Management and Integrity in Regulated GMP/GDP Environments (2021)。ALCOA+運用の国際的実務指針。",sources:[{t:"PIC/S PI 041-1 (2021)",u:"https://picscheme.org/en/publications"}]},
+  {id:"src_who_gdrp",label:"WHO Good Data and Record Management Practice",type:"source",domain:"d6",content:"WHO Good Data and Record Management Practice。ALCOA+とデータライフサイクルのWHO解釈。",sources:[{t:"WHO Good Data and Record Management Practice",u:"https://www.who.int/teams/regulation-prequalification/regulation-and-safety/good-data-and-record-management-practice"}]},
+  {id:"tier2_plant_model",label:"Tier2 plant_model（in-silico 検証リグ）",type:"concept",domain:"d4",content:"auto_cell の Tier2 シミュレーション層。Manstein 2021 の 6 項 Monod 型 ODE を step(actuators)->sensors IF で実装し、L1 制御ループの回帰検証と L2 BO の低忠実度評価に使う。",sources:[]},
+  {id:"plant_model_interface",label:"plant_model step IF",type:"concept",domain:"d4",content:"step(actuators)->sensors という決定的インターフェース。アクチュエータ（perfusion_rate_vvd, agitation_rpm, gas setpoints, feed bolus）を受け、センサ軌道（VCD/代謝物/凝集体径）を返す。",sources:[]},
+  {id:"plant_model_calibration",label:"plant_model パラメータ同定・不確実性",type:"concept",domain:"d4",content:"文献値を prior とし、実 run データでベイズ推定または最小二乗により校正。パラメタ事後分布・GP バイアス・構造候補モデルで不確実性を表現。",sources:[]},
+  {id:"multifidelity_sim",label:"多忠実度シミュレーション接続",type:"concept",domain:"d4",content:"L2 BO への多忠実度接続。Tier2 plant_model を低コスト低忠実度評価、実バイオリアクタ run を高忠実度評価として組み込む。",sources:[]},
+  {id:"plant_model_regression",label:"plant_model 回帰テスト",type:"concept",domain:"d4",content:"同一アクチュエータ系列 → 同一センサ軌道の決定性を保証するゴールデンテスト。CSV/CSA 観点から L1 制御ループの検証リグとして運用。",sources:[]},
+  {id:"cobrapy_gem",label:"COBRApy + GEM 差替候補",type:"concept",domain:"d4",content:"将来のゲノム規模代謝モデル（COBRApy）への差替候補。培地組成を制約ベースで解き、代謝物収支を予測。",sources:[]},
+  {id:"aggregate_formation_model",label:"凝集体形成動力学モデル",type:"concept",domain:"d1",content:"凝集体の形成・合体・破砕を表す動的サブモデル。撹拌速度・細胞密度と凝集体径の関係を追加する拡張。",sources:[]},
+  {id:"shear_stress_model",label:"シアストレスモデル",type:"concept",domain:"d4",content:"撹拌速度・粘度・凝集体径から Kolmogorov 長またはエネルギー散逸率を推定し、細胞傷害閾値を設計する拡張。",sources:[]},
+  {id:"src_scipy",label:"SciPy（数値積分）",type:"source",domain:"d5",content:"Python の科学技術計算ライブラリ。plant_model の ODE 数値積分（solve_ivp 等）に使用。",sources:[]},
+  {id:"src_cobrapy",label:"COBRApy",type:"source",domain:"d5",content:"Python によるゲノム規模代謝モデリングライブラリ。将来の COBRApy+GEM バックエンド差替の基盤。",sources:[]},
+  {id:"hmi_dashboard",label:"HMI ダッシュボード",type:"concept",domain:"d4",content:"研究者が培養状態・承認待ち・アラート・BO 提案を一目で把握するメイン画面。CPP 現在値・トレンド・phase・承認キューを表示し、on-the-loop の接点となる。",sources:[{t:"ISA-101 HMI Design Standards（プロセス制御 HMI）",u:"https://www.isa.org/standards-and-publications/isa-standards/isa-101"},{t:"IEC 62366-1 Medical devices — Application of usability engineering",u:"https://www.iso.org/standard/63179.html"}]},
+  {id:"alert_matrix",label:"アラート/通知マトリクス",type:"concept",domain:"d4",content:"各イベントの優先度（P0-P3）、抑制窓、通知チャネル、既定動作を定義したマトリクス。contamination_suspected は抑制不可（0 s）、BO 提案は run 単位（86400 s）など。",sources:[{t:"auto_cell A 層要求仕様（NFR-T, NFR-S）",u:"docs/design/requirements.md"},{t:"ISA-101 HMI Design Standards",u:"https://www.isa.org/standards-and-publications/isa-standards/isa-101"}]},
+  {id:"escalation_policy",label:"承認エスカレーションポリシー",type:"concept",domain:"d4",content:"承認要求がタイムアウト・却下・実行失敗した場合のエスカレーションルール。安全側へ倒す（キャンセル/ホールド）を基本とし、リトライ上限超過時は人間介入待ち。",sources:[{t:"auto_cell A 層要求仕様（FR-4, NFR-S）",u:"docs/design/requirements.md"}]},
+  {id:"contamination_response",label:"汚染疑い応答フロー",type:"concept",domain:"d7",content:"contamination_suspected 検知時の P0 即時対応。ブレインは安全系へのホールド要求を出し、デバイス局所が強制停止。研究者確認・誤検知記録・CAPA 起票の分岐。",sources:[{t:"KG → auto_cell 設計ブリッジ（sterility/capa 節）",u:"docs/design/kg_to_auto_cell.md"},{t:"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",u:"https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}]},
+  {id:"degraded_mode",label:"縮退運転モード",type:"concept",domain:"d4",content:"ブレイン/LLM/通信断時にも L0 局所 PID と L1 最終検証済レシピで培養を継続するモード。再起動耐性・冪等性・安全を担保。",sources:[{t:"ADR-0001（L0-L3 分離、C4 縮退運転）",u:"docs/design/adr/0001-control-architecture.md"},{t:"auto_cell A 層要求仕様（NFR-S, NFR-R）",u:"docs/design/requirements.md"}]},
+  {id:"human_on_the_loop",label:"Human-on-the-loop",type:"concept",domain:"d4",content:"監視・判断・包絡線内アクションは自律、包絡線外や重大アクションは人の承認を要する運転形態。auto_cell A 層の自律度。",sources:[{t:"auto_cell A 層要求仕様",u:"docs/design/requirements.md"}]},
+  {id:"audit_ui",label:"監査/EBR UI",type:"concept",domain:"d6",content:"event_store から 1 培養ランの操作ログ・イベント・承認履歴を検索/エクスポートするビュー。ALCOA+ と EBR 再構成を支援。",sources:[{t:"KG → auto_cell 設計ブリッジ（ALCOA+/EBR 節）",u:"docs/design/kg_to_auto_cell.md"},{t:"Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）",u:"https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}]},
+  {id:"approval_request_event",label:"承認要求イベント",type:"concept",domain:"d4",content:"承認ワークフローで発行されるイベント型。request_id、提案アクション、根拠、要求時刻、レビュー、決定、実行結果を含む。event_store に append-only で記録。",sources:[{t:"auto_cell A 層要求仕様（FR-4, FR-9）",u:"docs/design/requirements.md"}]},
+  {id:"notification_suppression",label:"通知抑制（suppression_defaults）",type:"concept",domain:"d4",content:"同一イベントの短時間再発を抑制し HMI/push のフラッディングを防ぐ仕組み。contamination_suspected は抑制不可とする。",sources:[{t:"KG → auto_cell 設計ブリッジ（DomainVertical slot 節）",u:"docs/design/kg_to_auto_cell.md"}]},
+  {id:"src_nist_ai_rmf",label:"NIST AI Risk Management Framework",type:"source",domain:"d4",content:"NIST が公開する AI リスク管理フレームワーク。Human-on-the-loop / human-in-the-loop による AI システムのガバナンスと監視を含む。",sources:[{t:"NIST AI Risk Management Framework",u:"https://www.nist.gov/itl/ai-risk-management-framework"}]},
+  {id:"src_iec62366",label:"IEC 62366-1（医療機器ユーザビリティ）",type:"source",domain:"d4",content:"医療機器のユーザビリティエンジニアリングを規定する国際標準。HMI 設計の人因工学基準。",sources:[{t:"IEC 62366-1:2015+AMD1:2020",u:"https://www.iso.org/standard/63179.html"}]},
+  {id:"src_isa101",label:"ISA-101（プロセス制御 HMI 設計）",type:"source",domain:"d4",content:"ISA-101 標準群。プロセス産業向け HMI の視覚設計、アラーム管理、パフォーマンス指向ディスプレイを規定。",sources:[{t:"ISA-101 HMI Design Standards",u:"https://www.isa.org/standards-and-publications/isa-standards/isa-101"}]},
+  {id:"mpc",label:"Model Predictive Control",type:"concept",domain:"d4",content:"プロセスモデルを用いて未来の挙動を予測し、制約内で最適な操作変数を逐次計算する制御手法。A 層では灌流率・feed bolus を操作変数とする将来拡張候補。",sources:[{t:"Model Predictive Controller Design for Bioprocesses (Rashedi et al., DYCOPS-2022)",u:"https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf"},{t:"フィジカルAI包括調査レポート §6.1",u:"/home/sin/Downloads/report/report.md"}]},
+  {id:"mpc_ipsc_perfusion",label:"iPSC 浮遊灌流 MPC",type:"concept",domain:"d4",content:"iPSC 浮遊凝集体灌流プロセスに特化した MPC。状態 = VCD/viability/glucose/lactate/glutamine/osmolality/aggregate diameter、操作変数 = perfusion rate/feed bolus、制約 = CPP 包絡線・pump ramp・凝集体シア。現時点で直接実証例は限定的。",sources:[{t:"Process development and scale-up of pluripotent stem cell manufacturing (Huang et al. 2020)",u:"https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/"},{t:"Manstein & Zweigerdt 2021, STAR Protocols Table 1",u:"https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/"}]},
+  {id:"mpc_lactate_feedback",label:"乳酸フィードバック MPC",type:"concept",domain:"d4",content:"累積乳酸濃度を細胞成長の soft sensor として、培地交換量を入力とする MPC。MSC 培養で実証されており、iPSC 浮遊灌流への転用可能性がある。",sources:[{t:"Van Beylen et al. 2020, Lactate-Based Model Predictive Control Strategy of Cell Growth for Cell Therapy Applications",u:"https://doi.org/10.3390/bioengineering7030078"}]},
+  {id:"mpc_model_types",label:"MPC モデルタイプ",type:"concept",domain:"d4",content:"線形 MPC（LMPC）、非線形 MPC（NMPC）、経済 MPC（EMPC）、ハイブリッド MPC（PINN+ODE）、データ駆動 MPC（DARX/サブスペース）の分類。A 層では plant_model（Manstein ODE）起点で NMPC → ハイブリッド MPC へ段階拡大。",sources:[{t:"Model Predictive Controller Design for Bioprocesses (Rashedi et al., DYCOPS-2022)",u:"https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf"},{t:"Van Beylen et al. 2020, Bioengineering",u:"https://doi.org/10.3390/bioengineering7030078"}]},
+  {id:"mpc_constraints",label:"MPC 制約集合",type:"concept",domain:"d4",content:"MPC で考慮する制約群：CPP 包絡線（glucose/lactate/osmolality/aggregate diameter）、perfusion rate 範囲（0–7 vvd）、pump ramp 制限、凝集体シア上限、培地コスト。",sources:[{t:"Manstein & Zweigerdt 2021, STAR Protocols Table 1",u:"https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/"},{t:"Process development and scale-up of pluripotent stem cell manufacturing (Huang et al. 2020)",u:"https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/"}]},
+  {id:"mpc_prediction_horizon",label:"MPC 予測ホライズン",type:"concept",domain:"d4",content:"MPC が未来のプロセス挙動を予測する時間幅。iPSC 培養ではバッチ尺が数日～数週間のため、時間単位～日単位の予測ホライズンが妥当。CHO fed-batch 例では 30 日が報告されているが、iPSC では未確定。",sources:[{t:"Model Predictive Controller Design for Bioprocesses (Rashedi et al., DYCOPS-2022)",u:"https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf"}]},
+  {id:"mpc_control_horizon",label:"MPC 制御ホライズン",type:"concept",domain:"d4",content:"MPC が最適化する未来の操作変数系列の長さ。予測ホライズン以下。iPSC では求解コストと制御性能のトレードオフで選定。CHO 例では 8 日。",sources:[{t:"Model Predictive Controller Design for Bioprocesses (Rashedi et al., DYCOPS-2022)",u:"https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf"}]},
+  {id:"mpc_adaptive_update",label:"MPC 適応更新",type:"concept",domain:"d4",content:"オンライン/at-line データを用いて MPC 内部モデルのパラメータを逐次更新する機構。プロセス・モデルミスマッチ、細胞株変動、ドナー変動に対応。",sources:[{t:"Van Beylen et al. 2020, Bioengineering",u:"https://doi.org/10.3390/bioengineering7030078"}]},
+  {id:"mpc_fail_safe",label:"MPC フェイルセーフ",type:"concept",domain:"d4",content:"MPC ソルバー非収束・異常予測・制約違反時に、L1 が最後の検証済 setpoint または安全側デフォルト灌流率を保持する機構。",sources:[{t:"ADR-0001 Control architecture",u:"docs/design/adr/0001-control-architecture.md"}]},
+  {id:"mpc_human_on_the_loop",label:"MPC Human-on-the-loop",type:"concept",domain:"d6",content:"MPC の提案軌道・包絡線外 setpoint・低信頼度予測に対して研究者が承認/調整/却下する仕組み。Annex 22 対応の決定論的下位制御器としての位置づけと両立。",sources:[{t:"requirements.md FR-4",u:"docs/design/requirements.md"},{t:"PIC/S GMP Annex 22 AI applicability (CiRA/Sugihara PMC11975184)",u:"https://pmc.ncbi.nlm.nih.gov/articles/PMC11975184/"}]},
+  {id:"mpc_implementation_libraries",label:"MPC 実装ライブラリ群",type:"concept",domain:"d5",content:"A 層 MPC 実装候補ライブラリ：CasADi（記号計算）、do-mpc（プロトタイプ・OPC-UA 接続例あり）、acados（高速組み込み C コード生成）。",sources:[{t:"CasADi",u:"https://web.casadi.org/"},{t:"do-mpc batch reactor example",u:"https://www.do-mpc.com/en/latest/example_gallery/batch_reactor.html"},{t:"acados documentation",u:"https://docs.acados.org/"}]},
+  {id:"dynamic_perfusion_ipsc",label:"iPSC 動的灌流戦略",type:"concept",domain:"d1",content:"pH トリガー等で perfusion rate を動的に増加させる iPSC 浮遊培養戦略。Huang et al. 2020 で pH 6.8 トリガー + 30%/日増加により固定灌流比 25% 向上。MPC で多変数化・最適化可能。",sources:[{t:"Process development and scale-up of pluripotent stem cell manufacturing (Huang et al. 2020)",u:"https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/"}]},
+  {id:"cpsr_control",label:"Cell-Specific Perfusion Rate 制御",type:"concept",domain:"d4",content:"生存細胞数あたりの灌流率（CSPR）を一定に保つ制御戦略。培地利用効率と安定的基質濃度を両立。high cell density perfusion の標準的アプローチ。",sources:[{t:"Konstantinov et al. 2006, CSPR concept",u:"https://pure.mpg.de/rest/items/item_3395904_4/component/file_3432420/content"}]},
+  {id:"mpc_vs_rule_engine",label:"MPC vs ルールエンジン比較",type:"concept",domain:"d4",content:"v1 の L1 決定的ルールと将来 MPC との比較軸：実装コスト、検証性、最適性、柔軟性、Annex 22 対応、Human-on-the-loop。v1 はルール、Phase 2 以降は MPC 拡張。",sources:[{t:"additional_mpc_for_ipsc.md",u:"docs/design/ground_knowledge/additional_mpc_for_ipsc.md"}]},
+  {id:"mpc_roadmap_l1",label:"L1 MPC 導入ロードマップ",type:"concept",domain:"d4",content:"Phase 1: ルールベース L1。Phase 2: plant_model ベース MPC シミュレーション・単一操作変数（perfusion rate）。Phase 3: 多変数・適応・経済 MPC の実機適用。",sources:[{t:"additional_mpc_for_ipsc.md",u:"docs/design/ground_knowledge/additional_mpc_for_ipsc.md"}]},
+  {id:"src_rashedi2022",label:"Rashedi et al. 2022 (DYCOPS-2022)",type:"source",domain:"d4",content:"Amgen の fed-batch CHO プロセスへの線形 MPC 実機適用。VCD 最大化、30 日予測ホライズン、8 日制御ホライズン、タイトル 2% 向上。",sources:[{t:"Model Predictive Controller Design for Bioprocesses",u:"https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf"}]},
+  {id:"src_van_beylen2020",label:"Van Beylen et al. 2020 (Bioengineering)",type:"source",domain:"d4",content:"Lactate-Based Model Predictive Control Strategy of Cell Growth for Cell Therapy Applications. hBM-MSC 培養で累積乳酸を soft sensor とする適応 DARX-MPC。",sources:[{t:"Lactate-Based Model Predictive Control Strategy",u:"https://doi.org/10.3390/bioengineering7030078"}]},
+  {id:"src_huang2020",label:"Huang et al. 2020 (Cell Gene Therapy Insights)",type:"source",domain:"d1",content:"PSC 10 L スケールアップ。動的灌流で pH 6.8 トリガー + 30%/日増加、固定灌流比 25% 向上、乳酸 15 mM 未満抑制。",sources:[{t:"Process development and scale-up of pluripotent stem cell manufacturing",u:"https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/"}]},
+  {id:"src_do_mpc",label:"do-mpc",type:"source",domain:"d5",content:"CasADi ベースの Python MPC ライブラリ。非線形 MPC、ロバスト MPC、OPC-UA 接続例あり。",sources:[{t:"do-mpc batch reactor example",u:"https://www.do-mpc.com/en/latest/example_gallery/batch_reactor.html"}]},
+  {id:"src_acados",label:"acados",type:"source",domain:"d5",content:"高速組み込み非線形 MPC ソルバー。C コード生成、HPIPM QP ソルバー、CasADi 記号モデル入力。",sources:[{t:"acados documentation",u:"https://docs.acados.org/"}]},
+  {id:"src_casadi",label:"CasADi",type:"source",domain:"d5",content:"非線形最適化と自動微分のためのオープンソース記号計算フレームワーク。MPC モデリングの基盤。",sources:[{t:"CasADi",u:"https://web.casadi.org/"}]},
+  {id:"pinn",label:"Physics-Informed Neural Network (PINN)",type:"concept",domain:"d4",content:"Neural network trained with both data loss and physics loss (ODE/PDE residuals). For iPSC suspension/aggregate bioreactors, PINNs are a future-phase technology; most published examples are CHO/microbial, not directly transferable to iPSC.",sources:[]},
+  {id:"digital_twin",label:"Digital Twin (DT)",type:"concept",domain:"d4",content:"Virtual replica of the bioreactor process that predicts concentration/state profiles and supports what-if analysis. Industrial examples (Yokogawa Insilico) are CHO/mAb-centric; iPSC aggregate-specific DTs are not yet established.",sources:[]},
+  {id:"hybrid_ode_nn",label:"Hybrid ODE + Neural Network model",type:"concept",domain:"d4",content:"Mechanistic ODE structure (mass balances) with kinetic terms represented or corrected by neural networks. More data-efficient than pure NN and a realistic Phase 2/3 extension of the Manstein ODE plant_model.",sources:[]},
+  {id:"pinn_mpc",label:"PINN-based Model Predictive Control",type:"concept",domain:"d4",content:"MPC that uses a PINN as the prediction model instead of a numerical ODE. Demonstrated in microbial/CHO contexts; iPSC applicability is unverified and should remain advisory/Human-on-the-loop.",sources:[]},
+  {id:"uncertainty_quantification",label:"Uncertainty Quantification (UQ) for learned models",type:"concept",domain:"d4",content:"Quantification of epistemic and aleatoric uncertainty in PINN/NN/DT predictions, typically expressed as 95% confidence intervals. Required for Human-on-the-loop escalation when model confidence is low.",sources:[]},
+  {id:"deep_ensemble",label:"Deep Ensemble UQ",type:"concept",domain:"d4",content:"Multiple independently trained networks whose prediction distribution defines mean and variance. Simplest practical UQ method for hybrid ODE+NN models.",sources:[]},
+  {id:"bayesian_pinn",label:"Bayesian PINN (B-PINN)",type:"concept",domain:"d4",content:"Variational inference over PINN weights to produce posterior predictive distributions. Theoretically grounded but computationally expensive and prior-dependent.",sources:[]},
+  {id:"efi_pinn",label:"EFI-based UQ for PINN",type:"concept",domain:"d4",content:"Extended Fiducial Inference for PINNs. Avoids subjective priors/dropout rates by solving data-generating equations; shown to achieve ~95% coverage on synthetic PDEs, but unverified on bioreactor time series.",sources:[]},
+  {id:"mc_dropout",label:"MC Dropout UQ",type:"concept",domain:"d4",content:"Dropout retained at inference time to approximate Bayesian predictive distributions. Sensitive to dropout-rate choice; intervals can be poorly calibrated.",sources:[]},
+  {id:"gp_bias_correction",label:"GP bias correction for plant_model",type:"concept",domain:"d4",content:"Gaussian Process that learns the residual between Manstein ODE predictions and observed run data. Natural Phase 2 extension that integrates with existing BO infrastructure.",sources:[]},
+  {id:"multifidelity_pinn",label:"Multi-fidelity PINN/DT integration",type:"concept",domain:"d4",content:"Use of Manstein ODE and Hybrid ODE+NN as low/medium-fidelity surrogates and real bioreactor runs as high-fidelity evaluations within multi-fidelity Bayesian optimization.",sources:[]},
+  {id:"digital_twin_calibration",label:"Digital Twin calibration",type:"concept",domain:"d4",content:"Online/offline parameter estimation and model-mismatch correction using real batch data. Required to keep the DT aligned with the physical process.",sources:[]},
+  {id:"universal_differential_equation",label:"Universal Differential Equation (UDE)",type:"concept",domain:"d4",content:"Hybrid model where known mechanistic terms remain explicit and unknown terms are learned by a neural network. Bridges Manstein ODE and full PINN approaches.",sources:[]},
+  {id:"neural_ode",label:"Neural ODE",type:"concept",domain:"d4",content:"Learned ordinary differential equation dx/dt = f_theta(x). Can be combined with known physics (UDE) for bioreactor dynamics.",sources:[]},
+  {id:"kinetic_cell_model",label:"Kinetic Cell Model",type:"concept",domain:"d1",content:"Sub-model describing cell metabolism and growth kinetics. In advanced DTs it combines genome-scale metabolic networks with neural networks.",sources:[]},
+  {id:"reactor_model",label:"Reactor Model",type:"concept",domain:"d4",content:"Mass-balance model of batch/fed-batch/perfusion reactor volumes and concentrations due to inlet/outlet streams.",sources:[]},
+  {id:"extracellular_reaction_model",label:"Extracellular Reaction Model",type:"concept",domain:"d4",content:"Model of abiotic reactions in culture media, e.g. glutamine degradation.",sources:[]},
+  {id:"model_mismatch_correction",label:"Model mismatch correction",type:"concept",domain:"d4",content:"Learned correction that refines low-fidelity digital twin or simulation predictions using real data. Essential for trustworthy multi-fidelity BO.",sources:[]},
+  {id:"prediction_confidence_score",label:"Prediction confidence score",type:"concept",domain:"d6",content:"Normalized score derived from model predictive uncertainty (e.g. 95% CI width). Drives Human-on-the-loop escalation for DT/BO/MPC proposals.",sources:[]},
+  {id:"data_requirement_pinn",label:"Data requirement for PINN/hybrid models",type:"concept",domain:"d4",content:"Industry rule-of-thumb: hybrid ODE+NN needs ~50-100 batches, pure NN needs 200-500 batches, PINN ~30-80 batches. CHO/microbial-derived figures; iPSC-native requirements are unverified and likely higher.",sources:[]},
+  {id:"src_thirugnanasambandam_2025",label:"Thirugnanasambandam et al. 2025 (Comput Chem Eng)",type:"source",domain:"d4",content:"Dual-ANN PINN framework for generic bioreactor modelling; shows extrapolation limits under time-varying controls.",sources:[]},
+  {id:"src_yang_2024_pinn",label:"Yang et al. 2024 (Ind Eng Chem Res)",type:"source",domain:"d4",content:"Hybrid PINN model for large-scale pilot CHO fed-batch culture. CHO example, not directly transferable to iPSC.",sources:[]},
+  {id:"src_catalao_2025",label:"Catalão et al. 2025 (J Process Control)",type:"source",domain:"d4",content:"Bioprocess MPC with physics-informed neural networks, microbial community PHA production.",sources:[]},
+  {id:"src_patel_2024",label:"Patel et al. 2024 (ADCHEM)",type:"source",domain:"d4",content:"MPC using physics-informed neural networks for DAE systems with ResNet + NTK training.",sources:[]},
+  {id:"src_shih_2025",label:"Shih, Jiang & Liang 2025 (NeurIPS / arXiv)",type:"source",domain:"d4",content:"Extended Fiducial Inference for rigorous uncertainty quantification in PINNs without subjective priors/dropout rates.",sources:[]},
+  {id:"src_nobar_2025",label:"Nobar et al. 2025 (arXiv)",type:"source",domain:"d4",content:"Guided multi-fidelity Bayesian optimization with learned correction model for digital twin controller tuning.",sources:[]},
+  {id:"src_bioprocesstools_2026",label:"Bioprocesstools 2026: AI and ML for Bioprocess Optimization",type:"source",domain:"d4",content:"Industry survey of ML method data requirements for bioprocess optimization.",sources:[]},
+  {id:"src_bioprocessintl_2026",label:"Bioprocess International 2026: Multifidelity Optimization in Biopharma",type:"source",domain:"d4",content:"Case study of multi-fidelity BO in mAb process with mechanistic simulator bias up to 15%.",sources:[]},
+  {id:"src_yokogawa_pharma40",label:"Yokogawa: Building Intelligent processes for Pharma 4.0",type:"source",domain:"d8",content:"Yokogawa Insilico digital twin architecture: Reactor + Extracellular Reaction + Kinetic Cell models.",sources:[]},
+  {id:"src_pharma_manufacturing_2022",label:"Pharma Manufacturing 2022: Pharma Innovation Awards",type:"source",domain:"d8",content:"Yokogawa Insilico Digital Twin Factory award and up to 50% experimental effort reduction claim.",sources:[]},
+  {id:"raman_calibration_ipsc",label:"iPSC 浮遊凝集体 Raman 校正戦略",type:"concept",domain:"d7",content:"iPSC 浮遊/凝集体バイオリアクターにおける in-line Raman の再校正アプローチ。Nova FLEX2 を正解ラベル、capacitance を VCD anchor、凝集体画像を光散乱補正の共変量として用いる。CHO 由来モデルは転用不可。v1 では Nova 校正後のオプション、v2 以降の閉ループ入力昇格を目指す。〔推定：設計提案〕",sources:[]},
+  {id:"raman_pls_model",label:"Raman PLS chemometric モデル",type:"concept",domain:"d4",content:"Raman スペクトルから glucose/lactate/glutamine 等を推定する部分最小二乗回帰モデル。前処理（ベースライン補正、Savitzky-Golay 微分、SNV/MSC）、変数選択、leave-one-batch-out 交差検証、外部検証を含む。iPSC では凝集体・高密度細胞による光散乱補正が必要。〔推定：CHO 事例を参考に iPSC 再解釈〕",sources:[]},
+  {id:"raman_reference_nova",label:"Nova FLEX2 Raman 正解ラベル",type:"concept",domain:"d7",content:"Raman PLS モデルの校正に使用する at-line リファレンス計測。Nova BioProfile FLEX2 による glucose/lactate/glutamine/osmolality/viability/細胞径等の多パラメータ正解。ALCOA-lite でサンプル時刻・スペクトル ID・モデル version と紐付ける。〔事実：Nova FLEX2 は 16 項 at-line analyzer; 推定：Raman 校正用途〕",sources:[]},
+  {id:"raman_cell_scattering",label:"Raman 細胞光散乱",type:"concept",domain:"d7",content:"懸濁細胞・凝集体による Mie 散乱により Raman 強度が減衰する現象。Beer-Lambert 則では記述できず、細胞密度との非線形関係が知られる。iPSC 凝集体（150–350 µm）は 785 nm レーザーに対して大きな散乱体となり、スペクトルベースラインと強度に影響を与える。〔事実：Yang 2024 J Biotechnol 396:41-52 DOI:10.1016/j.jbiotec.2024.10.007; 推定：iPSC 凝集体への適用〕",sources:[]},
+  {id:"raman_aggregate_interference",label:"Raman 凝集体干渉",type:"concept",domain:"d7",content:"凝集体径・密度の増大が Raman プローブの光路長と散乱断面積を変化させ、代謝物推定精度を低下させる要因。凝集体径は培養日数とともに増大し（95 µm → 530 µm）、多能性維持のため 400 µm 以下が推奨される。〔事実：Eppendorf AN485; StemCell mTeSR 3D manual; 推定：Raman 干渉〕",sources:[]},
+  {id:"raman_cho_to_ipsc_transfer",label:"CHO→iPSC Raman モデル転移制限",type:"concept",domain:"d4",content:"CHO/mAb 由来の chemometric モデルを iPSC 浮遊凝集体に直接転用できない制約。培地マトリックス、代謝プロファイル、細胞サイズ/凝集体構造、品質指標が異なる。クローン間・スケール間転移すら補正を要する事例が報告されている。〔推定：Pétillot 2020 DOI:10.1002/eng2.12230; Machleidt 2024 DOI:10.1002/biot.202300289; Rowland-Jones 2021 DOI:10.1002/btpr.3074〕",sources:[]},
+  {id:"raman_model_lifecycle",label:"Raman モデルライフサイクル管理",type:"concept",domain:"d6",content:"Raman PLS モデルの version 管理、再校正トリガ（培地ロット変更、細胞株変更、プローブ交換、スケール変更）、性能モニタリング、監査証跡を含む技術的統制。ALCOA-lite・GAMP5 AI/ML Appendix D11 に準じた扱い。〔推定：GAMP5 2nd Ed D11; FDA data integrity guidance〕",sources:[]},
+  {id:"raman_confidence_score",label:"Raman 推定信頼度スコア",type:"concept",domain:"d4",content:"Raman PLS モデルの予測不確実性を定量化するスコア（Q 残差、Hotelling T²、予測分散、校正範囲外判定）。低信頼度時は Human-on-the-loop 承認へエスカレーションし、Nova FLEX2 値を優先する。〔推定：設計提案〕",sources:[]},
+  {id:"src_abu_absi_2011",label:"Abu-Absi et al. 2011 in-line Raman CHO",type:"source",domain:"d7",content:"Real time monitoring of multiple parameters in mammalian cell culture bioreactors using an in-line Raman spectroscopy probe. Biotechnol Bioeng 108(5):1215-1221. CHO fed-batch で glucose/lactate/glutamine/glutamate/ammonium/VCD/TCD の同時 in-line 予測を実証。DOI:10.1002/bit.23023",sources:[]},
+  {id:"src_matthews_2016",label:"Matthews et al. 2016 Raman 乳酸閉ループ制御",type:"source",domain:"d7",content:"Closed loop control of lactate concentration in mammalian cell culture by Raman spectroscopy leads to improved cell density, viability, and biopharmaceutical protein production. Biotechnol Bioeng 113(11):2416-2424. Raman PLS ベースの乳酸閉ループ制御で培養期間延長・収量向上。DOI:10.1002/bit.26018",sources:[]},
+  {id:"src_berry_2015",label:"Berry et al. 2015 cross-scale Raman CHO",type:"source",domain:"d7",content:"Cross-scale predictive modeling of CHO cell culture growth and metabolites using Raman spectroscopy and multivariate analysis. Biotechnol Prog 31(2):566-577. Raman モデルのスケール横断予測。DOI:10.1002/btpr.2035",sources:[]},
+  {id:"src_yan_2024",label:"Yan et al. 2024 Raman バッチ数影響",type:"source",domain:"d7",content:"Development of an in-line Raman analytical method for commercial-scale CHO cell culture process monitoring: influence of measurement channels and batch number on model performance. Biotechnol J 19(1):2300395. 商業規模 CHO での in-line Raman 法開発。チャネル数とバッチ数がモデル性能に与える影響を評価。DOI:10.1002/biot.202300395",sources:[]},
+  {id:"src_costa_2024",label:"Costa et al. 2024 Raman cell therapy review",type:"source",domain:"d7",content:"Harnessing Raman spectroscopy for cell therapy bioprocessing. Biotechnol Adv 2024. Cell therapy 製造における Raman の包括レビュー。細胞密度、生存率、代謝物、細胞同一性バイオマーカーの同時計測可能性を議論。DOI:10.1016/j.biotechadv.2024.108166",sources:[]},
+  {id:"src_yang_2024_raman",label:"Yang et al. 2024 Raman 細胞散乱補正",type:"source",domain:"d7",content:"In-line monitoring of bioreactor by Raman spectroscopy: direct use of a standard-based model through cell-scattering correction. J Biotechnol 396:41-52 (2024). 酵母培養において細胞散乱による Raman 強度減衰を非線形式で補正し、標準液ベース PLS モデルを直接使用。DOI:10.1016/j.jbiotec.2024.10.007",sources:[]},
+  {id:"src_petillot_2020",label:"Pétillot et al. 2020 Raman calibration transfer",type:"source",domain:"d7",content:"Calibration transfer for bioprocess Raman monitoring using Kennard-Stone piecewise direct standardization and multivariate algorithms. Eng Rep 2(11):e12230. バイオプロセス Raman モデルのキャリブレーション転移の困難性と補正手法。DOI:10.1002/eng2.12230",sources:[]},
+  {id:"src_machleidt_2024",label:"Machleidt et al. 2024 cross-clone Raman CHO",type:"source",domain:"d7",content:"Feasibility and performance of cross-clone Raman calibration models in CHO cultivation. Biotechnol J 19(1):2300289. CHO クローン間でも Raman 校正モデルの性能が制限されることを示唆。DOI:10.1002/biot.202300289",sources:[]},
+  {id:"src_rowland_jones_2021",label:"Rowland-Jones et al. 2021 Raman scale transfer",type:"source",domain:"d7",content:"Spectroscopy integration to miniature bioreactors and large scale production bioreactors—increasing current capabilities and model transfer. Biotechnol Prog 37(1):e3074. ミニバイオリアクタから大規模槽への Raman モデル転移の課題。DOI:10.1002/btpr.3074",sources:[]},
+  {id:"src_bioprocesstools_raman",label:"Bioprocess Tools Raman monitoring guide",type:"source",domain:"d7",content:"How to Use Raman Spectroscopy for Real-Time Bioprocess Monitoring. PLS モデル構築ワークフロー、前処理、5–15 バッチ校正、性能指標（RMSEP/R²/bias）の実務ガイド。URL:https://bioprocesstools.com/blog/raman-spectroscopy-bioprocess-monitoring/",sources:[]},
+  {id:"src_metrohm_an_pan_1065",label:"Metrohm 2060 Raman cell culture AN-PAN-1065",type:"source",domain:"d7",content:"Inline monitoring of cell cultures with Raman spectroscopy. Metrohm 2060 Raman Analyzer による細胞培養 glucose/lactate in-line 計測アプリケーションノート。SEP glucose 0.20 g/L、lactate 0.12 g/L。URL:https://www.metrohm.com/en/applications/application-notes/prozess-applikationen-anpan/an-pan-1065.html",sources:[]},
+  {id:"src_repligen_maverick",label:"Repligen MAVERICK Raman PAT",type:"source",domain:"d8",content:"Instant Implementation of Raman-Based PAT With MAVERICK System for Monitoring Glucose and Lactate. de novo モデルによる glucose/lactate/biomass 計測。複数哺乳類培地で線形性・選択性を検証。URL:https://www.repligen.com/Products/analytics/maverick/Resources/DOC043_1.PDF",sources:[]},
+  {id:"src_yokogawa_2023",label:"Yokogawa Raman calibration model without culture data",type:"source",domain:"d8",content:"Yokogawa Electric / Kwansei Gakuin University. Development of Raman calibration model without culture data for in-line cell culture monitoring. glucose RMSEP 0.23 g/L、lactate 0.29 g/L、antibody 0.20 g/L を報告。原論文確認中。URL:https://www.spectroscopyonline.com/view/using-a-new-raman-method-for-real-time-inline-cell-culture-monitoring",sources:[]},
+  {id:"add_cho_ipsc_cho_metabolism",label:"CHO 代謝プロファイル",type:"concept",domain:"d1",content:"ハムスター卵巢由来 CHO 細胞の代謝特性。高グルコース消費、活発な乳酸産生、グルタミン分解によるアンモニア蓄積、mAb タイトル最大化が最適化目標。iPSC にはそのまま転用不可。",sources:[]},
+  {id:"add_cho_ipsc_ipsc_metabolism",label:"iPSC 代謝プロファイル",type:"concept",domain:"d1",content:"ヒト多能性幹細胞 iPSC の代謝特性。highly glycolytic で高密度化に伴いグルコース消費と乳酸分泌が急増。乳酸蓄積・浸透圧ピーク・凝集体サイズが成長制限因子。多能性維持が品質目標。",sources:[]},
+  {id:"add_cho_ipsc_glycolytic_shift",label:"iPSC の高解糖性シフト",type:"concept",domain:"d1",content:"iPSC が未分化状態で解糖系を優位に使う代謝特性。高密度培養ではグルコース供給と乳酸洗浄のトレードオフが顕在化し、灌流制御の中核となる。",sources:[]},
+  {id:"add_cho_ipsc_lactate_threshold",label:"乳酸閾値の細胞種差",type:"concept",domain:"d7",content:"CHO では株により 15–50 mM の阻害閾値が報告される。iPSC では Manstein 2021 のモデル値 K_Lac=50 mM が用いられるが、実際の iPSC 株・培地で再校正が必要。CHO 値をそのまま転用しない。",sources:[]},
+  {id:"add_cho_ipsc_ammonia_threshold",label:"アンモニア閾値の未確定性",type:"concept",domain:"d7",content:"CHO では 5 mM で成長阻害が報告されるが、iPSC のネイティブ閾値は未確定。auto_cell A 層では監視値として扱い、実データまたは文献調査で再校正。",sources:[]},
+  {id:"add_cho_ipsc_osmolality_threshold",label:"浸透圧閾値の細胞種差",type:"concept",domain:"d7",content:"CHO/哺乳類培養では 380–450 mOsm/kg 超で成長低下が報告される。iPSC では Manstein 2021 が K_Osm=500 mOsm/kg を採用。培地・密度依存で再校正要。",sources:[]},
+  {id:"add_cho_ipsc_glucose_threshold",label:"グルコース閾値の細胞種差",type:"concept",domain:"d7",content:"CHO では 2–3 g/L（11–17 mM）維持が推奨される。iPSC では Manstein 2021 が K_Glc=1.5 mM を採用。iPSC は低グルコースで飢餓制限を受けやすい。",sources:[]},
+  {id:"add_cho_ipsc_aggregate_oxygen_diffusion",label:"凝集体内酸素拡散限界",type:"concept",domain:"d1",content:"iPSC 凝集体では径が大きくなると中心部への酸素/栄養拡散が制限され壊死コアが形成。100–200 µm の拡散距離、300 µm 以下の径制御が目安。",sources:[]},
+  {id:"add_cho_ipsc_aggregate_size_cpp",label:"凝集体サイズを CPP として扱う",type:"concept",domain:"d4",content:"iPSC 浮遊培養では凝集体径が酸素拡散、シアストレス、未分化性維持を同時に規定する独立した CPP。平均径だけでなく大径凝集体割合も考慮。",sources:[]},
+  {id:"add_cho_ipsc_shear_sensitivity",label:"iPSC のシア感受性",type:"concept",domain:"d4",content:"iPSC は攪拌によるシアストレスに敏感。Vertical-Wheel では 40–60 rpm が最適、DASbox では 80 rpm（150mL）が報告。反応器形状とスケールで再設定必要。",sources:[]},
+  {id:"add_cho_ipsc_mab_titer_objective",label:"CHO の mAb タイトル目的関数",type:"concept",domain:"d4",content:"CHO fed-batch/perfusion の最適化目標。抗体タイトル（g/L）、viable cell density × specific productivity、糖鎖パターン（CQA）。iPSC 目的関数とは本質的に異なる。",sources:[]},
+  {id:"add_cho_ipsc_pluripotency_objective",label:"iPSC の多能性品質目的関数",type:"concept",domain:"d4",content:"iPSC 浮遊拡大の最適化目標。細胞収量 × 生存率 × 多能性マーカー陽性率（OCT4/SOX2/NANOG/SSEA/TRA）× 凝集体適正サイズ。重みは細胞株・用途で変動。",sources:[]},
+  {id:"add_cho_ipsc_qc_marker_panel",label:"iPSC 多能性 QC マーカーパネル",type:"concept",domain:"d1",content:"iPSC の未分化性を評価するマーカー群。核内転写因子 OCT4/SOX2/NANOG、細胞表面マーカー SSEA-3/SSEA-4/TRA-1-60/TRA-1-81、核型/同一性。offline/run 単位で測定。",sources:[]},
+  {id:"add_cho_ipsc_transfer_caution",label:"CHO→iPSC 知見転用注意",type:"concept",domain:"d4",content:"CHO 由来の CPP 数値・制御戦略・目的関数を iPSC にそのまま転用しないこと。細胞種・培地・反応器形状・製品特性（mAb vs 細胞製品）の違いを再解釈。",sources:[]},
+  {id:"add_cho_ipsc_cpp_reinterpretation",label:"CPP の iPSC 再解釈",type:"concept",domain:"d4",content:"CHO/mAb 中心の調査レポートから得られた知見を、iPSC 浮遊/凝集体灌流の文脈に再解釈する設計活動。L1 レシピ、L2 BO、L3 HMI に反映。",sources:[]},
+  {id:"src_add_cho_ipsc_manstein2021",label:"Manstein & Zweigerdt 2021 hiPSC perfusion",type:"source",domain:"d1",content:"hPSC 灌流撹拌槽高密度培養。7 日で 35×10⁶ cells/mL、乳酸/浸透圧/グルコース制御、6 項 Monod モデル。",sources:[]},
+  {id:"src_add_cho_ipsc_borys2021",label:"Borys et al. 2021 Vertical-Wheel hiPSC",type:"source",domain:"d4",content:"Vertical-Wheel 撹拌槽での hiPSC 凝集体拡大。40 rpm 最適、>400 µm で壊死リスク。",sources:[]},
+  {id:"src_add_cho_ipsc_huang2020",label:"Huang et al. 2020 PSC 10L stirred tank manufacturing",type:"source",domain:"d1",content:"10 L 撹拌槽での PSC 製造プロセス開発。凝集体サイズ 300 µm 制限、酸素拡散限界 100–200 µm。",sources:[]},
+  {id:"src_add_cho_ipsc_xing2008",label:"Xing et al. 2008 CHO metabolite inhibition thresholds",type:"source",domain:"d7",content:"CHO 培養における乳酸・アンモニア・浸透圧・pCO₂ の阻害閾値多変量解析。iPSC への直接転用不可。",sources:[]},
+  {id:"src_add_cho_ipsc_toussaint2016",label:"Toussaint et al. 2016 CHO lactate metabolism engineering",type:"source",domain:"d1",content:"CHO の乳酸代謝改変（PYC2）による抗体タイトル向上。CHO 特異的戦略。",sources:[]},
+  {id:"src_add_cho_ipsc_mabion2025",label:"Mabion 2025 CHO metabolite analysis guide",type:"source",domain:"d7",content:"CHO 培養の代謝物/栄養解析に関する業界ガイダンス。乳酸・アンモニア・浸透圧の影響。",sources:[]},
+  {id:"src_add_cho_ipsc_gfi2025",label:"GFI 2025 Cultivated meat techno-economics report",type:"source",domain:"d7",content:"哺乳類細胞培養における乳酸・浸透圧の阻害メカニズムと閾値範囲。CHO 培養知見を含む。",sources:[]},
+  {id:"src_add_cho_ipsc_seo2021",label:"Seo et al. 2021 Vertical-Wheel iPSC aggregate DoE",type:"source",domain:"d4",content:"Vertical-Wheel での iPSC 凝集体安定性 DoE。OCT4/SOX2/NANOG の個別最適化と多能性維持。",sources:[]},
+  {id:"src_add_cho_ipsc_stemcellpis",label:"STEMCELL hPSC aggregate culture PIS",type:"source",domain:"d1",content:"hPSC 凝集体培養プロトコル。理想平均凝集体径 50–200 µm。",sources:[]},
+  {id:"src_add_cho_ipsc_amsbio",label:"Amsbio stem cell QC guide",type:"source",domain:"d1",content:"幹細胞品質管理ガイド。OCT4/SOX2/NANOG/SSEA/TRA 等の多能性マーカー。",sources:[]},
+  {id:"src_add_cho_ipsc_chen2014",label:"Chen et al. 2014 hPSC culture considerations",type:"source",domain:"d1",content:"hPSC 培養の維持・拡大・治療応用における考慮事項。酸素拡散限界 100–200 µm。",sources:[]},
+  {id:"annex22",label:"PIC/S GMP Annex 22（AI）",type:"concept",domain:"d6",content:"PIC/S・EU GMP の AI/ML 専用アネックス（2025-07-07 草案公開）。クリティカル用途では静的・決定論的 AI/ML モデルのみ許容し、動的学習・確率的出力・生成 AI/LLM を禁止。非クリティカル用途の生成 AI は HITL 下で使用可能。Annex 11 上に位置づけられる。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"},{t:"PIC/S news — Joint stakeholders consultation on Chapter 4 / Annex 11 / Annex 22",u:"https://picscheme.org/en/news/joint-stakeholders-consultation-on-the-revision-of-chapter-4"}]},
+  {id:"critical_ai",label:"クリティカル AI",type:"concept",domain:"d6",content:"患者安全・製品品質・データインテグリティに直接影響する GMP 判断を支援・自動化する AI/ML モデル。Annex 22 では静的・決定論的モデルのみ許可され、厳格な検証・監視・説明性が求められる。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}]},
+  {id:"noncritical_ai",label:"非クリティカル AI",type:"concept",domain:"d6",content:"文書作成、トレーニング、スケジューリング、非 GMP 傾向分析など、患者安全・品質・データ完全性に直接影響しない AI。生成 AI/LLM も HITL 下で使用可能。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}]},
+  {id:"static_model",label:"静的 AI モデル",type:"concept",domain:"d6",content:"デプロイ後に新データを取り込んで性能を適応させない凍結モデル。Annex 22 クリティカル用途で要求される。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}]},
+  {id:"deterministic_output",label:"決定論的出力",type:"concept",domain:"d6",content:"同一入力に対し同一出力を返すモデル特性。Annex 22 クリティカル用途で必須。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}]},
+  {id:"dynamic_model",label:"動的 AI モデル",type:"concept",domain:"d6",content:"使用中又は新データを継続的・自動的に学習し性能を適応させるモデル。Annex 22 ではクリティカル GMP 用途で禁止。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}]},
+  {id:"probabilistic_model",label:"確率的 AI モデル",type:"concept",domain:"d6",content:"同一入力でも異なる出力を生じうるモデル。Annex 22 ではクリティカル GMP 用途で禁止。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}]},
+  {id:"generative_ai",label:"生成 AI",type:"concept",domain:"d6",content:"テキスト・画像等を生成する確率的モデル群。クリティカル GMP 用途では禁止され、非クリティカル用途で HITL 下でのみ使用可能。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}]},
+  {id:"hitl",label:"Human-in-the-Loop（HITL）",type:"concept",domain:"d6",content:"AI 出力を適格な人間がレビュー・承認する仕組み。Annex 22 では非クリティカル AI やテスト負荷が軽減されたクリティカル AI で要求される。auto_cell では Human-on-the-loop として実装。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}]},
+  {id:"xai",label:"説明可能 AI（XAI）",type:"concept",domain:"d6",content:"AI 判断の根拠を人間が理解・監査できる技術。Annex 22 では特徴量帰属（feature attribution）の記録を要求。SHAP・LIME・ヒートマップ等が例。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}]},
+  {id:"confidence_score",label:"信頼度スコア",type:"concept",domain:"d6",content:"AI モデルの予測・分類ごとの信頼度を数値化したもの。Annex 22 では低信頼度出力を undecided として人間レビューへルーティングすることを求める。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}]},
+  {id:"feature_attribution",label:"特徴量帰属",type:"concept",domain:"d6",content:"モデル出力に寄与した入力特徴量を特定・記録する技術。XAI の中核。Annex 22 8.Explainability で要求。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}]},
+  {id:"drift_monitoring",label:"ドリフト監視",type:"concept",domain:"d6",content:"AI モデルの性能劣化や入力データ分布の変化を継続的に監視する仕組み。Annex 22 10.Operation で要求。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}]},
+  {id:"test_data_independence",label:"テストデータ独立性",type:"concept",domain:"d6",content:"テスト用データが訓練・検証に使用されないよう技術的・手続き的に保証すること。Annex 22 6.Test Data Independency で要求。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}]},
+  {id:"staff_independence",label:"職員独立性",type:"concept",domain:"d6",content:"テストデータにアクセスした職員が同じモデルの訓練・検証に関与しないこと。不可能な場合は dual control/4-eyes で緩和。Annex 22 6.5 で要求。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}]},
+  {id:"data_segregation",label:"データ分離",type:"concept",domain:"d6",content:"訓練・検証・テスト・運用データを分離し、混同・漏洩を防ぐ技術的管理。Annex 22 の test data independency と運用監視の前提。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}]},
+  {id:"static_deterministic_proof",label:"静的決定論的証明",type:"concept",domain:"d6",content:"AI モデルが静的（凍結パラメータ）かつ決定論的（同一入力→同一出力）であることを、チェックサム・固定シード・再現性テスト・モデルカードで証明する手法。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}]},
+  {id:"esignature",label:"電子署名",type:"concept",domain:"d6",content:"電子的な承認・検証を行う仕組み。R&D 一次では PIN/パスフレーズ+監査ログで済ませ、GMP 移行時に 21 CFR Part 11 / Annex 11 準拠の完全電子署名へ移行。",sources:[{t:"21 CFR Part 11 — Electronic Records; Electronic Signatures",u:"https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11"}]},
+  {id:"gamp_ai_lifecycle",label:"GAMP5 AI ライフサイクル",type:"concept",domain:"d6",content:"ISPE GAMP 5 Appendix D11 及び GAMP AI Guide が定める concept / project / operation / retirement の AI 有効化システムライフサイクル。Annex 22 実装の業界標準フレームワーク。",sources:[{t:"ISPE GAMP Guide: Artificial Intelligence (2025)",u:"https://ispe.org/publications/guidance-documents/gamp-guide-artificial-intelligence"}]},
+  {id:"src_pics_annex22_draft",label:"PIC/S GMP Annex 22 草案",type:"source",domain:"d6",content:"EudraLex Volume 4, Draft Annex 22: Artificial Intelligence, published 2025-07-07 for PIC/S and EU consultation. 患者安全・品質・データインテグリティに影響するクリティカル AI には静的決定論的モデルのみを許容。",sources:[{t:"EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)",u:"https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}]},
+  {id:"src_eu_ai_act",label:"EU AI Act (Regulation 2024/1689)",type:"source",domain:"d6",content:"欧州 AI 規則。製造プロセス制御等の high-risk AI に透明性・文書化・人間監視を要求。Annex 22 と併用される。",sources:[{t:"Regulation (EU) 2024/1689 — Artificial Intelligence Act",u:"https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689"}]},
+  {id:"add_aggimg_aggregate_imaging_survey",label:"浮遊凝集体画像解析調査",type:"concept",domain:"d2",content:"iPSC 浮遊/凝集体の径・形態を at-line/in-line で計測し、label-free DL で品質代理指標を推定する技術群。v1 では at-line 明視野/位相差画像を主軸とし、DHM/FBRM/FlowCam はオプション〜後段。",sources:[{t:"Borys et al. 2021, Stem Cell Res Ther 12:55",u:"https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/"},{t:"Eppendorf App Note 485: hiPSC Aggregate Expansion in Stirred-tank Bioreactors",u:"https://www.eppendorf.com/product-media/doc/en/11804882/Fermentors-Bioreactors_Application-Note_485_SciVario_Human-Induced-Pluripotent-Stem-Cell-hiPSC-Aggregate-Expansion-Stirred-tank-Bioreactors-SciVario-twin-Bioprocess-Controller.pdf"}]},
+  {id:"add_aggimg_dhm_ovizio",label:"DHM / Ovizio iLINE-F PRO",type:"system",domain:"d7",content:"差分デジタルホログラフィー（D3HM）による in-line ラベルフリー細胞/凝集体モニタリング。VCD・viability・形態パラメータを連続計測。OPC UA 対応・cGMP 対応。iPSC 凝集体の個別径絶対精度には校正が必要。",sources:[{t:"Ovizio iLINE-F PRO commercial partnership (BioProcess Online)",u:"https://www.bioprocessonline.com/doc/ovizio-imaging-systems-is-entering-into-a-commercial-partnership-with-merck-to-promote-its-iline-f-pro-solution-for-the-cell-gene-therapy-market-0001"}]},
+  {id:"add_aggimg_fbrm_cld_detail",label:"FBRM 弦長分布（CLD）解析",type:"concept",domain:"d7",content:"Focused Beam Reflectance Measurement による in-line chord length distribution。0.5–1000 µm のトレンド監視が可能。CLD は真の粒径分布ではなく、凝集体の非球形・透光性により径換算に誤差。画像法で補正が必要。",sources:[{t:"Mettler Toledo ParticleTrack with FBRM technology",u:"https://www.mt.com/my/en/home/products/L1_AutochemProducts/particle-size-analyzers/particletrack-fbrm.html"}]},
+  {id:"add_aggimg_flowcam_atline",label:"FlowCam at-line 凝集体画像",type:"system",domain:"d7",content:"フローイメージング顕微鏡による at-line 粒子/凝集体解析。2 µm–1 mm の径・面積・円形度・アスペクト比を画像ベースで出力。高濃度・重なり凝集体では計数漏れあり。日次運用が現実的。",sources:[{t:"FlowCam — What is FlowCam?",u:"https://www.fluidimaging.com/blog/what-is-the-flowcam"}]},
+  {id:"add_aggimg_brightfield_atline",label:"明視野/位相差 at-line 凝集体画像",type:"concept",domain:"d7",content:"iPSC 浮遊凝集体で最も普及している at-line 画像計測。サンプリング＋光学顕微鏡＋ImageJ 等で径・形態を手動/半自動計測。Kropp 型バイパス顕微鏡または自動サンプリング＋顕微鏡で自動化可能。",sources:[{t:"Kropp/Lipsitz et al. 2019, Sci Rep — at-line bypass imaging of hiPSC aggregates",u:"https://www.nature.com/articles/s41598-019-48814-w"},{t:"Eppendorf App Note 485: hiPSC Aggregate Expansion in Stirred-tank Bioreactors",u:"https://www.eppendorf.com/product-media/doc/en/11804882/Fermentors-Bioreactors_Application-Note_485_SciVario_Human-Induced-Pluripotent-Stem-Cell-hiPSC-Aggregate-Expansion-Stirred-tank-Bioreactors-SciVario-twin-Bioprocess-Controller.pdf"}]},
+  {id:"add_aggimg_aggregate_quality_proxy",label:"凝集体品質代理指標",type:"concept",domain:"d2",content:"凝集体画像特徴量（径分布、円形度、内部輝度勾配、輪郭粗さ等）から OCT4/SOX2/NANOG/SSEA4/TRA-1-60 等の offline 品質マーカーを推定する代理指標。v1 では未導入、v2 以降の DL 化候補。",sources:[{t:"Park et al. 2022, Deep learning predicts kidney organoid differentiation",u:"https://www.krcp-ksn.org/upload/pdf/j-krcp-22-017.pdf"},{t:"Piotrowski et al. 2021, Comput Biol Med 129:104172",u:"https://doi.org/10.1016/j.compbiomed.2020.104172"}]},
+  {id:"add_aggimg_dl_morphology_pluripotency",label:"DL 形態から多能性予測",type:"concept",domain:"d2",content:"明視野/位相差画像から CNN/U-Net/DenseNet 等で未分化/自発分化を予測する技術。2D コロニー・organoid で実証多数。iPSC 浮遊凝集体への転移は有望だが、教師データ・細胞株汎化が未解決。",sources:[{t:"Chu et al. 2023, Comput Methods Programs Biomed 229:107264",u:"https://doi.org/10.1016/j.cmpb.2022.107264"},{t:"Waisman et al. 2019, Stem Cell Rep 12:845–859",u:"https://doi.org/10.1016/j.stemcr.2019.02.004"}]},
+  {id:"add_aggimg_aggregate_size_pluripotency",label:"凝集体径と多能性維持",type:"concept",domain:"d1",content:"凝集体径が大きくなると拡散制限により内部の酸素/栄養濃度が低下し、未分化性マーカー（OCT4 等）が低下・壊死が増大する。Borys 2021 では >400 µm で壊死リスク。細胞株・培地による変動あり。",sources:[{t:"Borys et al. 2021, Stem Cell Res Ther 12:55",u:"https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/"},{t:"StemCell Technologies, Expansion of hPSCs as Aggregates in Suspension Culture Using mTeSR 3D",u:"https://cdn.stemcell.com/media/files/manual/10000005520-Expansion_of_Human_Pluripotent_Stem_Cells_as_Aggregates_in_Suspension_Culture_Using_mTeSR_3D.pdf"}]},
+  {id:"add_aggimg_2d_to_aggregate_transfer",label:"2D 画像解析→凝集体解析転移",type:"concept",domain:"d2",content:"2D confluency は浮遊凝集体に不適用。コロニー形態分類・分化領域検出・増殖曲線予測の技術スタックは転移可能だが、教師ラベルと特徴量を凝集体の径・形態・内部構造に読み替える必要がある。",sources:[{t:"Gursky 2023, How Morphology of hPSCs Determines Clone Selection (IntechOpen)",u:"https://www.intechopen.com/online-first/87934"}]},
+  {id:"add_aggimg_human_approval_imaging",label:"画像品質代理指標の Human-on-the-loop",type:"concept",domain:"d6",content:"DL 品質代理指標を BO 目的関数や passage トリガに使う場合、予測不確実性・OOD 検出により低信頼度の場合は研究者承認を必須とする。GAMP5 AI/ML Appendix D11 に準拠したモデル管理が前提。",sources:[{t:"auto_cell A 層要求仕様（Human-on-the-loop）",u:"docs/design/requirements.md"},{t:"ADR-0001: thin LLM orchestrator over deterministic tools + Bayesian optimization",u:"docs/design/adr/0001-control-architecture.md"}]},
+  {id:"add_aggimg_src_borys_2021",label:"Borys et al. 2021 (hiPSC Vertical-Wheel)",type:"source",domain:"d4",content:"Vertical-Wheel 撹拌槽での hiPSC 凝集体培養。40–80 rpm で day 5 径 169–275 µm、>400 µm で壊死リスク。PMC7805206。",sources:[{t:"Borys et al. 2021, Stem Cell Res Ther 12:55",u:"https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/"}]},
+  {id:"add_aggimg_src_eppendorf_485",label:"Eppendorf App Note 485 (hiPSC stirred-tank)",type:"source",domain:"d7",content:"1 L DASGIP Spinner Vessel での hiPSC 凝集体拡大。day 0–5 で 0.5×10⁶ → 8×10⁶ cells/mL。凝集体径は at-line 明視野画像＋ImageJ で手動測定。",sources:[{t:"Eppendorf App Note 485",u:"https://www.eppendorf.com/product-media/doc/en/11804882/Fermentors-Bioreactors_Application-Note_485_SciVario_Human-Induced-Pluripotent-Stem-Cell-hiPSC-Aggregate-Expansion-Stirred-tank-Bioreactors-SciVario-twin-Bioprocess-Controller.pdf"}]},
+  {id:"add_aggimg_src_stemcell_mtesr3d",label:"StemCell mTeSR 3D suspension manual",type:"source",domain:"d1",content:"hPSC 浮遊凝集体培養マニュアル。>400 µm で core が栄養欠乏・分化/細胞死。3–4 日ごとの継代を推奨。",sources:[{t:"StemCell Technologies, Expansion of hPSCs as Aggregates in Suspension Culture Using mTeSR 3D",u:"https://cdn.stemcell.com/media/files/manual/10000005520-Expansion_of_Human_Pluripotent_Stem_Cells_as_Aggregates_in_Suspension_Culture_Using_mTeSR_3D.pdf"}]},
+  {id:"add_aggimg_src_kropp_2019",label:"Kropp/Lipsitz et al. 2019 (hiPSC bypass imaging)",type:"source",domain:"d7",content:"hiPSC 撹拌懸濁培養の at-line バイパス顕微鏡画像。凝集体径・形態の自動計測への先行例。DOI 10.1038/s41598-019-48814-w。",sources:[{t:"Kropp/Lipsitz et al. 2019, Sci Rep",u:"https://www.nature.com/articles/s41598-019-48814-w"}]},
+  {id:"add_aggimg_src_ovizio_ilinef",label:"Ovizio iLINE-F PRO ベンダ資料",type:"source",domain:"d7",content:"D3HM ベースの in-line ラベルフリー細胞/凝集体モニタリング。VCD・viability・形態パラメータ・OPC UA 対応。",sources:[{t:"Ovizio iLINE-F PRO commercial partnership",u:"https://www.bioprocessonline.com/doc/ovizio-imaging-systems-is-entering-into-a-commercial-partnership-with-merck-to-promote-its-iline-f-pro-solution-for-the-cell-gene-therapy-market-0001"}]},
+  {id:"add_aggimg_src_fbrm_g400",label:"Mettler Toledo FBRM 技術資料",type:"source",domain:"d7",content:"FBRM 原理：回転レーザー後方散乱による chord length distribution。iPSC 凝集体では CLD→径換算に注意。",sources:[{t:"ParticleTrack with FBRM technology",u:"https://www.mt.com/my/en/home/products/L1_AutochemProducts/particle-size-analyzers/particletrack-fbrm.html"}]},
+  {id:"add_aggimg_src_flowcam",label:"FlowCam 技術資料",type:"source",domain:"d7",content:"フローイメージング顕微鏡。2 µm–1 mm の粒子/凝集体画像解析。高濃度・重なり時は計数漏れ。",sources:[{t:"FlowCam — What is FlowCam?",u:"https://www.fluidimaging.com/blog/what-is-the-flowcam"}]},
+  {id:"add_aggimg_src_chu_2023",label:"Chu et al. 2023 (iPSC reprogramming DL)",type:"source",domain:"d2",content:"明視野時系列画像から hiPSC 形成・コロニー形態を予測。CNN+U-Net+RNN。accuracy 0.8。DOI 10.1016/j.cmpb.2022.107264。",sources:[{t:"Chu et al. 2023, Comput Methods Programs Biomed 229:107264",u:"https://doi.org/10.1016/j.cmpb.2022.107264"}]},
+  {id:"add_aggimg_src_park_2022",label:"Park et al. 2022 (kidney organoid DL differentiation)",type:"source",domain:"d2",content:"明視野画像から DenseNet121 で kidney organoid 分化を予測。qPCR 発現予測 PCC 0.783。",sources:[{t:"Park et al. 2022, Korean J Intern Med supplement",u:"https://www.krcp-ksn.org/upload/pdf/j-krcp-22-017.pdf"}]},
+  {id:"add_aggimg_src_piotrowski_2021",label:"Piotrowski et al. 2021 (hPSC DL segmentation)",type:"source",domain:"d2",content:"hPSC 2D 培養のマルチクラス DL セグメンテーションによる培養状態自動評価。DOI 10.1016/j.compbiomed.2020.104172。",sources:[{t:"Piotrowski et al. 2021, Comput Biol Med 129:104172",u:"https://doi.org/10.1016/j.compbiomed.2020.104172"}]},
+  {id:"add_aggimg_src_waisman_2019",label:"Waisman et al. 2019 (early differentiation DL)",type:"source",domain:"d2",content:"mESC の非常早期分化を DL で高精度予測。Stem Cell Rep 12:845–859。",sources:[{t:"Waisman et al. 2019, Stem Cell Rep 12:845–859",u:"https://doi.org/10.1016/j.stemcr.2019.02.004"}]},
+  {id:"add_aggimg_src_maddah_2014",label:"Maddah et al. 2014 (morphology-based iPSC evaluation)",type:"source",domain:"d2",content:"time-lapse + 形態特徴量による iPSC コロニー品質自動評価。6 特徴量で accuracy 0.80–0.89。",sources:[{t:"Maddah et al. 2014, J Lab Autom 19:454–460",u:"https://doi.org/10.1177/2211068214529287"}]},
+  {id:"add_aggimg_src_kato_2016",label:"Kato et al. 2016 (colony morphology & gene expression)",type:"source",domain:"d2",content:"hPSC コロニー形態のパラメトリック解析。形態カテゴリと遺伝子発現プロファイルが対応。Sci Rep 6:34009。",sources:[{t:"Kato et al. 2016, Sci Rep 6:34009",u:"https://doi.org/10.1038/srep34009"}]},
+  {id:"add_aggimg_src_gursky_2023",label:"Gursky 2023 (hPSC morphology review)",type:"source",domain:"d2",content:"hPSC 形態と自動評価のレビュー。培地・マトリックス・細胞株による形態変動を指摘。",sources:[{t:"Gursky 2023, How Morphology of hPSCs Determines Clone Selection (IntechOpen)",u:"https://www.intechopen.com/online-first/87934"}]}
+];
+
+const EDGES = [
+  {s:"root",t:"d1",rel:"contains"},
+  {s:"root",t:"d2",rel:"contains"},
+  {s:"root",t:"d3",rel:"contains"},
+  {s:"root",t:"d4",rel:"contains"},
+  {s:"root",t:"d5",rel:"contains"},
+  {s:"root",t:"d6",rel:"contains"},
+  {s:"root",t:"d7",rel:"contains"},
+  {s:"root",t:"d8",rel:"contains"},
+  {s:"d1",t:"maint",rel:"has"},
+  {s:"d1",t:"passage",rel:"has"},
+  {s:"d1",t:"feeder",rel:"has"},
+  {s:"d1",t:"diff",rel:"has"},
+  {s:"d1",t:"signal",rel:"has"},
+  {s:"d1",t:"suspension",rel:"has"},
+  {s:"d1",t:"reprog",rel:"has"},
+  {s:"d1",t:"qccrit",rel:"has"},
+  {s:"d2",t:"bf",rel:"has"},
+  {s:"d2",t:"conf",rel:"has"},
+  {s:"d2",t:"morphcls",rel:"has"},
+  {s:"d2",t:"diffdet",rel:"has"},
+  {s:"d2",t:"growth",rel:"has"},
+  {s:"d2",t:"dlmodel",rel:"has"},
+  {s:"d3",t:"dualarm",rel:"has"},
+  {s:"d3",t:"closeddev",rel:"has"},
+  {s:"d3",t:"dispense",rel:"has"},
+  {s:"d3",t:"transport",rel:"has"},
+  {s:"d3",t:"motioncap",rel:"has"},
+  {s:"d4",t:"sched",rel:"has"},
+  {s:"d4",t:"loop",rel:"has"},
+  {s:"d4",t:"bbo",rel:"has"},
+  {s:"d4",t:"doe",rel:"has"},
+  {s:"d4",t:"sdl",rel:"has"},
+  {s:"d4",t:"rl",rel:"has"},
+  {s:"d5",t:"sila",rel:"has"},
+  {s:"d5",t:"opcua",rel:"has"},
+  {s:"d5",t:"mtp",rel:"has"},
+  {s:"d5",t:"orch",rel:"has"},
+  {s:"d5",t:"gateway",rel:"has"},
+  {s:"d5",t:"lims",rel:"has"},
+  {s:"d5",t:"datamodel",rel:"has"},
+  {s:"d6",t:"gctp",rel:"has"},
+  {s:"d6",t:"ramlaw",rel:"has"},
+  {s:"d6",t:"alcoa",rel:"has"},
+  {s:"d6",t:"csv",rel:"has"},
+  {s:"d6",t:"part11",rel:"has"},
+  {s:"d6",t:"ebr",rel:"has"},
+  {s:"d6",t:"audit",rel:"has"},
+  {s:"d6",t:"capa",rel:"has"},
+  {s:"d7",t:"envmon",rel:"has"},
+  {s:"d7",t:"sterility",rel:"has"},
+  {s:"d7",t:"cpv",rel:"has"},
+  {s:"d7",t:"edge",rel:"has"},
+  {s:"d8",t:"cira",rel:"has"},
+  {s:"d8",t:"terumo",rel:"has"},
+  {s:"d8",t:"pana",rel:"has"},
+  {s:"d8",t:"kaneka",rel:"has"},
+  {s:"d8",t:"rbi",rel:"has"},
+  {s:"d8",t:"epistra",rel:"has"},
+  {s:"d8",t:"moldev",rel:"has"},
+  {s:"d8",t:"astellas",rel:"has"},
+  {s:"growth",t:"passage",rel:"triggers"},
+  {s:"conf",t:"sched",rel:"feeds"},
+  {s:"conf",t:"loop",rel:"feeds"},
+  {s:"diffdet",t:"qccrit",rel:"evaluates"},
+  {s:"morphcls",t:"qccrit",rel:"evaluates"},
+  {s:"dlmodel",t:"conf",rel:"powers"},
+  {s:"dlmodel",t:"morphcls",rel:"powers"},
+  {s:"dlmodel",t:"diffdet",rel:"powers"},
+  {s:"bf",t:"dlmodel",rel:"input_to"},
+  {s:"loop",t:"dispense",rel:"commands"},
+  {s:"loop",t:"transport",rel:"commands"},
+  {s:"sched",t:"loop",rel:"drives"},
+  {s:"bbo",t:"signal",rel:"optimizes"},
+  {s:"bbo",t:"diff",rel:"optimizes"},
+  {s:"doe",t:"bbo",rel:"formulates"},
+  {s:"sdl",t:"bbo",rel:"uses"},
+  {s:"sdl",t:"loop",rel:"extends"},
+  {s:"rl",t:"sdl",rel:"advances"},
+  {s:"passage",t:"maint",rel:"part_of"},
+  {s:"signal",t:"diff",rel:"controls"},
+  {s:"feeder",t:"maint",rel:"enables"},
+  {s:"suspension",t:"reprog",rel:"scales"},
+  {s:"reprog",t:"maint",rel:"precedes"},
+  {s:"motioncap",t:"passage",rel:"reproduces"},
+  {s:"dualarm",t:"diff",rel:"executes"},
+  {s:"closeddev",t:"maint",rel:"executes"},
+  {s:"dispense",t:"maint",rel:"executes"},
+  {s:"sila",t:"closeddev",rel:"integrates"},
+  {s:"sila",t:"dualarm",rel:"integrates"},
+  {s:"sila",t:"edge",rel:"integrates"},
+  {s:"opcua",t:"closeddev",rel:"integrates"},
+  {s:"gateway",t:"sila",rel:"bridges_to"},
+  {s:"orch",t:"sched",rel:"hosts"},
+  {s:"orch",t:"sila",rel:"consumes"},
+  {s:"datamodel",t:"lims",rel:"feeds"},
+  {s:"lims",t:"ebr",rel:"produces"},
+  {s:"edge",t:"envmon",rel:"carries"},
+  {s:"envmon",t:"maint",rel:"monitors"},
+  {s:"envmon",t:"loop",rel:"state_for"},
+  {s:"sterility",t:"closeddev",rel:"guards"},
+  {s:"cpv",t:"qccrit",rel:"verifies"},
+  {s:"gctp",t:"cira",rel:"governs"},
+  {s:"ramlaw",t:"closeddev",rel:"governs"},
+  {s:"alcoa",t:"ebr",rel:"constrains"},
+  {s:"alcoa",t:"audit",rel:"constrains"},
+  {s:"alcoa",t:"datamodel",rel:"constrains"},
+  {s:"csv",t:"lims",rel:"validates"},
+  {s:"csv",t:"loop",rel:"validates"},
+  {s:"part11",t:"ebr",rel:"requires"},
+  {s:"part11",t:"audit",rel:"requires"},
+  {s:"capa",t:"sterility",rel:"responds_to"},
+  {s:"gctp",t:"qccrit",rel:"defines"},
+  {s:"cira",t:"closeddev",rel:"uses"},
+  {s:"cira",t:"terumo",rel:"partners"},
+  {s:"cira",t:"reprog",rel:"pursues"},
+  {s:"cira",t:"maint",rel:"pursues"},
+  {s:"terumo",t:"closeddev",rel:"provides"},
+  {s:"pana",t:"closeddev",rel:"builds"},
+  {s:"pana",t:"reprog",rel:"automates"},
+  {s:"kaneka",t:"suspension",rel:"demonstrates"},
+  {s:"rbi",t:"dualarm",rel:"provides"},
+  {s:"epistra",t:"bbo",rel:"provides"},
+  {s:"moldev",t:"conf",rel:"implements"},
+  {s:"moldev",t:"diffdet",rel:"implements"},
+  {s:"moldev",t:"loop",rel:"implements"},
+  {s:"astellas",t:"dualarm",rel:"uses"},
+  {s:"src_kanda",t:"bbo",rel:"defines"},
+  {s:"src_kanda",t:"sdl",rel:"defines"},
+  {s:"src_kanda",t:"diff",rel:"demonstrates"},
+  {s:"src_riken2020",t:"growth",rel:"demonstrates"},
+  {s:"src_riken2020",t:"loop",rel:"demonstrates"},
+  {s:"src_sila",t:"sila",rel:"specifies"},
+  {s:"src_sila",t:"orch",rel:"informs"},
+  {s:"src_gctp",t:"gctp",rel:"specifies"},
+  {s:"src_cgt",t:"alcoa",rel:"explains"},
+  {s:"src_cgt",t:"csv",rel:"explains"},
+  {s:"src_cxa",t:"conf",rel:"illustrates"},
+  {s:"src_cxa",t:"diffdet",rel:"illustrates"},
+  {s:"src_susp",t:"suspension",rel:"reports"},
+  {s:"d1",t:"kinetics",rel:"has"},
+  {s:"kinetics",t:"suspension",rel:"reproduces"},
+  {s:"kinetics",t:"loop",rel:"validates"},
+  {s:"src_borys",t:"suspension",rel:"demonstrates"},
+  {s:"src_kropp",t:"suspension",rel:"demonstrates"},
+  {s:"src_traj",t:"suspension",rel:"reports"},
+  {s:"src_manstein",t:"kinetics",rel:"defines"},
+  {s:"src_manstein",t:"suspension",rel:"demonstrates"},
+  {s:"src_galv",t:"kinetics",rel:"informs"},
+  {s:"src_lads",t:"opcua",rel:"specifies"},
+  {s:"gateway",t:"opcua",rel:"bridges_to"},
+  {s:"d4",t:"ctrl_split",rel:"has"},
+  {s:"ctrl_split",t:"loop",rel:"constrains"},
+  {s:"csv",t:"ctrl_split",rel:"validates"},
+  {s:"d5",t:"devprofile",rel:"has"},
+  {s:"devprofile",t:"opcua",rel:"uses"},
+  {s:"gateway",t:"devprofile",rel:"implements"},
+  {s:"cpv",t:"loop",rel:"feeds"},
+  {s:"src_manstein",t:"cpv",rel:"demonstrates"},
+  {s:"recipe_executor",t:"loop",rel:"implements"},
+  {s:"recipe_dsl",t:"recipe_executor",rel:"defines"},
+  {s:"rule_engine",t:"recipe_executor",rel:"evaluates"},
+  {s:"state_machine_l1",t:"recipe_executor",rel:"governs"},
+  {s:"l0_local_pid",t:"closeddev",rel:"controls"},
+  {s:"l0_fail_safe",t:"l0_local_pid",rel:"protects"},
+  {s:"ctrl_split",t:"l0_local_pid",rel:"separates"},
+  {s:"ctrl_split",t:"recipe_executor",rel:"separates"},
+  {s:"ax_bayesian",t:"bbo",rel:"optimizes"},
+  {s:"botorch",t:"ax_bayesian",rel:"powers"},
+  {s:"multi_fidelity",t:"kinetics",rel:"uses"},
+  {s:"multi_fidelity",t:"bbo",rel:"extends"},
+  {s:"safe_bo",t:"bbo",rel:"constrains"},
+  {s:"batch_bo",t:"bbo",rel:"extends"},
+  {s:"llm_orchestrator",t:"loop",rel:"extends"},
+  {s:"llm_orchestrator",t:"human_approval",rel:"mediates"},
+  {s:"approval_workflow",t:"human_approval",rel:"requires"},
+  {s:"approval_workflow",t:"loop",rel:"constrains"},
+  {s:"idempotency",t:"loop",rel:"ensures"},
+  {s:"validate_tool_call",t:"recipe_executor",rel:"constrains"},
+  {s:"set_perfusion_rate",t:"recipe_executor",rel:"part_of"},
+  {s:"set_agitation_rpm",t:"recipe_executor",rel:"part_of"},
+  {s:"trigger_passage_l1",t:"passage",rel:"triggers"},
+  {s:"take_sample_l1",t:"cpv",rel:"feeds"},
+  {s:"recipe_executor",t:"dispense",rel:"commands"},
+  {s:"recipe_executor",t:"closeddev",rel:"commands"},
+  {s:"bbo",t:"suspension",rel:"optimizes"},
+  {s:"kinetics",t:"recipe_executor",rel:"validates"},
+  {s:"kinetics",t:"cpp_glucose",rel:"defines"},
+  {s:"kinetics",t:"cpp_lactate",rel:"defines"},
+  {s:"kinetics",t:"cpp_glutamine",rel:"defines"},
+  {s:"kinetics",t:"cpp_osmolality",rel:"defines"},
+  {s:"kinetics",t:"cpp_aggregate_diameter",rel:"defines"},
+  {s:"src_manstein",t:"cpp_perfusion_rate",rel:"defines"},
+  {s:"src_borys",t:"cpp_agitation",rel:"defines"},
+  {s:"src_borys",t:"cpp_aggregate_diameter",rel:"constrains"},
+  {s:"cpp_perfusion_rate",t:"cpp_glucose",rel:"controls"},
+  {s:"cpp_perfusion_rate",t:"cpp_lactate",rel:"controls"},
+  {s:"cpp_perfusion_rate",t:"cpp_osmolality",rel:"controls"},
+  {s:"cpp_glucose",t:"perfusion_trigger",rel:"triggers"},
+  {s:"cpp_lactate",t:"perfusion_trigger",rel:"triggers"},
+  {s:"cpp_osmolality",t:"perfusion_trigger",rel:"triggers"},
+  {s:"perfusion_trigger",t:"tool_set_perfusion_rate",rel:"commands"},
+  {s:"ramp_limit",t:"tool_set_perfusion_rate",rel:"constrains"},
+  {s:"ramp_limit",t:"tool_set_agitation_rpm",rel:"constrains"},
+  {s:"cpp_aggregate_diameter",t:"tool_trigger_passage",rel:"triggers"},
+  {s:"cpp_vcd",t:"tool_trigger_passage",rel:"triggers"},
+  {s:"y_27632",t:"passage",rel:"part_of"},
+  {s:"tool_trigger_passage",t:"y_27632",rel:"requires"},
+  {s:"cpv",t:"cpp_vcd",rel:"measures"},
+  {s:"cpv",t:"cpp_glucose",rel:"measures"},
+  {s:"cpv",t:"cpp_lactate",rel:"measures"},
+  {s:"cpv",t:"cpp_glutamine",rel:"measures"},
+  {s:"cpv",t:"cpp_osmolality",rel:"measures"},
+  {s:"cpv",t:"cpp_ammonia",rel:"measures"},
+  {s:"cpv",t:"cpp_viability",rel:"measures"},
+  {s:"envmon",t:"cpp_ph",rel:"measures"},
+  {s:"envmon",t:"cpp_do",rel:"measures"},
+  {s:"envmon",t:"cpp_temp",rel:"measures"},
+  {s:"bbo",t:"cpp_agitation",rel:"optimizes"},
+  {s:"bbo",t:"cpp_perfusion_rate",rel:"optimizes"},
+  {s:"bbo",t:"cpp_aggregate_diameter",rel:"optimizes"},
+  {s:"ctrl_split",t:"cpp_ph",rel:"constrains"},
+  {s:"ctrl_split",t:"cpp_do",rel:"constrains"},
+  {s:"ctrl_split",t:"cpp_temp",rel:"constrains"},
+  {s:"ctrl_split",t:"cpp_agitation",rel:"constrains"},
+  {s:"devprofile",t:"cpp_ph",rel:"contains"},
+  {s:"devprofile",t:"cpp_do",rel:"contains"},
+  {s:"devprofile",t:"cpp_temp",rel:"contains"},
+  {s:"devprofile",t:"cpp_agitation",rel:"contains"},
+  {s:"devprofile",t:"cpp_perfusion_rate",rel:"contains"},
+  {s:"qccrit",t:"cpp_viability",rel:"verifies"},
+  {s:"qccrit",t:"cpp_aggregate_diameter",rel:"verifies"},
+  {s:"src_yehya2024",t:"cpp_agitation",rel:"supports"},
+  {s:"src_xing2008",t:"cpp_osmolality",rel:"informs"},
+  {s:"src_nova_flex2",t:"cpv",rel:"enables"},
+  {s:"loop",t:"tool_set_perfusion_rate",rel:"commands"},
+  {s:"loop",t:"tool_set_agitation_rpm",rel:"commands"},
+  {s:"loop",t:"tool_trigger_passage",rel:"commands"},
+  {s:"csv",t:"ramp_limit",rel:"validates"},
+  {s:"opcua",t:"lads_functional_unit",rel:"contains"},
+  {s:"lads_functional_unit",t:"lads_sensor_function",rel:"has"},
+  {s:"lads_functional_unit",t:"lads_controller_function",rel:"has"},
+  {s:"lads_functional_unit",t:"lads_actuator_function",rel:"has"},
+  {s:"lads_functional_unit",t:"lads_program_result",rel:"has"},
+  {s:"lads_sensor_function",t:"envmon",rel:"provides"},
+  {s:"lads_sensor_function",t:"cpv",rel:"provides"},
+  {s:"lads_controller_function",t:"closeddev",rel:"commands"},
+  {s:"lads_actuator_function",t:"dispense",rel:"commands"},
+  {s:"lads_program_result",t:"ebr",rel:"records"},
+  {s:"sila",t:"sila_feature",rel:"contains"},
+  {s:"sila_feature",t:"peripheral_sampler",rel:"integrates"},
+  {s:"sila_feature",t:"peripheral_dispenser",rel:"integrates"},
+  {s:"sila_feature",t:"peripheral_atline_analyzer",rel:"integrates"},
+  {s:"peripheral_atline_analyzer",t:"cpv",rel:"verifies"},
+  {s:"devprofile",t:"lads_functional_unit",rel:"defines"},
+  {s:"devprofile",t:"sila_feature",rel:"defines"},
+  {s:"devprofile",t:"mqtt_topic_contract",rel:"defines"},
+  {s:"gateway",t:"lads_functional_unit",rel:"translates"},
+  {s:"gateway",t:"sila_feature",rel:"translates"},
+  {s:"gateway",t:"mqtt_topic_contract",rel:"bridges_to"},
+  {s:"gateway_cmd_ack",t:"mqtt_topic_contract",rel:"implements"},
+  {s:"icd_setpoint_envelope",t:"lads_controller_function",rel:"constrains"},
+  {s:"icd_setpoint_envelope",t:"lads_actuator_function",rel:"constrains"},
+  {s:"icd_setpoint_envelope",t:"ctrl_split",rel:"validates"},
+  {s:"src_lads",t:"lads_functional_unit",rel:"specifies"},
+  {s:"src_sila",t:"sila_feature",rel:"specifies"},
+  {s:"src_mqtt5",t:"mqtt_topic_contract",rel:"specifies"},
+  {s:"cpv",t:"measurement_vcd_capacitance",rel:"uses"},
+  {s:"cpv",t:"measurement_raman_inline",rel:"uses"},
+  {s:"cpv",t:"measurement_atline_nova",rel:"uses"},
+  {s:"cpv",t:"measurement_aggregate_imaging",rel:"uses"},
+  {s:"cpv",t:"measurement_fbrm_cld",rel:"uses"},
+  {s:"cpv",t:"measurement_ovizio_dhm",rel:"uses"},
+  {s:"measurement_vcd_capacitance",t:"loop",rel:"state_for"},
+  {s:"measurement_raman_inline",t:"loop",rel:"state_for"},
+  {s:"measurement_atline_nova",t:"loop",rel:"state_for"},
+  {s:"measurement_aggregate_imaging",t:"loop",rel:"state_for"},
+  {s:"measurement_fbrm_cld",t:"loop",rel:"state_for"},
+  {s:"measurement_ovizio_dhm",t:"loop",rel:"state_for"},
+  {s:"measurement_vcd_capacitance",t:"growth",rel:"feeds"},
+  {s:"measurement_atline_nova",t:"growth",rel:"feeds"},
+  {s:"measurement_aggregate_imaging",t:"qccrit",rel:"evaluates"},
+  {s:"measurement_aggregate_imaging",t:"passage",rel:"triggers"},
+  {s:"dlmodel",t:"measurement_aggregate_imaging",rel:"powers"},
+  {s:"bf",t:"measurement_aggregate_imaging",rel:"input_to"},
+  {s:"monitoring_ammonia_atline",t:"loop",rel:"state_for"},
+  {s:"monitoring_quality_offline",t:"qccrit",rel:"verifies"},
+  {s:"monitoring_quality_offline",t:"bbo",rel:"optimizes"},
+  {s:"monitoring_sterility_offline",t:"closeddev",rel:"guards"},
+  {s:"monitoring_sterility_offline",t:"capa",rel:"triggers"},
+  {s:"instr_aber_futura",t:"measurement_vcd_capacitance",rel:"implements"},
+  {s:"instr_hamilton_incytes",t:"measurement_vcd_capacitance",rel:"implements"},
+  {s:"instr_sartorius_viamass",t:"measurement_vcd_capacitance",rel:"implements"},
+  {s:"instr_nova_flex2",t:"measurement_atline_nova",rel:"implements"},
+  {s:"instr_nova_flex2",t:"monitoring_ammonia_atline",rel:"implements"},
+  {s:"instr_ovizio_ilinef",t:"measurement_ovizio_dhm",rel:"implements"},
+  {s:"instr_fbrm_g400",t:"measurement_fbrm_cld",rel:"implements"},
+  {s:"instr_flowcam",t:"measurement_aggregate_imaging",rel:"implements"},
+  {s:"src_manstein",t:"measurement_vcd_capacitance",rel:"demonstrates"},
+  {s:"src_borys",t:"measurement_aggregate_imaging",rel:"demonstrates"},
+  {s:"src_kropp",t:"measurement_aggregate_imaging",rel:"demonstrates"},
+  {s:"src_raman_graf2022",t:"measurement_raman_inline",rel:"demonstrates"},
+  {s:"src_krause2023",t:"measurement_vcd_capacitance",rel:"explains"},
+  {s:"src_aber_futura",t:"instr_aber_futura",rel:"specifies"},
+  {s:"src_hamilton_incytes",t:"instr_hamilton_incytes",rel:"specifies"},
+  {s:"src_sartorius_viamass",t:"instr_sartorius_viamass",rel:"specifies"},
+  {s:"src_nova_flex2",t:"instr_nova_flex2",rel:"specifies"},
+  {s:"src_ovizio_ilinef",t:"instr_ovizio_ilinef",rel:"specifies"},
+  {s:"src_fbrm_g400",t:"instr_fbrm_g400",rel:"specifies"},
+  {s:"src_flowcam",t:"instr_flowcam",rel:"specifies"},
+  {s:"d6",t:"tech_control",rel:"has"},
+  {s:"d6",t:"audit_schema",rel:"has"},
+  {s:"d6",t:"approval_log",rel:"has"},
+  {s:"d6",t:"data_lifecycle",rel:"has"},
+  {s:"d6",t:"llm_validation",rel:"has"},
+  {s:"d6",t:"ebr_derivation",rel:"has"},
+  {s:"d5",t:"event_store",rel:"has"},
+  {s:"tech_control",t:"alcoa",rel:"enforces"},
+  {s:"tech_control",t:"part11",rel:"enforces"},
+  {s:"alcoa",t:"audit_schema",rel:"constrains"},
+  {s:"alcoa",t:"ebr_derivation",rel:"constrains"},
+  {s:"part11",t:"approval_log",rel:"requires"},
+  {s:"part11",t:"audit_schema",rel:"requires"},
+  {s:"audit",t:"audit_schema",rel:"implements"},
+  {s:"csv",t:"tech_control",rel:"validates"},
+  {s:"capa",t:"audit_schema",rel:"uses"},
+  {s:"gctp",t:"tech_control",rel:"governs"},
+  {s:"loop",t:"audit_schema",rel:"generates"},
+  {s:"loop",t:"approval_log",rel:"uses"},
+  {s:"ctrl_split",t:"approval_log",rel:"constrains"},
+  {s:"data_lifecycle",t:"datamodel",rel:"governs"},
+  {s:"data_lifecycle",t:"audit",rel:"governs"},
+  {s:"ebr_derivation",t:"ebr",rel:"derives"},
+  {s:"ebr_derivation",t:"event_store",rel:"derived_from"},
+  {s:"llm_validation",t:"loop",rel:"validates"},
+  {s:"event_store",t:"ebr_derivation",rel:"feeds"},
+  {s:"event_store",t:"audit",rel:"feeds"},
+  {s:"src_fda_data_integrity",t:"alcoa",rel:"explains"},
+  {s:"src_fda_data_integrity",t:"tech_control",rel:"explains"},
+  {s:"src_part11",t:"part11",rel:"specifies"},
+  {s:"src_part11",t:"audit_schema",rel:"specifies"},
+  {s:"src_fda_csa",t:"csv",rel:"informs"},
+  {s:"src_fda_csa",t:"tech_control",rel:"informs"},
+  {s:"src_gamp5",t:"csv",rel:"informs"},
+  {s:"src_gamp5",t:"tech_control",rel:"informs"},
+  {s:"src_gamp5_ai",t:"llm_validation",rel:"informs"},
+  {s:"src_annex11",t:"part11",rel:"specifies"},
+  {s:"src_annex11",t:"ebr_derivation",rel:"specifies"},
+  {s:"src_pics041",t:"alcoa",rel:"explains"},
+  {s:"src_pics041",t:"audit_schema",rel:"explains"},
+  {s:"src_who_gdrp",t:"alcoa",rel:"explains"},
+  {s:"src_who_gdrp",t:"data_lifecycle",rel:"explains"},
+  {s:"d4",t:"tier2_plant_model",rel:"has"},
+  {s:"tier2_plant_model",t:"kinetics",rel:"implements"},
+  {s:"tier2_plant_model",t:"suspension",rel:"simulates"},
+  {s:"tier2_plant_model",t:"loop",rel:"validates"},
+  {s:"tier2_plant_model",t:"bbo",rel:"feeds"},
+  {s:"plant_model_interface",t:"tier2_plant_model",rel:"defines"},
+  {s:"plant_model_calibration",t:"tier2_plant_model",rel:"calibrates"},
+  {s:"multifidelity_sim",t:"tier2_plant_model",rel:"uses"},
+  {s:"plant_model_regression",t:"tier2_plant_model",rel:"tests"},
+  {s:"cobrapy_gem",t:"tier2_plant_model",rel:"extends"},
+  {s:"aggregate_formation_model",t:"tier2_plant_model",rel:"extends"},
+  {s:"shear_stress_model",t:"tier2_plant_model",rel:"extends"},
+  {s:"src_scipy",t:"tier2_plant_model",rel:"implements"},
+  {s:"src_botorch",t:"bbo",rel:"informs"},
+  {s:"src_ax",t:"bbo",rel:"informs"},
+  {s:"src_cobrapy",t:"cobrapy_gem",rel:"informs"},
+  {s:"loop",t:"approval_workflow",rel:"requires_approval"},
+  {s:"sched",t:"approval_workflow",rel:"triggers"},
+  {s:"bbo",t:"approval_workflow",rel:"proposes_to"},
+  {s:"human_on_the_loop",t:"approval_workflow",rel:"approves"},
+  {s:"approval_workflow",t:"audit",rel:"logs_to"},
+  {s:"approval_workflow",t:"ebr",rel:"produces"},
+  {s:"approval_workflow",t:"escalation_policy",rel:"escalates_via"},
+  {s:"approval_workflow",t:"approval_request_event",rel:"emits"},
+  {s:"approval_request_event",t:"datamodel",rel:"stored_in"},
+  {s:"escalation_policy",t:"approval_workflow",rel:"governs"},
+  {s:"hmi_dashboard",t:"loop",rel:"displays"},
+  {s:"hmi_dashboard",t:"envmon",rel:"displays"},
+  {s:"hmi_dashboard",t:"cpv",rel:"displays"},
+  {s:"hmi_dashboard",t:"bbo",rel:"displays"},
+  {s:"hmi_dashboard",t:"approval_workflow",rel:"displays"},
+  {s:"qccrit",t:"hmi_dashboard",rel:"informs"},
+  {s:"growth",t:"hmi_dashboard",rel:"informs"},
+  {s:"alert_matrix",t:"loop",rel:"manages"},
+  {s:"alert_matrix",t:"notification_suppression",rel:"suppresses"},
+  {s:"notification_suppression",t:"loop",rel:"applies_to"},
+  {s:"sterility",t:"contamination_response",rel:"triggers"},
+  {s:"contamination_response",t:"capa",rel:"activates"},
+  {s:"contamination_response",t:"ctrl_split",rel:"requests_hold"},
+  {s:"ctrl_split",t:"degraded_mode",rel:"preserves"},
+  {s:"degraded_mode",t:"loop",rel:"preserves"},
+  {s:"degraded_mode",t:"sched",rel:"preserves"},
+  {s:"audit_ui",t:"audit",rel:"reads"},
+  {s:"audit_ui",t:"ebr",rel:"reads"},
+  {s:"audit_ui",t:"datamodel",rel:"reads"},
+  {s:"src_nist_ai_rmf",t:"approval_workflow",rel:"informs"},
+  {s:"src_nist_ai_rmf",t:"human_on_the_loop",rel:"informs"},
+  {s:"src_iec62366",t:"hmi_dashboard",rel:"informs"},
+  {s:"src_isa101",t:"hmi_dashboard",rel:"informs"},
+  {s:"src_isa101",t:"alert_matrix",rel:"informs"},
+  {s:"d4",t:"mpc",rel:"has"},
+  {s:"mpc",t:"mpc_ipsc_perfusion",rel:"specializes"},
+  {s:"mpc",t:"loop",rel:"implements"},
+  {s:"mpc_ipsc_perfusion",t:"set_perfusion_rate",rel:"controls"},
+  {s:"mpc_ipsc_perfusion",t:"cpp_perfusion_rate",rel:"controls"},
+  {s:"mpc_ipsc_perfusion",t:"cpp_glucose",rel:"constrains"},
+  {s:"mpc_ipsc_perfusion",t:"cpp_lactate",rel:"constrains"},
+  {s:"mpc_ipsc_perfusion",t:"cpp_glutamine",rel:"constrains"},
+  {s:"mpc_ipsc_perfusion",t:"cpp_osmolality",rel:"constrains"},
+  {s:"mpc_ipsc_perfusion",t:"cpp_aggregate_diameter",rel:"constrains"},
+  {s:"mpc",t:"tier2_plant_model",rel:"uses"},
+  {s:"mpc_ipsc_perfusion",t:"measurement_vcd_capacitance",rel:"uses"},
+  {s:"mpc_ipsc_perfusion",t:"measurement_raman_inline",rel:"uses"},
+  {s:"mpc_ipsc_perfusion",t:"measurement_atline_nova",rel:"uses"},
+  {s:"mpc_ipsc_perfusion",t:"measurement_aggregate_imaging",rel:"uses"},
+  {s:"mpc_lactate_feedback",t:"cpp_lactate",rel:"uses"},
+  {s:"mpc_lactate_feedback",t:"src_van_beylen2020",rel:"demonstrated_by"},
+  {s:"mpc",t:"mpc_model_types",rel:"uses"},
+  {s:"mpc",t:"mpc_constraints",rel:"uses"},
+  {s:"mpc",t:"mpc_prediction_horizon",rel:"uses"},
+  {s:"mpc",t:"mpc_control_horizon",rel:"uses"},
+  {s:"mpc",t:"mpc_adaptive_update",rel:"uses"},
+  {s:"mpc",t:"mpc_fail_safe",rel:"requires"},
+  {s:"mpc",t:"mpc_human_on_the_loop",rel:"requires"},
+  {s:"mpc",t:"mpc_implementation_libraries",rel:"implemented_by"},
+  {s:"mpc_implementation_libraries",t:"src_casadi",rel:"includes"},
+  {s:"mpc_implementation_libraries",t:"src_do_mpc",rel:"includes"},
+  {s:"mpc_implementation_libraries",t:"src_acados",rel:"includes"},
+  {s:"dynamic_perfusion_ipsc",t:"src_huang2020",rel:"demonstrated_by"},
+  {s:"dynamic_perfusion_ipsc",t:"mpc_ipsc_perfusion",rel:"optimizable_by"},
+  {s:"cpsr_control",t:"mpc_ipsc_perfusion",rel:"related_to"},
+  {s:"mpc",t:"mpc_vs_rule_engine",rel:"compared_to"},
+  {s:"mpc_vs_rule_engine",t:"rule_engine",rel:"contrasts"},
+  {s:"mpc_roadmap_l1",t:"mpc",rel:"plans"},
+  {s:"mpc_roadmap_l1",t:"recipe_executor",rel:"extends"},
+  {s:"mpc",t:"src_rashedi2022",rel:"demonstrated_by"},
+  {s:"mpc_human_on_the_loop",t:"mpc",rel:"oversees"},
+  {s:"mpc_fail_safe",t:"loop",rel:"preserves"},
+  {s:"d4",t:"pinn",rel:"has"},
+  {s:"d4",t:"digital_twin",rel:"has"},
+  {s:"d4",t:"hybrid_ode_nn",rel:"has"},
+  {s:"d4",t:"uncertainty_quantification",rel:"has"},
+  {s:"d4",t:"multifidelity_pinn",rel:"has"},
+  {s:"pinn",t:"digital_twin",rel:"implements"},
+  {s:"hybrid_ode_nn",t:"digital_twin",rel:"implements"},
+  {s:"universal_differential_equation",t:"hybrid_ode_nn",rel:"implements"},
+  {s:"neural_ode",t:"hybrid_ode_nn",rel:"implements"},
+  {s:"digital_twin",t:"tier2_plant_model",rel:"extends"},
+  {s:"hybrid_ode_nn",t:"tier2_plant_model",rel:"extends"},
+  {s:"pinn",t:"loop",rel:"researches"},
+  {s:"pinn_mpc",t:"loop",rel:"researches"},
+  {s:"uncertainty_quantification",t:"pinn",rel:"quantifies"},
+  {s:"uncertainty_quantification",t:"hybrid_ode_nn",rel:"quantifies"},
+  {s:"uncertainty_quantification",t:"digital_twin",rel:"quantifies"},
+  {s:"deep_ensemble",t:"uncertainty_quantification",rel:"implements"},
+  {s:"bayesian_pinn",t:"uncertainty_quantification",rel:"implements"},
+  {s:"efi_pinn",t:"uncertainty_quantification",rel:"implements"},
+  {s:"mc_dropout",t:"uncertainty_quantification",rel:"implements"},
+  {s:"gp_bias_correction",t:"uncertainty_quantification",rel:"implements"},
+  {s:"gp_bias_correction",t:"tier2_plant_model",rel:"corrects"},
+  {s:"multifidelity_pinn",t:"digital_twin",rel:"uses"},
+  {s:"multifidelity_pinn",t:"hybrid_ode_nn",rel:"uses"},
+  {s:"multifidelity_pinn",t:"bbo",rel:"enhances"},
+  {s:"multifidelity_pinn",t:"multi_fidelity",rel:"enhances"},
+  {s:"digital_twin_calibration",t:"digital_twin",rel:"calibrates"},
+  {s:"digital_twin_calibration",t:"hybrid_ode_nn",rel:"calibrates"},
+  {s:"model_mismatch_correction",t:"multifidelity_pinn",rel:"corrects"},
+  {s:"model_mismatch_correction",t:"digital_twin",rel:"corrects"},
+  {s:"prediction_confidence_score",t:"loop",rel:"explains"},
+  {s:"prediction_confidence_score",t:"human_approval",rel:"drives"},
+  {s:"prediction_confidence_score",t:"approval_workflow",rel:"drives"},
+  {s:"data_requirement_pinn",t:"bbo",rel:"constrains"},
+  {s:"data_requirement_pinn",t:"sdl",rel:"constrains"},
+  {s:"data_requirement_pinn",t:"digital_twin",rel:"constrains"},
+  {s:"kinetic_cell_model",t:"digital_twin",rel:"part_of"},
+  {s:"reactor_model",t:"digital_twin",rel:"part_of"},
+  {s:"extracellular_reaction_model",t:"digital_twin",rel:"part_of"},
+  {s:"kinetic_cell_model",t:"suspension",rel:"models"},
+  {s:"reactor_model",t:"suspension",rel:"models"},
+  {s:"kinetics",t:"pinn",rel:"informs"},
+  {s:"kinetics",t:"hybrid_ode_nn",rel:"informs"},
+  {s:"cpv",t:"digital_twin",rel:"feeds"},
+  {s:"cpv",t:"hybrid_ode_nn",rel:"feeds"},
+  {s:"qccrit",t:"digital_twin",rel:"verifies"},
+  {s:"csv",t:"digital_twin",rel:"validates"},
+  {s:"csv",t:"hybrid_ode_nn",rel:"validates"},
+  {s:"audit",t:"digital_twin",rel:"logs"},
+  {s:"audit",t:"hybrid_ode_nn",rel:"logs"},
+  {s:"part11",t:"digital_twin",rel:"constrains"},
+  {s:"alcoa",t:"digital_twin",rel:"constrains"},
+  {s:"recipe_executor",t:"pinn_mpc",rel:"succeeds"},
+  {s:"rule_engine",t:"pinn_mpc",rel:"succeeds"},
+  {s:"state_machine_l1",t:"pinn_mpc",rel:"succeeds"},
+  {s:"llm_orchestrator",t:"prediction_confidence_score",rel:"explains"},
+  {s:"safe_bo",t:"prediction_confidence_score",rel:"uses"},
+  {s:"batch_bo",t:"multifidelity_pinn",rel:"uses"},
+  {s:"multi_fidelity",t:"multifidelity_pinn",rel:"includes"},
+  {s:"src_thirugnanasambandam_2025",t:"pinn",rel:"informs"},
+  {s:"src_yang_2024_pinn",t:"pinn",rel:"informs"},
+  {s:"src_yang_2024_pinn",t:"hybrid_ode_nn",rel:"informs"},
+  {s:"src_catalao_2025",t:"pinn_mpc",rel:"informs"},
+  {s:"src_patel_2024",t:"pinn_mpc",rel:"informs"},
+  {s:"src_shih_2025",t:"efi_pinn",rel:"informs"},
+  {s:"src_shih_2025",t:"uncertainty_quantification",rel:"informs"},
+  {s:"src_nobar_2025",t:"multifidelity_pinn",rel:"informs"},
+  {s:"src_nobar_2025",t:"model_mismatch_correction",rel:"informs"},
+  {s:"src_bioprocesstools_2026",t:"data_requirement_pinn",rel:"defines"},
+  {s:"src_bioprocessintl_2026",t:"multifidelity_pinn",rel:"supports"},
+  {s:"src_yokogawa_pharma40",t:"digital_twin",rel:"defines"},
+  {s:"src_yokogawa_pharma40",t:"reactor_model",rel:"defines"},
+  {s:"src_yokogawa_pharma40",t:"extracellular_reaction_model",rel:"defines"},
+  {s:"src_yokogawa_pharma40",t:"kinetic_cell_model",rel:"defines"},
+  {s:"src_pharma_manufacturing_2022",t:"digital_twin",rel:"supports"},
+  {s:"src_manstein",t:"hybrid_ode_nn",rel:"informs"},
+  {s:"src_manstein",t:"pinn",rel:"informs"},
+  {s:"src_ax",t:"multifidelity_pinn",rel:"informs"},
+  {s:"src_botorch",t:"multifidelity_pinn",rel:"informs"},
+  {s:"raman_calibration_ipsc",t:"cpv",rel:"instance_of"},
+  {s:"raman_calibration_ipsc",t:"measurement_raman_inline",rel:"uses"},
+  {s:"raman_calibration_ipsc",t:"measurement_vcd_capacitance",rel:"uses"},
+  {s:"raman_calibration_ipsc",t:"measurement_atline_nova",rel:"uses"},
+  {s:"raman_calibration_ipsc",t:"measurement_raman_inline",rel:"calibrates"},
+  {s:"raman_calibration_ipsc",t:"loop",rel:"informs"},
+  {s:"raman_calibration_ipsc",t:"bbo",rel:"informs"},
+  {s:"raman_pls_model",t:"raman_calibration_ipsc",rel:"implements"},
+  {s:"raman_pls_model",t:"raman_reference_nova",rel:"requires"},
+  {s:"raman_reference_nova",t:"measurement_atline_nova",rel:"instance_of"},
+  {s:"raman_reference_nova",t:"raman_pls_model",rel:"calibrates"},
+  {s:"raman_cell_scattering",t:"raman_aggregate_interference",rel:"causes"},
+  {s:"raman_cell_scattering",t:"raman_pls_model",rel:"constrains"},
+  {s:"raman_aggregate_interference",t:"raman_pls_model",rel:"constrains"},
+  {s:"raman_cell_scattering",t:"measurement_raman_inline",rel:"constrains"},
+  {s:"raman_aggregate_interference",t:"measurement_raman_inline",rel:"constrains"},
+  {s:"raman_cho_to_ipsc_transfer",t:"raman_calibration_ipsc",rel:"constrains"},
+  {s:"raman_cho_to_ipsc_transfer",t:"raman_pls_model",rel:"constrains"},
+  {s:"raman_model_lifecycle",t:"raman_pls_model",rel:"manages"},
+  {s:"raman_model_lifecycle",t:"audit",rel:"requires"},
+  {s:"raman_model_lifecycle",t:"alcoa",rel:"requires"},
+  {s:"raman_confidence_score",t:"raman_pls_model",rel:"evaluates"},
+  {s:"raman_confidence_score",t:"human_approval",rel:"triggers"},
+  {s:"raman_confidence_score",t:"approval_workflow",rel:"triggers"},
+  {s:"src_abu_absi_2011",t:"measurement_raman_inline",rel:"supports"},
+  {s:"src_matthews_2016",t:"measurement_raman_inline",rel:"supports"},
+  {s:"src_berry_2015",t:"raman_pls_model",rel:"supports"},
+  {s:"src_yan_2024",t:"raman_pls_model",rel:"supports"},
+  {s:"src_costa_2024",t:"raman_calibration_ipsc",rel:"supports"},
+  {s:"src_yang_2024_raman",t:"raman_cell_scattering",rel:"supports"},
+  {s:"src_petillot_2020",t:"raman_cho_to_ipsc_transfer",rel:"supports"},
+  {s:"src_machleidt_2024",t:"raman_cho_to_ipsc_transfer",rel:"supports"},
+  {s:"src_rowland_jones_2021",t:"raman_cho_to_ipsc_transfer",rel:"supports"},
+  {s:"src_bioprocesstools_raman",t:"raman_pls_model",rel:"supports"},
+  {s:"src_metrohm_an_pan_1065",t:"measurement_raman_inline",rel:"supports"},
+  {s:"src_repligen_maverick",t:"measurement_raman_inline",rel:"supports"},
+  {s:"src_yokogawa_2023",t:"measurement_raman_inline",rel:"supports"},
+  {s:"d1",t:"add_cho_ipsc_cho_metabolism",rel:"has"},
+  {s:"d1",t:"add_cho_ipsc_ipsc_metabolism",rel:"has"},
+  {s:"d4",t:"add_cho_ipsc_aggregate_size_cpp",rel:"has"},
+  {s:"d4",t:"add_cho_ipsc_mab_titer_objective",rel:"has"},
+  {s:"d4",t:"add_cho_ipsc_pluripotency_objective",rel:"has"},
+  {s:"d4",t:"add_cho_ipsc_transfer_caution",rel:"has"},
+  {s:"d7",t:"add_cho_ipsc_lactate_threshold",rel:"has"},
+  {s:"d7",t:"add_cho_ipsc_ammonia_threshold",rel:"has"},
+  {s:"d7",t:"add_cho_ipsc_osmolality_threshold",rel:"has"},
+  {s:"d7",t:"add_cho_ipsc_glucose_threshold",rel:"has"},
+  {s:"add_cho_ipsc_cho_metabolism",t:"add_cho_ipsc_ipsc_metabolism",rel:"differs_from"},
+  {s:"add_cho_ipsc_ipsc_metabolism",t:"add_cho_ipsc_glycolytic_shift",rel:"exhibits"},
+  {s:"add_cho_ipsc_glycolytic_shift",t:"cpp_glucose",rel:"increases"},
+  {s:"add_cho_ipsc_glycolytic_shift",t:"cpp_lactate",rel:"increases"},
+  {s:"add_cho_ipsc_lactate_threshold",t:"cpp_lactate",rel:"constrains"},
+  {s:"add_cho_ipsc_ammonia_threshold",t:"cpp_ammonia",rel:"monitors"},
+  {s:"add_cho_ipsc_osmolality_threshold",t:"cpp_osmolality",rel:"constrains"},
+  {s:"add_cho_ipsc_glucose_threshold",t:"cpp_glucose",rel:"constrains"},
+  {s:"add_cho_ipsc_aggregate_size_cpp",t:"add_cho_ipsc_aggregate_oxygen_diffusion",rel:"influences"},
+  {s:"add_cho_ipsc_aggregate_oxygen_diffusion",t:"cpp_viability",rel:"limits"},
+  {s:"add_cho_ipsc_aggregate_size_cpp",t:"tool_trigger_passage",rel:"triggers"},
+  {s:"add_cho_ipsc_shear_sensitivity",t:"cpp_agitation",rel:"constrains"},
+  {s:"add_cho_ipsc_mab_titer_objective",t:"add_cho_ipsc_pluripotency_objective",rel:"contrasts_with"},
+  {s:"add_cho_ipsc_pluripotency_objective",t:"add_cho_ipsc_qc_marker_panel",rel:"measured_by"},
+  {s:"add_cho_ipsc_qc_marker_panel",t:"monitoring_quality_offline",rel:"implemented_by"},
+  {s:"add_cho_ipsc_pluripotency_objective",t:"bbo",rel:"optimizes"},
+  {s:"add_cho_ipsc_transfer_caution",t:"add_cho_ipsc_cpp_reinterpretation",rel:"governs"},
+  {s:"add_cho_ipsc_cpp_reinterpretation",t:"bbo",rel:"modifies"},
+  {s:"add_cho_ipsc_cpp_reinterpretation",t:"recipe_executor",rel:"modifies"},
+  {s:"src_add_cho_ipsc_manstein2021",t:"add_cho_ipsc_ipsc_metabolism",rel:"defines"},
+  {s:"src_add_cho_ipsc_manstein2021",t:"add_cho_ipsc_glucose_threshold",rel:"defines"},
+  {s:"src_add_cho_ipsc_manstein2021",t:"add_cho_ipsc_lactate_threshold",rel:"defines"},
+  {s:"src_add_cho_ipsc_manstein2021",t:"add_cho_ipsc_osmolality_threshold",rel:"defines"},
+  {s:"src_add_cho_ipsc_borys2021",t:"add_cho_ipsc_aggregate_size_cpp",rel:"defines"},
+  {s:"src_add_cho_ipsc_borys2021",t:"add_cho_ipsc_shear_sensitivity",rel:"defines"},
+  {s:"src_add_cho_ipsc_huang2020",t:"add_cho_ipsc_aggregate_oxygen_diffusion",rel:"informs"},
+  {s:"src_add_cho_ipsc_xing2008",t:"add_cho_ipsc_cho_metabolism",rel:"informs"},
+  {s:"src_add_cho_ipsc_toussaint2016",t:"add_cho_ipsc_cho_metabolism",rel:"illustrates"},
+  {s:"src_add_cho_ipsc_mabion2025",t:"add_cho_ipsc_cho_metabolism",rel:"informs"},
+  {s:"src_add_cho_ipsc_gfi2025",t:"add_cho_ipsc_cho_metabolism",rel:"informs"},
+  {s:"src_add_cho_ipsc_seo2021",t:"add_cho_ipsc_pluripotency_objective",rel:"informs"},
+  {s:"src_add_cho_ipsc_stemcellpis",t:"add_cho_ipsc_aggregate_size_cpp",rel:"defines"},
+  {s:"src_add_cho_ipsc_amsbio",t:"add_cho_ipsc_qc_marker_panel",rel:"defines"},
+  {s:"src_add_cho_ipsc_chen2014",t:"add_cho_ipsc_aggregate_oxygen_diffusion",rel:"informs"},
+  {s:"d6",t:"annex22",rel:"has"},
+  {s:"d6",t:"critical_ai",rel:"has"},
+  {s:"d6",t:"noncritical_ai",rel:"has"},
+  {s:"d6",t:"static_model",rel:"has"},
+  {s:"d6",t:"deterministic_output",rel:"has"},
+  {s:"d6",t:"dynamic_model",rel:"has"},
+  {s:"d6",t:"probabilistic_model",rel:"has"},
+  {s:"d6",t:"generative_ai",rel:"has"},
+  {s:"d6",t:"hitl",rel:"has"},
+  {s:"d6",t:"xai",rel:"has"},
+  {s:"d6",t:"confidence_score",rel:"has"},
+  {s:"d6",t:"feature_attribution",rel:"has"},
+  {s:"d6",t:"drift_monitoring",rel:"has"},
+  {s:"d6",t:"test_data_independence",rel:"has"},
+  {s:"d6",t:"staff_independence",rel:"has"},
+  {s:"d6",t:"data_segregation",rel:"has"},
+  {s:"d6",t:"static_deterministic_proof",rel:"has"},
+  {s:"d6",t:"esignature",rel:"has"},
+  {s:"d6",t:"gamp_ai_lifecycle",rel:"has"},
+  {s:"annex22",t:"part11",rel:"complements"},
+  {s:"annex22",t:"loop",rel:"constrains"},
+  {s:"annex22",t:"llm_orchestrator",rel:"constrains"},
+  {s:"annex22",t:"critical_ai",rel:"defines"},
+  {s:"annex22",t:"noncritical_ai",rel:"defines"},
+  {s:"critical_ai",t:"static_model",rel:"requires"},
+  {s:"critical_ai",t:"deterministic_output",rel:"requires"},
+  {s:"static_model",t:"deterministic_output",rel:"produces"},
+  {s:"critical_ai",t:"dynamic_model",rel:"prohibits"},
+  {s:"critical_ai",t:"probabilistic_model",rel:"prohibits"},
+  {s:"critical_ai",t:"generative_ai",rel:"prohibits"},
+  {s:"noncritical_ai",t:"generative_ai",rel:"permits"},
+  {s:"noncritical_ai",t:"hitl",rel:"requires"},
+  {s:"generative_ai",t:"probabilistic_model",rel:"isa"},
+  {s:"llm_orchestrator",t:"generative_ai",rel:"isa"},
+  {s:"critical_ai",t:"xai",rel:"requires"},
+  {s:"xai",t:"feature_attribution",rel:"uses"},
+  {s:"critical_ai",t:"confidence_score",rel:"requires"},
+  {s:"confidence_score",t:"hitl",rel:"triggers"},
+  {s:"critical_ai",t:"drift_monitoring",rel:"requires"},
+  {s:"critical_ai",t:"test_data_independence",rel:"requires"},
+  {s:"test_data_independence",t:"data_segregation",rel:"requires"},
+  {s:"test_data_independence",t:"staff_independence",rel:"requires"},
+  {s:"static_deterministic_proof",t:"static_model",rel:"proves"},
+  {s:"static_deterministic_proof",t:"deterministic_output",rel:"proves"},
+  {s:"part11",t:"esignature",rel:"requires"},
+  {s:"esignature",t:"approval_log",rel:"implements"},
+  {s:"gamp_ai_lifecycle",t:"critical_ai",rel:"governs"},
+  {s:"gamp_ai_lifecycle",t:"noncritical_ai",rel:"governs"},
+  {s:"human_approval",t:"hitl",rel:"implements"},
+  {s:"approval_workflow",t:"hitl",rel:"implements"},
+  {s:"loop",t:"confidence_score",rel:"uses"},
+  {s:"drift_monitoring",t:"loop",rel:"monitors"},
+  {s:"alcoa",t:"data_segregation",rel:"constrains"},
+  {s:"csv",t:"static_deterministic_proof",rel:"validates"},
+  {s:"tech_control",t:"annex22",rel:"enforces"},
+  {s:"src_pics_annex22_draft",t:"annex22",rel:"specifies"},
+  {s:"src_eu_ai_act",t:"annex22",rel:"informs"},
+  {s:"src_gamp5_ai",t:"gamp_ai_lifecycle",rel:"informs"},
+  {s:"d2",t:"add_aggimg_aggregate_imaging_survey",rel:"has"},
+  {s:"d7",t:"add_aggimg_dhm_ovizio",rel:"has"},
+  {s:"d7",t:"add_aggimg_fbrm_cld_detail",rel:"has"},
+  {s:"d7",t:"add_aggimg_flowcam_atline",rel:"has"},
+  {s:"d7",t:"add_aggimg_brightfield_atline",rel:"has"},
+  {s:"add_aggimg_aggregate_imaging_survey",t:"add_aggimg_dhm_ovizio",rel:"uses"},
+  {s:"add_aggimg_aggregate_imaging_survey",t:"add_aggimg_fbrm_cld_detail",rel:"uses"},
+  {s:"add_aggimg_aggregate_imaging_survey",t:"add_aggimg_flowcam_atline",rel:"uses"},
+  {s:"add_aggimg_aggregate_imaging_survey",t:"add_aggimg_brightfield_atline",rel:"uses"},
+  {s:"add_aggimg_aggregate_imaging_survey",t:"qccrit",rel:"evaluates"},
+  {s:"add_aggimg_aggregate_imaging_survey",t:"passage",rel:"triggers"},
+  {s:"add_aggimg_aggregate_imaging_survey",t:"cpp_aggregate_diameter",rel:"informs"},
+  {s:"add_aggimg_aggregate_quality_proxy",t:"qccrit",rel:"predicts"},
+  {s:"add_aggimg_dl_morphology_pluripotency",t:"add_aggimg_aggregate_quality_proxy",rel:"implements"},
+  {s:"add_aggimg_aggregate_size_pluripotency",t:"add_aggimg_aggregate_quality_proxy",rel:"informs"},
+  {s:"add_aggimg_aggregate_size_pluripotency",t:"cpp_aggregate_diameter",rel:"constrains"},
+  {s:"add_aggimg_2d_to_aggregate_transfer",t:"dlmodel",rel:"transfers"},
+  {s:"add_aggimg_2d_to_aggregate_transfer",t:"add_aggimg_aggregate_quality_proxy",rel:"adapts"},
+  {s:"add_aggimg_2d_to_aggregate_transfer",t:"conf",rel:"differs_from"},
+  {s:"add_aggimg_human_approval_imaging",t:"add_aggimg_aggregate_quality_proxy",rel:"oversees"},
+  {s:"add_aggimg_human_approval_imaging",t:"approval_workflow",rel:"requires_approval"},
+  {s:"add_aggimg_src_borys_2021",t:"add_aggimg_aggregate_size_pluripotency",rel:"demonstrates"},
+  {s:"add_aggimg_src_eppendorf_485",t:"add_aggimg_brightfield_atline",rel:"illustrates"},
+  {s:"add_aggimg_src_stemcell_mtesr3d",t:"add_aggimg_aggregate_size_pluripotency",rel:"guides"},
+  {s:"add_aggimg_src_kropp_2019",t:"add_aggimg_brightfield_atline",rel:"demonstrates"},
+  {s:"add_aggimg_src_ovizio_ilinef",t:"add_aggimg_dhm_ovizio",rel:"specifies"},
+  {s:"add_aggimg_src_fbrm_g400",t:"add_aggimg_fbrm_cld_detail",rel:"specifies"},
+  {s:"add_aggimg_src_flowcam",t:"add_aggimg_flowcam_atline",rel:"specifies"},
+  {s:"add_aggimg_src_chu_2023",t:"add_aggimg_dl_morphology_pluripotency",rel:"demonstrates"},
+  {s:"add_aggimg_src_park_2022",t:"add_aggimg_dl_morphology_pluripotency",rel:"demonstrates"},
+  {s:"add_aggimg_src_piotrowski_2021",t:"add_aggimg_dl_morphology_pluripotency",rel:"demonstrates"},
+  {s:"add_aggimg_src_waisman_2019",t:"add_aggimg_dl_morphology_pluripotency",rel:"demonstrates"},
+  {s:"add_aggimg_src_maddah_2014",t:"add_aggimg_dl_morphology_pluripotency",rel:"demonstrates"},
+  {s:"add_aggimg_src_kato_2016",t:"add_aggimg_dl_morphology_pluripotency",rel:"demonstrates"},
+  {s:"add_aggimg_src_gursky_2023",t:"add_aggimg_2d_to_aggregate_transfer",rel:"informs"}
+];
+
+/* ===================== RENDER ===================== */
+const cssv = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+const domColor = {}; DOMAINS.forEach(d=>domColor[d.id]=cssv(d.color));
+domColor['root']='#E8ECF2';
+const colorOf = n => n.type==='source' ? '#C5CDDC' : (n.domain?domColor[n.domain]:domColor['root']);
+const TYPE_LABEL = {root:'ルート',domain:'ドメイン',concept:'概念',system:'システム',player:'プレイヤー',source:'情報源'};
+
+const byId = {}; NODES.forEach(n=>byId[n.id]=n);
+const adj = {}; NODES.forEach(n=>adj[n.id]=new Set());
+EDGES.forEach(e=>{adj[e.s].add(e.t);adj[e.t].add(e.s);});
+
+document.getElementById('nNodes').textContent=NODES.length;
+document.getElementById('nEdges').textContent=EDGES.length;
+
+// legend
+const legEl=document.getElementById('legend');
+const domCount={}; NODES.forEach(n=>{const k=n.type==='source'?'src':n.domain;domCount[k]=(domCount[k]||0)+1;});
+let soloDomain=null;
+DOMAINS.forEach(d=>{
+  const row=document.createElement('div');row.className='leg';row.dataset.dom=d.id;
+  row.innerHTML=`<span class="dot" style="background:${domColor[d.id]}"></span><span class="legtitle">${d.label}</span><span class="cnt">${domCount[d.id]||0}</span>`;
+  row.addEventListener('click',()=>toggleSolo(d.id,row));
+  legEl.appendChild(row);
+});
+// source legend
+const srow=document.createElement('div');srow.className='leg';srow.dataset.dom='__src';
+srow.innerHTML=`<span class="dot" style="background:#C5CDDC"></span><span class="legtitle">情報源ノード</span><span class="cnt">${domCount['src']||0}</span>`;
+srow.addEventListener('click',()=>toggleSolo('__src',srow));
+legEl.appendChild(srow);
+
+function toggleSolo(dom,row){
+  if(soloDomain===dom){soloDomain=null;}else{soloDomain=dom;}
+  document.querySelectorAll('.leg').forEach(r=>{
+    r.classList.toggle('solo',r.dataset.dom===soloDomain);
+    r.classList.toggle('off',soloDomain&&r.dataset.dom!==soloDomain);
+  });
+  applySolo();
+}
+
+const svg=d3.select('#graph');
+const stage=document.getElementById('stage');
+let W=stage.clientWidth,H=stage.clientHeight;
+svg.attr('viewBox',`0 0 ${W} ${H}`);
+const g=svg.append('g');
+
+const zoom=d3.zoom().scaleExtent([0.3,3]).on('zoom',ev=>g.attr('transform',ev.transform));
+svg.call(zoom);
+
+const linkSel=g.append('g').selectAll('line').data(EDGES).join('line')
+  .attr('class','link').attr('stroke-width',d=>d.rel==='contains'||d.rel==='has'?1:1.3);
+
+const nodeSel=g.append('g').selectAll('g').data(NODES).join('g').attr('class','node')
+  .call(d3.drag().on('start',dstart).on('drag',ddrag).on('end',dend))
+  .on('click',(ev,d)=>{ev.stopPropagation();openDetail(d);})
+  .on('mouseenter',(ev,d)=>focusNeighbors(d.id))
+  .on('mouseleave',()=>{ if(!detailOpenId) clearFocus(); });
+
+const radius = d => d.type==='root'?20 : d.type==='domain'?14 : d.type==='source'?7.5 : 9;
+
+nodeSel.append('circle').attr('class','core')
+  .attr('r',radius)
+  .attr('fill',d=>d3.color(colorOf(d)).copy({opacity:0.16}))
+  .attr('stroke',d=>colorOf(d))
+  .attr('stroke-dasharray',d=>d.type==='source'?'2 2':null);
+
+// inner dot (phase-contrast nucleus feel)
+nodeSel.append('circle').attr('r',d=>Math.max(2,radius(d)*0.32))
+  .attr('fill',d=>colorOf(d)).attr('opacity',.9);
+
+nodeSel.append('text')
+  .attr('x',d=>radius(d)+6).attr('y',4)
+  .attr('font-size',d=>d.type==='root'?13:d.type==='domain'?11.5:10)
+  .attr('font-weight',d=>d.type==='root'||d.type==='domain'?600:400)
+  .attr('fill',d=>d.type==='domain'||d.type==='root'?colorOf(d):'#E8ECF2')
+  .text(d=>d.label);
+
+// BUGFIX: d3.forceLink resolves links via `source`/`target`, but EDGES use
+// `s`/`t`. Without this alias forceLink throws "missing: undefined" on init and
+// nothing renders. Keep s/t intact (adj/distance/detail/export still read them).
+EDGES.forEach(e=>{e.source=e.s;e.target=e.t;});
+
+const sim=d3.forceSimulation(NODES)
+  .force('link',d3.forceLink(EDGES).id(d=>d.id)
+     .distance(d=>{const a=byId[d.s.id||d.s],b=byId[d.t.id||d.t];
+       if(a.type==='root')return 120; if(a.type==='domain'&&(d.rel==='has'))return 64; return 92;})
+     .strength(d=>d.rel==='has'||d.rel==='contains'?0.7:0.12))
+  .force('charge',d3.forceManyBody().strength(d=>d.type==='root'?-900:d.type==='domain'?-560:-230))
+  .force('center',d3.forceCenter(W/2,H/2))
+  .force('collide',d3.forceCollide().radius(d=>radius(d)+18))
+  .on('tick',tick);
+
+function tick(){
+  linkSel.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y)
+         .attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
+  nodeSel.attr('transform',d=>`translate(${d.x},${d.y})`);
+}
+function dstart(ev,d){if(!ev.active)sim.alphaTarget(.3).restart();d.fx=d.x;d.fy=d.y;}
+function ddrag(ev,d){d.fx=ev.x;d.fy=ev.y;}
+function dend(ev,d){if(!ev.active)sim.alphaTarget(0);d.fx=null;d.fy=null;}
+
+// focus / dim
+function focusNeighbors(id){
+  const keep=new Set([id,...adj[id]]);
+  nodeSel.style('opacity',d=>keep.has(d.id)?1:0.12);
+  linkSel.style('opacity',d=>(d.source.id===id||d.target.id===id)?0.9:0.04)
+         .style('stroke',d=>(d.source.id===id||d.target.id===id)?colorOf(byId[id]):'#3A465F');
+}
+function clearFocus(){
+  if(soloDomain){applySolo();return;}
+  nodeSel.style('opacity',1);
+  linkSel.style('opacity',null).style('stroke','#3A465F');
+}
+function applySolo(){
+  if(!soloDomain){clearFocus();return;}
+  const inDom=d=> soloDomain==='__src'? d.type==='source' : (d.domain===soloDomain||d.id===soloDomain||d.id==='root');
+  nodeSel.style('opacity',d=>inDom(d)?1:0.08);
+  linkSel.style('opacity',d=>(inDom(d.source)&&inDom(d.target))?0.6:0.03);
+}
+
+// search
+document.getElementById('search').addEventListener('input',e=>{
+  const q=e.target.value.trim().toLowerCase();
+  if(!q){clearFocus();return;}
+  const hit=new Set(NODES.filter(n=>n.label.toLowerCase().includes(q)||n.content.toLowerCase().includes(q)).map(n=>n.id));
+  nodeSel.style('opacity',d=>hit.has(d.id)?1:0.1);
+  nodeSel.select('circle.core').attr('stroke-width',d=>hit.has(d.id)?2.6:1.4);
+  linkSel.style('opacity',0.05);
+});
+
+/* ---- detail panel ---- */
+const detail=document.getElementById('detail');
+let detailOpenId=null;
+function openDetail(d){
+  detailOpenId=d.id;
+  document.getElementById('dtType').innerHTML=`<span class="dot" style="background:${colorOf(d)}"></span>${TYPE_LABEL[d.type]||d.type}`;
+  document.getElementById('dtName').textContent=d.label;
+  document.getElementById('dtDom').textContent=d.domain?('ドメイン: '+ (DOMAINS.find(x=>x.id===d.domain)?.label||'')):(d.type==='root'?'全体ルート':'横断');
+  document.getElementById('dtContent').textContent=d.content;
+  // sources
+  const sc=document.getElementById('dtSrcs');sc.innerHTML='';
+  (d.sources||[]).forEach(s=>{
+    const a=document.createElement('a');a.className='src';a.href=s.u;a.target='_blank';a.rel='noopener';
+    a.innerHTML=`<div class="t">${s.t}</div><div class="u">${s.u}</div>`;sc.appendChild(a);
+  });
+  document.getElementById('dtSrcSec').style.display=(d.sources&&d.sources.length)?'':'none';
+  // relations
+  const rc=document.getElementById('dtRels');rc.innerHTML='';
+  const outs=EDGES.filter(e=>(e.s.id||e.s)===d.id);
+  const ins=EDGES.filter(e=>(e.t.id||e.t)===d.id);
+  outs.forEach(e=>addRel(rc,e.rel,byId[e.t.id||e.t],'out'));
+  ins.forEach(e=>addRel(rc,e.rel,byId[e.s.id||e.s],'in'));
+  detail.classList.add('open');detail.setAttribute('aria-hidden','false');
+  focusNeighbors(d.id);
+}
+function addRel(parent,verb,node,dir){
+  const r=document.createElement('div');r.className='rel '+(dir==='in'?'arrowin':'');
+  const arrow=dir==='out'?'→':'←';
+  r.innerHTML=`<span class="verb">${arrow} ${verb}</span><span class="tgt">${node.label}</span>`;
+  r.addEventListener('click',()=>openDetail(node));
+  parent.appendChild(r);
+}
+function closeDetail(){detail.classList.remove('open');detail.setAttribute('aria-hidden','true');detailOpenId=null;clearFocus();}
+document.getElementById('dtClose').addEventListener('click',closeDetail);
+svg.on('click',closeDetail);
+
+/* ---- export ---- */
+const exportData={meta:{title:'iPS自動培養ソフトウェア ドメイン知識マップ',generated:new Date().toISOString().slice(0,10),node_count:NODES.length,edge_count:EDGES.length},
+  domains:DOMAINS.map(d=>({id:d.id,label:d.label})),
+  nodes:NODES.map(n=>({id:n.id,label:n.label,type:n.type,domain:n.domain,content:n.content,sources:n.sources})),
+  edges:EDGES.map(e=>({source:e.s.id||e.s,target:e.t.id||e.t,rel:e.rel}))};
+const modal=document.getElementById('modal');
+document.getElementById('exportBtn').addEventListener('click',()=>{
+  document.getElementById('jsonOut').value=JSON.stringify(exportData,null,2);
+  document.getElementById('modalCount').textContent=`${NODES.length} nodes · ${EDGES.length} edges`;
+  modal.classList.add('open');
+});
+document.getElementById('modalClose').addEventListener('click',()=>modal.classList.remove('open'));
+document.getElementById('copyBtn').addEventListener('click',()=>{
+  const ta=document.getElementById('jsonOut');ta.select();
+  navigator.clipboard?.writeText(ta.value).then(()=>{document.getElementById('copyBtn').textContent='COPIED';
+    setTimeout(()=>document.getElementById('copyBtn').textContent='COPY',1400);}).catch(()=>{document.execCommand('copy');});
+});
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  soloDomain=null;document.querySelectorAll('.leg').forEach(r=>r.classList.remove('solo','off'));
+  document.getElementById('search').value='';
+  nodeSel.select('circle.core').attr('stroke-width',1.4);
+  svg.transition().duration(500).call(zoom.transform,d3.zoomIdentity);
+  clearFocus();
+});
+
+// mobile menu
+document.getElementById('menuToggle').addEventListener('click',()=>document.getElementById('rail').classList.toggle('open'));
+
+// resize
+window.addEventListener('resize',()=>{
+  W=stage.clientWidth;H=stage.clientHeight;svg.attr('viewBox',`0 0 ${W} ${H}`);
+  sim.force('center',d3.forceCenter(W/2,H/2)).alpha(.2).restart();
+});
+// initial settle zoom
+setTimeout(()=>{ const t=d3.zoomIdentity.translate(W*0.02,0).scale(0.82); svg.transition().duration(700).call(zoom.transform,t); },400);
+</script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+{
+  "nodes": [
+    {
+      "id": "src_mqtt5",
+      "label": "MQTT Version 5.0 | OASIS Standard",
+      "type": "source",
+      "domain": "d5",
+      "content": "MQTT 5.0 標準仕様。Response Topic、Correlation Data、Message Expiry Interval、Reason Code 等により request-response とエラーハンドリングを規定。"
+    },
+    {
+      "id": "lads_functional_unit",
+      "label": "LADS Functional Unit",
+      "type": "concept",
+      "domain": "d5",
+      "content": "LADS v1.0.0 で定義される機能単位。バイオリアクタ槽を 1 つの仮想デバイスとして集約し、内部に Sensor/Controller/Actuator Function と ProgramManager を持つ。"
+    },
+    {
+      "id": "lads_sensor_function",
+      "label": "LADS Sensor Function",
+      "type": "concept",
+      "domain": "d5",
+      "content": "LADS Functional Unit に属するセンサ機能（analog/discrete/multi-state）。pH/DO/Temp/Agitation/Capacitance/Raman/Pressure/Level/Foam 等が該当。"
+    },
+    {
+      "id": "lads_controller_function",
+      "label": "LADS Controller Function",
+      "type": "concept",
+      "domain": "d5",
+      "content": "LADS Functional Unit に属する制御機能。局所 PID（pH/DO/Temp/Agitation）の制御ロジックを内包し、ブレインからの検証済設定点を受け取る。"
+    },
+    {
+      "id": "lads_actuator_function",
+      "label": "LADS Actuator Function",
+      "type": "concept",
+      "domain": "d5",
+      "content": "LADS Functional Unit に属する駆動機能。灌流ポンプ、給餌ポンプ、培地交換弁、サンプリング弁等の離散/連続駆動素子を表す。"
+    },
+    {
+      "id": "lads_program_result",
+      "label": "LADS Program/Result",
+      "type": "concept",
+      "domain": "d5",
+      "content": "LADS ProgramManager が管理するプログラム（seed/passage/perfusion_ramp/clean）とその実行結果。EBR 導出の原材料となる。"
+    },
+    {
+      "id": "sila_feature",
+      "label": "SiLA2 Feature",
+      "type": "concept",
+      "domain": "d5",
+      "content": "SiLA2 Feature Definition Language（FDL）で定義される機能単位。サンプリングロボ、分注、at-line 分析器等のコマンド/property を記述。"
+    },
+    {
+      "id": "mqtt_topic_contract",
+      "label": "MQTT topic contract",
+      "type": "concept",
+      "domain": "d5",
+      "content": "auto_cell brain と device_gateway 間の MQTT topic 命名規則。cell/{culture_unit_id}/{direction}/{category}/{device_id}/{function_id} の形式。"
+    },
+    {
+      "id": "gateway_cmd_ack",
+      "label": "Gateway command/ack correlation",
+      "type": "concept",
+      "domain": "d5",
+      "content": "MQTT 5.0 Response Topic + Correlation Data を使った非同期 request-response。冪等キーと Message Expiry Interval による重複/stale コマンド防止。"
+    },
+    {
+      "id": "icd_setpoint_envelope",
+      "label": "ICD setpoint envelope",
+      "type": "concept",
+      "domain": "d4",
+      "content": "協業 ICD に定義された設定点範囲・単位・変化率制限。validate_tool_call と gateway 側の二重検証に使われる。"
+    },
+    {
+      "id": "peripheral_sampler",
+      "label": "SiLA2 サンプリングロボ",
+      "type": "system",
+      "domain": "d8",
+      "content": "SiLA2 で統合される at-line サンプリングロボ。take_sample コマンドを提供。"
+    },
+    {
+      "id": "peripheral_dispenser",
+      "label": "SiLA2 自動分注器",
+      "type": "system",
+      "domain": "d8",
+      "content": "SiLA2 で統合される液体分注器。feed/exchange_media 等の培地操作を実行。"
+    },
+    {
+      "id": "peripheral_atline_analyzer",
+      "label": "SiLA2 at-line 分析器",
+      "type": "system",
+      "domain": "d8",
+      "content": "SiLA2 で統合される at-line 分析器（例: Nova BioProfile FLEX2）。代謝物パネル・浸透圧・生存率を提供。"
+    }
+  ],
+  "edges": [
+    {"source": "opcua", "rel": "contains", "target": "lads_functional_unit"},
+    {"source": "lads_functional_unit", "rel": "has", "target": "lads_sensor_function"},
+    {"source": "lads_functional_unit", "rel": "has", "target": "lads_controller_function"},
+    {"source": "lads_functional_unit", "rel": "has", "target": "lads_actuator_function"},
+    {"source": "lads_functional_unit", "rel": "has", "target": "lads_program_result"},
+    {"source": "lads_sensor_function", "rel": "provides", "target": "envmon"},
+    {"source": "lads_sensor_function", "rel": "provides", "target": "cpv"},
+    {"source": "lads_controller_function", "rel": "commands", "target": "closeddev"},
+    {"source": "lads_actuator_function", "rel": "commands", "target": "dispense"},
+    {"source": "lads_program_result", "rel": "records", "target": "ebr"},
+    {"source": "sila", "rel": "contains", "target": "sila_feature"},
+    {"source": "sila_feature", "rel": "integrates", "target": "peripheral_sampler"},
+    {"source": "sila_feature", "rel": "integrates", "target": "peripheral_dispenser"},
+    {"source": "sila_feature", "rel": "integrates", "target": "peripheral_atline_analyzer"},
+    {"source": "peripheral_atline_analyzer", "rel": "verifies", "target": "cpv"},
+    {"source": "devprofile", "rel": "defines", "target": "lads_functional_unit"},
+    {"source": "devprofile", "rel": "defines", "target": "sila_feature"},
+    {"source": "devprofile", "rel": "defines", "target": "mqtt_topic_contract"},
+    {"source": "gateway", "rel": "translates", "target": "lads_functional_unit"},
+    {"source": "gateway", "rel": "translates", "target": "sila_feature"},
+    {"source": "gateway", "rel": "bridges_to", "target": "mqtt_topic_contract"},
+    {"source": "gateway_cmd_ack", "rel": "implements", "target": "mqtt_topic_contract"},
+    {"source": "icd_setpoint_envelope", "rel": "constrains", "target": "lads_controller_function"},
+    {"source": "icd_setpoint_envelope", "rel": "constrains", "target": "lads_actuator_function"},
+    {"source": "icd_setpoint_envelope", "rel": "validates", "target": "ctrl_split"},
+    {"source": "src_lads", "rel": "specifies", "target": "lads_functional_unit"},
+    {"source": "src_sila", "rel": "specifies", "target": "sila_feature"},
+    {"source": "src_mqtt5", "rel": "specifies", "target": "mqtt_topic_contract"}
+  ],
+  "sources": [
+    {
+      "id": "src_lads",
+      "url": "https://reference.opcfoundation.org/specs/OPC-30500-1/4.1",
+      "title": "OPC UA for Laboratory & Analytical Device Standard (LADS) Part 1: Basics (OPC 30500-1)"
+    },
+    {
+      "id": "src_sila",
+      "url": "https://sila-standard.com/faq/",
+      "title": "SiLA 2 FAQ（HTTP/2 + Protocol Buffers）"
+    },
+    {
+      "id": "src_mqtt5",
+      "url": "https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html",
+      "title": "MQTT Version 5.0 | OASIS Standard"
+    },
+    {
+      "id": "src_mqtt5_reqresp",
+      "url": "https://www.emqx.com/en/blog/mqtt5-request-response",
+      "title": "MQTT Request / Response Explained and Example (MQTT 5.0)"
+    },
+    {
+      "id": "src_sila_comm",
+      "url": "https://www.nuget.org/packages/SiLA2.Communication",
+      "title": "SiLA2.Communication — Runtime Dynamic Protobuf Generation for SiLA2 Features"
+    },
+    {
+      "id": "src_nova_flex2",
+      "url": "https://www.novabiomedical.com/cell-culture-analyzers/bioprofile-flex2-basic/",
+      "title": "Nova Biomedical BioProfile FLEX2 (16-parameter at-line analyzer)"
+    }
+  ]
+}

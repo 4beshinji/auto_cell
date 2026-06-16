@@ -1,0 +1,425 @@
+{
+  "meta": {
+    "generated_by": "agent_raman_calibration_ipsc",
+    "date": "2026-06-16",
+    "mode": "B diff",
+    "scope": "Raman calibration strategy for iPSC suspension/aggregate bioreactor control (auto_cell A-layer)",
+    "input_files": [
+      "docs/design/additional_tasks_memo.md",
+      "docs/design/alignment_with_downloaded_report.md",
+      "docs/design/requirements.md",
+      "docs/design/adr/0001-control-architecture.md",
+      "docs/design/kg_to_auto_cell.md",
+      "docs/design/ground_knowledge/integrated_report.md",
+      "docs/knowledge_graph/knowledge_graph_v2.json"
+    ],
+    "summary": {
+      "total_nodes": 21,
+      "total_edges": 36,
+      "total_sources": 13
+    }
+  },
+  "nodes": [
+    {
+      "id": "raman_calibration_ipsc",
+      "label": "iPSC 浮遊凝集体 Raman 校正戦略",
+      "type": "concept",
+      "domain": "d7",
+      "content": "iPSC 浮遊/凝集体バイオリアクターにおける in-line Raman の再校正アプローチ。Nova FLEX2 を正解ラベル、capacitance を VCD anchor、凝集体画像を光散乱補正の共変量として用いる。CHO 由来モデルは転用不可。v1 では Nova 校正後のオプション、v2 以降の閉ループ入力昇格を目指す。〔推定：設計提案〕"
+    },
+    {
+      "id": "raman_pls_model",
+      "label": "Raman PLS chemometric モデル",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Raman スペクトルから glucose/lactate/glutamine 等を推定する部分最小二乗回帰モデル。前処理（ベースライン補正、Savitzky-Golay 微分、SNV/MSC）、変数選択、leave-one-batch-out 交差検証、外部検証を含む。iPSC では凝集体・高密度細胞による光散乱補正が必要。〔推定：CHO 事例を参考に iPSC 再解釈〕"
+    },
+    {
+      "id": "raman_reference_nova",
+      "label": "Nova FLEX2 Raman 正解ラベル",
+      "type": "concept",
+      "domain": "d7",
+      "content": "Raman PLS モデルの校正に使用する at-line リファレンス計測。Nova BioProfile FLEX2 による glucose/lactate/glutamine/osmolality/viability/細胞径等の多パラメータ正解。ALCOA-lite でサンプル時刻・スペクトル ID・モデル version と紐付ける。〔事実：Nova FLEX2 は 16 項 at-line analyzer; 推定：Raman 校正用途〕"
+    },
+    {
+      "id": "raman_cell_scattering",
+      "label": "Raman 細胞光散乱",
+      "type": "concept",
+      "domain": "d7",
+      "content": "懸濁細胞・凝集体による Mie 散乱により Raman 強度が減衰する現象。Beer-Lambert 則では記述できず、細胞密度との非線形関係が知られる。iPSC 凝集体（150–350 µm）は 785 nm レーザーに対して大きな散乱体となり、スペクトルベースラインと強度に影響を与える。〔事実：Yang 2024 J Biotechnol 396:41-52 DOI:10.1016/j.jbiotec.2024.10.007; 推定：iPSC 凝集体への適用〕"
+    },
+    {
+      "id": "raman_aggregate_interference",
+      "label": "Raman 凝集体干渉",
+      "type": "concept",
+      "domain": "d7",
+      "content": "凝集体径・密度の増大が Raman プローブの光路長と散乱断面積を変化させ、代謝物推定精度を低下させる要因。凝集体径は培養日数とともに増大し（95 µm → 530 µm）、多能性維持のため 400 µm 以下が推奨される。〔事実：Eppendorf AN485; StemCell mTeSR 3D manual; 推定：Raman 干渉〕"
+    },
+    {
+      "id": "raman_cho_to_ipsc_transfer",
+      "label": "CHO→iPSC Raman モデル転移制限",
+      "type": "concept",
+      "domain": "d4",
+      "content": "CHO/mAb 由来の chemometric モデルを iPSC 浮遊凝集体に直接転用できない制約。培地マトリックス、代謝プロファイル、細胞サイズ/凝集体構造、品質指標が異なる。クローン間・スケール間転移すら補正を要する事例が報告されている。〔推定：Pétillot 2020 DOI:10.1002/eng2.12230; Machleidt 2024 DOI:10.1002/biot.202300289; Rowland-Jones 2021 DOI:10.1002/btpr.3074〕"
+    },
+    {
+      "id": "raman_model_lifecycle",
+      "label": "Raman モデルライフサイクル管理",
+      "type": "concept",
+      "domain": "d6",
+      "content": "Raman PLS モデルの version 管理、再校正トリガ（培地ロット変更、細胞株変更、プローブ交換、スケール変更）、性能モニタリング、監査証跡を含む技術的統制。ALCOA-lite・GAMP5 AI/ML Appendix D11 に準じた扱い。〔推定：GAMP5 2nd Ed D11; FDA data integrity guidance〕"
+    },
+    {
+      "id": "raman_confidence_score",
+      "label": "Raman 推定信頼度スコア",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Raman PLS モデルの予測不確実性を定量化するスコア（Q 残差、Hotelling T²、予測分散、校正範囲外判定）。低信頼度時は Human-on-the-loop 承認へエスカレーションし、Nova FLEX2 値を優先する。〔推定：設計提案〕"
+    },
+    {
+      "id": "src_abu_absi_2011",
+      "label": "Abu-Absi et al. 2011 in-line Raman CHO",
+      "type": "source",
+      "domain": "d7",
+      "content": "Real time monitoring of multiple parameters in mammalian cell culture bioreactors using an in-line Raman spectroscopy probe. Biotechnol Bioeng 108(5):1215-1221. CHO fed-batch で glucose/lactate/glutamine/glutamate/ammonium/VCD/TCD の同時 in-line 予測を実証。DOI:10.1002/bit.23023"
+    },
+    {
+      "id": "src_matthews_2016",
+      "label": "Matthews et al. 2016 Raman 乳酸閉ループ制御",
+      "type": "source",
+      "domain": "d7",
+      "content": "Closed loop control of lactate concentration in mammalian cell culture by Raman spectroscopy leads to improved cell density, viability, and biopharmaceutical protein production. Biotechnol Bioeng 113(11):2416-2424. Raman PLS ベースの乳酸閉ループ制御で培養期間延長・収量向上。DOI:10.1002/bit.26018"
+    },
+    {
+      "id": "src_berry_2015",
+      "label": "Berry et al. 2015 cross-scale Raman CHO",
+      "type": "source",
+      "domain": "d7",
+      "content": "Cross-scale predictive modeling of CHO cell culture growth and metabolites using Raman spectroscopy and multivariate analysis. Biotechnol Prog 31(2):566-577. Raman モデルのスケール横断予測。DOI:10.1002/btpr.2035"
+    },
+    {
+      "id": "src_yan_2024",
+      "label": "Yan et al. 2024 Raman バッチ数影響",
+      "type": "source",
+      "domain": "d7",
+      "content": "Development of an in-line Raman analytical method for commercial-scale CHO cell culture process monitoring: influence of measurement channels and batch number on model performance. Biotechnol J 19(1):2300395. 商業規模 CHO での in-line Raman 法開発。チャネル数とバッチ数がモデル性能に与える影響を評価。DOI:10.1002/biot.202300395"
+    },
+    {
+      "id": "src_costa_2024",
+      "label": "Costa et al. 2024 Raman cell therapy review",
+      "type": "source",
+      "domain": "d7",
+      "content": "Harnessing Raman spectroscopy for cell therapy bioprocessing. Biotechnol Adv 2024. Cell therapy 製造における Raman の包括レビュー。細胞密度、生存率、代謝物、細胞同一性バイオマーカーの同時計測可能性を議論。DOI:10.1016/j.biotechadv.2024.108166"
+    },
+    {
+      "id": "src_yang_2024",
+      "label": "Yang et al. 2024 Raman 細胞散乱補正",
+      "type": "source",
+      "domain": "d7",
+      "content": "In-line monitoring of bioreactor by Raman spectroscopy: direct use of a standard-based model through cell-scattering correction. J Biotechnol 396:41-52 (2024). 酵母培養において細胞散乱による Raman 強度減衰を非線形式で補正し、標準液ベース PLS モデルを直接使用。DOI:10.1016/j.jbiotec.2024.10.007"
+    },
+    {
+      "id": "src_petillot_2020",
+      "label": "Pétillot et al. 2020 Raman calibration transfer",
+      "type": "source",
+      "domain": "d7",
+      "content": "Calibration transfer for bioprocess Raman monitoring using Kennard-Stone piecewise direct standardization and multivariate algorithms. Eng Rep 2(11):e12230. バイオプロセス Raman モデルのキャリブレーション転移の困難性と補正手法。DOI:10.1002/eng2.12230"
+    },
+    {
+      "id": "src_machleidt_2024",
+      "label": "Machleidt et al. 2024 cross-clone Raman CHO",
+      "type": "source",
+      "domain": "d7",
+      "content": "Feasibility and performance of cross-clone Raman calibration models in CHO cultivation. Biotechnol J 19(1):2300289. CHO クローン間でも Raman 校正モデルの性能が制限されることを示唆。DOI:10.1002/biot.202300289"
+    },
+    {
+      "id": "src_rowland_jones_2021",
+      "label": "Rowland-Jones et al. 2021 Raman scale transfer",
+      "type": "source",
+      "domain": "d7",
+      "content": "Spectroscopy integration to miniature bioreactors and large scale production bioreactors—increasing current capabilities and model transfer. Biotechnol Prog 37(1):e3074. ミニバイオリアクタから大規模槽への Raman モデル転移の課題。DOI:10.1002/btpr.3074"
+    },
+    {
+      "id": "src_bioprocesstools_raman",
+      "label": "Bioprocess Tools Raman monitoring guide",
+      "type": "source",
+      "domain": "d7",
+      "content": "How to Use Raman Spectroscopy for Real-Time Bioprocess Monitoring. PLS モデル構築ワークフロー、前処理、5–15 バッチ校正、性能指標（RMSEP/R²/bias）の実務ガイド。URL:https://bioprocesstools.com/blog/raman-spectroscopy-bioprocess-monitoring/"
+    },
+    {
+      "id": "src_metrohm_an_pan_1065",
+      "label": "Metrohm 2060 Raman cell culture AN-PAN-1065",
+      "type": "source",
+      "domain": "d7",
+      "content": "Inline monitoring of cell cultures with Raman spectroscopy. Metrohm 2060 Raman Analyzer による細胞培養 glucose/lactate in-line 計測アプリケーションノート。SEP glucose 0.20 g/L、lactate 0.12 g/L。URL:https://www.metrohm.com/en/applications/application-notes/prozess-applikationen-anpan/an-pan-1065.html"
+    },
+    {
+      "id": "src_repligen_maverick",
+      "label": "Repligen MAVERICK Raman PAT",
+      "type": "source",
+      "domain": "d8",
+      "content": "Instant Implementation of Raman-Based PAT With MAVERICK System for Monitoring Glucose and Lactate. de novo モデルによる glucose/lactate/biomass 計測。複数哺乳類培地で線形性・選択性を検証。URL:https://www.repligen.com/Products/analytics/maverick/Resources/DOC043_1.PDF"
+    },
+    {
+      "id": "src_yokogawa_2023",
+      "label": "Yokogawa Raman calibration model without culture data",
+      "type": "source",
+      "domain": "d8",
+      "content": "Yokogawa Electric / Kwansei Gakuin University. Development of Raman calibration model without culture data for in-line cell culture monitoring. glucose RMSEP 0.23 g/L、lactate 0.29 g/L、antibody 0.20 g/L を報告。原論文確認中。URL:https://www.spectroscopyonline.com/view/using-a-new-raman-method-for-real-time-inline-cell-culture-monitoring"
+    }
+  ],
+  "edges": [
+    {
+      "source": "raman_calibration_ipsc",
+      "rel": "instance_of",
+      "target": "cpv"
+    },
+    {
+      "source": "raman_calibration_ipsc",
+      "rel": "uses",
+      "target": "measurement_raman_inline"
+    },
+    {
+      "source": "raman_calibration_ipsc",
+      "rel": "uses",
+      "target": "measurement_vcd_capacitance"
+    },
+    {
+      "source": "raman_calibration_ipsc",
+      "rel": "uses",
+      "target": "measurement_atline_nova"
+    },
+    {
+      "source": "raman_calibration_ipsc",
+      "rel": "calibrates",
+      "target": "measurement_raman_inline"
+    },
+    {
+      "source": "raman_calibration_ipsc",
+      "rel": "informs",
+      "target": "loop"
+    },
+    {
+      "source": "raman_calibration_ipsc",
+      "rel": "informs",
+      "target": "bbo"
+    },
+    {
+      "source": "raman_pls_model",
+      "rel": "implements",
+      "target": "raman_calibration_ipsc"
+    },
+    {
+      "source": "raman_pls_model",
+      "rel": "requires",
+      "target": "raman_reference_nova"
+    },
+    {
+      "source": "raman_reference_nova",
+      "rel": "instance_of",
+      "target": "measurement_atline_nova"
+    },
+    {
+      "source": "raman_reference_nova",
+      "rel": "calibrates",
+      "target": "raman_pls_model"
+    },
+    {
+      "source": "raman_cell_scattering",
+      "rel": "causes",
+      "target": "raman_aggregate_interference"
+    },
+    {
+      "source": "raman_cell_scattering",
+      "rel": "constrains",
+      "target": "raman_pls_model"
+    },
+    {
+      "source": "raman_aggregate_interference",
+      "rel": "constrains",
+      "target": "raman_pls_model"
+    },
+    {
+      "source": "raman_cell_scattering",
+      "rel": "constrains",
+      "target": "measurement_raman_inline"
+    },
+    {
+      "source": "raman_aggregate_interference",
+      "rel": "constrains",
+      "target": "measurement_raman_inline"
+    },
+    {
+      "source": "raman_cho_to_ipsc_transfer",
+      "rel": "constrains",
+      "target": "raman_calibration_ipsc"
+    },
+    {
+      "source": "raman_cho_to_ipsc_transfer",
+      "rel": "constrains",
+      "target": "raman_pls_model"
+    },
+    {
+      "source": "raman_model_lifecycle",
+      "rel": "manages",
+      "target": "raman_pls_model"
+    },
+    {
+      "source": "raman_model_lifecycle",
+      "rel": "requires",
+      "target": "audit"
+    },
+    {
+      "source": "raman_model_lifecycle",
+      "rel": "requires",
+      "target": "alcoa"
+    },
+    {
+      "source": "raman_confidence_score",
+      "rel": "evaluates",
+      "target": "raman_pls_model"
+    },
+    {
+      "source": "raman_confidence_score",
+      "rel": "triggers",
+      "target": "human_approval"
+    },
+    {
+      "source": "raman_confidence_score",
+      "rel": "triggers",
+      "target": "approval_workflow"
+    },
+    {
+      "source": "src_abu_absi_2011",
+      "rel": "supports",
+      "target": "measurement_raman_inline"
+    },
+    {
+      "source": "src_matthews_2016",
+      "rel": "supports",
+      "target": "measurement_raman_inline"
+    },
+    {
+      "source": "src_berry_2015",
+      "rel": "supports",
+      "target": "raman_pls_model"
+    },
+    {
+      "source": "src_yan_2024",
+      "rel": "supports",
+      "target": "raman_pls_model"
+    },
+    {
+      "source": "src_costa_2024",
+      "rel": "supports",
+      "target": "raman_calibration_ipsc"
+    },
+    {
+      "source": "src_yang_2024",
+      "rel": "supports",
+      "target": "raman_cell_scattering"
+    },
+    {
+      "source": "src_petillot_2020",
+      "rel": "supports",
+      "target": "raman_cho_to_ipsc_transfer"
+    },
+    {
+      "source": "src_machleidt_2024",
+      "rel": "supports",
+      "target": "raman_cho_to_ipsc_transfer"
+    },
+    {
+      "source": "src_rowland_jones_2021",
+      "rel": "supports",
+      "target": "raman_cho_to_ipsc_transfer"
+    },
+    {
+      "source": "src_bioprocesstools_raman",
+      "rel": "supports",
+      "target": "raman_pls_model"
+    },
+    {
+      "source": "src_metrohm_an_pan_1065",
+      "rel": "supports",
+      "target": "measurement_raman_inline"
+    },
+    {
+      "source": "src_repligen_maverick",
+      "rel": "supports",
+      "target": "measurement_raman_inline"
+    },
+    {
+      "source": "src_yokogawa_2023",
+      "rel": "supports",
+      "target": "measurement_raman_inline"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src_abu_absi_2011",
+      "title": "Abu-Absi et al. 2011, Biotechnol Bioeng",
+      "url": "https://doi.org/10.1002/bit.23023"
+    },
+    {
+      "id": "src_matthews_2016",
+      "title": "Matthews et al. 2016, Biotechnol Bioeng",
+      "url": "https://doi.org/10.1002/bit.26018"
+    },
+    {
+      "id": "src_berry_2015",
+      "title": "Berry et al. 2015, Biotechnol Prog",
+      "url": "https://doi.org/10.1002/btpr.2035"
+    },
+    {
+      "id": "src_yan_2024",
+      "title": "Yan et al. 2024, Biotechnol J",
+      "url": "https://doi.org/10.1002/biot.202300395"
+    },
+    {
+      "id": "src_costa_2024",
+      "title": "Costa et al. 2024, Biotechnol Adv",
+      "url": "https://doi.org/10.1016/j.biotechadv.2024.108166"
+    },
+    {
+      "id": "src_yang_2024",
+      "title": "Yang et al. 2024, J Biotechnol",
+      "url": "https://doi.org/10.1016/j.jbiotec.2024.10.007"
+    },
+    {
+      "id": "src_petillot_2020",
+      "title": "Pétillot et al. 2020, Eng Rep",
+      "url": "https://doi.org/10.1002/eng2.12230"
+    },
+    {
+      "id": "src_machleidt_2024",
+      "title": "Machleidt et al. 2024, Biotechnol J",
+      "url": "https://doi.org/10.1002/biot.202300289"
+    },
+    {
+      "id": "src_rowland_jones_2021",
+      "title": "Rowland-Jones et al. 2021, Biotechnol Prog",
+      "url": "https://doi.org/10.1002/btpr.3074"
+    },
+    {
+      "id": "src_bioprocesstools_raman",
+      "title": "Bioprocess Tools: Raman spectroscopy bioprocess monitoring",
+      "url": "https://bioprocesstools.com/blog/raman-spectroscopy-bioprocess-monitoring/"
+    },
+    {
+      "id": "src_metrohm_an_pan_1065",
+      "title": "Metrohm AN-PAN-1065",
+      "url": "https://www.metrohm.com/en/applications/application-notes/prozess-applikationen-anpan/an-pan-1065.html"
+    },
+    {
+      "id": "src_repligen_maverick",
+      "title": "Repligen MAVERICK technical note DOC043_1",
+      "url": "https://www.repligen.com/Products/analytics/maverick/Resources/DOC043_1.PDF"
+    },
+    {
+      "id": "src_yokogawa_2023",
+      "title": "Spectroscopy Online: Yokogawa Raman calibration model",
+      "url": "https://www.spectroscopyonline.com/view/using-a-new-raman-method-for-real-time-inline-cell-culture-monitoring"
+    }
+  ]
+}

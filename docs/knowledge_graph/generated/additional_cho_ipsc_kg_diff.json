@@ -1,0 +1,260 @@
+{
+  "meta": {
+    "agent": "agent_cho_ipsc_cpp_translation",
+    "scope": "CHO-to-iPSC CPP translation differences for A-layer iPSC suspension/aggregate perfusion bioreactor control",
+    "mode": "B",
+    "generated": "2026-06-16",
+    "based_on": [
+      "docs/design/additional_tasks_memo.md",
+      "docs/design/alignment_with_downloaded_report.md",
+      "docs/design/requirements.md",
+      "docs/design/adr/0001-control-architecture.md",
+      "docs/design/kg_to_auto_cell.md",
+      "docs/design/ground_knowledge/integrated_report.md",
+      "docs/design/ground_knowledge/additional_cho_to_ipsc_cpp.md"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "add_cho_ipsc_cho_metabolism",
+      "label": "CHO 代謝プロファイル",
+      "type": "concept",
+      "domain": "d1",
+      "content": "ハムスター卵巢由来 CHO 細胞の代謝特性。高グルコース消費、活発な乳酸産生、グルタミン分解によるアンモニア蓄積、mAb タイトル最大化が最適化目標。iPSC にはそのまま転用不可。"
+    },
+    {
+      "id": "add_cho_ipsc_ipsc_metabolism",
+      "label": "iPSC 代謝プロファイル",
+      "type": "concept",
+      "domain": "d1",
+      "content": "ヒト多能性幹細胞 iPSC の代謝特性。highly glycolytic で高密度化に伴いグルコース消費と乳酸分泌が急増。乳酸蓄積・浸透圧ピーク・凝集体サイズが成長制限因子。多能性維持が品質目標。"
+    },
+    {
+      "id": "add_cho_ipsc_glycolytic_shift",
+      "label": "iPSC の高解糖性シフト",
+      "type": "concept",
+      "domain": "d1",
+      "content": "iPSC が未分化状態で解糖系を優位に使う代謝特性。高密度培養ではグルコース供給と乳酸洗浄のトレードオフが顕在化し、灌流制御の中核となる。"
+    },
+    {
+      "id": "add_cho_ipsc_lactate_threshold",
+      "label": "乳酸閾値の細胞種差",
+      "type": "concept",
+      "domain": "d7",
+      "content": "CHO では株により 15–50 mM の阻害閾値が報告される。iPSC では Manstein 2021 のモデル値 K_Lac=50 mM が用いられるが、実際の iPSC 株・培地で再校正が必要。CHO 値をそのまま転用しない。"
+    },
+    {
+      "id": "add_cho_ipsc_ammonia_threshold",
+      "label": "アンモニア閾値の未確定性",
+      "type": "concept",
+      "domain": "d7",
+      "content": "CHO では 5 mM で成長阻害が報告されるが、iPSC のネイティブ閾値は未確定。auto_cell A 層では監視値として扱い、実データまたは文献調査で再校正。"
+    },
+    {
+      "id": "add_cho_ipsc_osmolality_threshold",
+      "label": "浸透圧閾値の細胞種差",
+      "type": "concept",
+      "domain": "d7",
+      "content": "CHO/哺乳類培養では 380–450 mOsm/kg 超で成長低下が報告される。iPSC では Manstein 2021 が K_Osm=500 mOsm/kg を採用。培地・密度依存で再校正要。"
+    },
+    {
+      "id": "add_cho_ipsc_glucose_threshold",
+      "label": "グルコース閾値の細胞種差",
+      "type": "concept",
+      "domain": "d7",
+      "content": "CHO では 2–3 g/L（11–17 mM）維持が推奨される。iPSC では Manstein 2021 が K_Glc=1.5 mM を採用。iPSC は低グルコースで飢餓制限を受けやすい。"
+    },
+    {
+      "id": "add_cho_ipsc_aggregate_oxygen_diffusion",
+      "label": "凝集体内酸素拡散限界",
+      "type": "concept",
+      "domain": "d1",
+      "content": "iPSC 凝集体では径が大きくなると中心部への酸素/栄養拡散が制限され壊死コアが形成。100–200 µm の拡散距離、300 µm 以下の径制御が目安。"
+    },
+    {
+      "id": "add_cho_ipsc_aggregate_size_cpp",
+      "label": "凝集体サイズを CPP として扱う",
+      "type": "concept",
+      "domain": "d4",
+      "content": "iPSC 浮遊培養では凝集体径が酸素拡散、シアストレス、未分化性維持を同時に規定する独立した CPP。平均径だけでなく大径凝集体割合も考慮。"
+    },
+    {
+      "id": "add_cho_ipsc_shear_sensitivity",
+      "label": "iPSC のシア感受性",
+      "type": "concept",
+      "domain": "d4",
+      "content": "iPSC は攪拌によるシアストレスに敏感。Vertical-Wheel では 40–60 rpm が最適、DASbox では 80 rpm（150mL）が報告。反応器形状とスケールで再設定必要。"
+    },
+    {
+      "id": "add_cho_ipsc_mab_titer_objective",
+      "label": "CHO の mAb タイトル目的関数",
+      "type": "concept",
+      "domain": "d4",
+      "content": "CHO fed-batch/perfusion の最適化目標。抗体タイトル（g/L）、viable cell density × specific productivity、糖鎖パターン（CQA）。iPSC 目的関数とは本質的に異なる。"
+    },
+    {
+      "id": "add_cho_ipsc_pluripotency_objective",
+      "label": "iPSC の多能性品質目的関数",
+      "type": "concept",
+      "domain": "d4",
+      "content": "iPSC 浮遊拡大の最適化目標。細胞収量 × 生存率 × 多能性マーカー陽性率（OCT4/SOX2/NANOG/SSEA/TRA）× 凝集体適正サイズ。重みは細胞株・用途で変動。"
+    },
+    {
+      "id": "add_cho_ipsc_qc_marker_panel",
+      "label": "iPSC 多能性 QC マーカーパネル",
+      "type": "concept",
+      "domain": "d1",
+      "content": "iPSC の未分化性を評価するマーカー群。核内転写因子 OCT4/SOX2/NANOG、細胞表面マーカー SSEA-3/SSEA-4/TRA-1-60/TRA-1-81、核型/同一性。offline/run 単位で測定。"
+    },
+    {
+      "id": "add_cho_ipsc_transfer_caution",
+      "label": "CHO→iPSC 知見転用注意",
+      "type": "concept",
+      "domain": "d4",
+      "content": "CHO 由来の CPP 数値・制御戦略・目的関数を iPSC にそのまま転用しないこと。細胞種・培地・反応器形状・製品特性（mAb vs 細胞製品）の違いを再解釈。"
+    },
+    {
+      "id": "add_cho_ipsc_cpp_reinterpretation",
+      "label": "CPP の iPSC 再解釈",
+      "type": "concept",
+      "domain": "d4",
+      "content": "CHO/mAb 中心の調査レポートから得られた知見を、iPSC 浮遊/凝集体灌流の文脈に再解釈する設計活動。L1 レシピ、L2 BO、L3 HMI に反映。"
+    },
+    {
+      "id": "src_add_cho_ipsc_manstein2021",
+      "label": "Manstein & Zweigerdt 2021 hiPSC perfusion",
+      "type": "source",
+      "domain": "d1",
+      "content": "hPSC 灌流撹拌槽高密度培養。7 日で 35×10⁶ cells/mL、乳酸/浸透圧/グルコース制御、6 項 Monod モデル。"
+    },
+    {
+      "id": "src_add_cho_ipsc_borys2021",
+      "label": "Borys et al. 2021 Vertical-Wheel hiPSC",
+      "type": "source",
+      "domain": "d4",
+      "content": "Vertical-Wheel 撹拌槽での hiPSC 凝集体拡大。40 rpm 最適、>400 µm で壊死リスク。"
+    },
+    {
+      "id": "src_add_cho_ipsc_huang2020",
+      "label": "Huang et al. 2020 PSC 10L stirred tank manufacturing",
+      "type": "source",
+      "domain": "d1",
+      "content": "10 L 撹拌槽での PSC 製造プロセス開発。凝集体サイズ 300 µm 制限、酸素拡散限界 100–200 µm。"
+    },
+    {
+      "id": "src_add_cho_ipsc_xing2008",
+      "label": "Xing et al. 2008 CHO metabolite inhibition thresholds",
+      "type": "source",
+      "domain": "d7",
+      "content": "CHO 培養における乳酸・アンモニア・浸透圧・pCO₂ の阻害閾値多変量解析。iPSC への直接転用不可。"
+    },
+    {
+      "id": "src_add_cho_ipsc_toussaint2016",
+      "label": "Toussaint et al. 2016 CHO lactate metabolism engineering",
+      "type": "source",
+      "domain": "d1",
+      "content": "CHO の乳酸代謝改変（PYC2）による抗体タイトル向上。CHO 特異的戦略。"
+    },
+    {
+      "id": "src_add_cho_ipsc_mabion2025",
+      "label": "Mabion 2025 CHO metabolite analysis guide",
+      "type": "source",
+      "domain": "d7",
+      "content": "CHO 培養の代謝物/栄養解析に関する業界ガイダンス。乳酸・アンモニア・浸透圧の影響。"
+    },
+    {
+      "id": "src_add_cho_ipsc_gfi2025",
+      "label": "GFI 2025 Cultivated meat techno-economics report",
+      "type": "source",
+      "domain": "d7",
+      "content": "哺乳類細胞培養における乳酸・浸透圧の阻害メカニズムと閾値範囲。CHO 培養知見を含む。"
+    },
+    {
+      "id": "src_add_cho_ipsc_seo2021",
+      "label": "Seo et al. 2021 Vertical-Wheel iPSC aggregate DoE",
+      "type": "source",
+      "domain": "d4",
+      "content": "Vertical-Wheel での iPSC 凝集体安定性 DoE。OCT4/SOX2/NANOG の個別最適化と多能性維持。"
+    },
+    {
+      "id": "src_add_cho_ipsc_stemcellpis",
+      "label": "STEMCELL hPSC aggregate culture PIS",
+      "type": "source",
+      "domain": "d1",
+      "content": "hPSC 凝集体培養プロトコル。理想平均凝集体径 50–200 µm。"
+    },
+    {
+      "id": "src_add_cho_ipsc_amsbio",
+      "label": "Amsbio stem cell QC guide",
+      "type": "source",
+      "domain": "d1",
+      "content": "幹細胞品質管理ガイド。OCT4/SOX2/NANOG/SSEA/TRA 等の多能性マーカー。"
+    },
+    {
+      "id": "src_add_cho_ipsc_chen2014",
+      "label": "Chen et al. 2014 hPSC culture considerations",
+      "type": "source",
+      "domain": "d1",
+      "content": "hPSC 培養の維持・拡大・治療応用における考慮事項。酸素拡散限界 100–200 µm。"
+    }
+  ],
+  "edges": [
+    {"source": "d1", "rel": "has", "target": "add_cho_ipsc_cho_metabolism"},
+    {"source": "d1", "rel": "has", "target": "add_cho_ipsc_ipsc_metabolism"},
+    {"source": "d4", "rel": "has", "target": "add_cho_ipsc_aggregate_size_cpp"},
+    {"source": "d4", "rel": "has", "target": "add_cho_ipsc_mab_titer_objective"},
+    {"source": "d4", "rel": "has", "target": "add_cho_ipsc_pluripotency_objective"},
+    {"source": "d4", "rel": "has", "target": "add_cho_ipsc_transfer_caution"},
+    {"source": "d7", "rel": "has", "target": "add_cho_ipsc_lactate_threshold"},
+    {"source": "d7", "rel": "has", "target": "add_cho_ipsc_ammonia_threshold"},
+    {"source": "d7", "rel": "has", "target": "add_cho_ipsc_osmolality_threshold"},
+    {"source": "d7", "rel": "has", "target": "add_cho_ipsc_glucose_threshold"},
+    {"source": "add_cho_ipsc_cho_metabolism", "rel": "differs_from", "target": "add_cho_ipsc_ipsc_metabolism"},
+    {"source": "add_cho_ipsc_ipsc_metabolism", "rel": "exhibits", "target": "add_cho_ipsc_glycolytic_shift"},
+    {"source": "add_cho_ipsc_glycolytic_shift", "rel": "increases", "target": "cpp_glucose"},
+    {"source": "add_cho_ipsc_glycolytic_shift", "rel": "increases", "target": "cpp_lactate"},
+    {"source": "add_cho_ipsc_lactate_threshold", "rel": "constrains", "target": "cpp_lactate"},
+    {"source": "add_cho_ipsc_ammonia_threshold", "rel": "monitors", "target": "cpp_ammonia"},
+    {"source": "add_cho_ipsc_osmolality_threshold", "rel": "constrains", "target": "cpp_osmolality"},
+    {"source": "add_cho_ipsc_glucose_threshold", "rel": "constrains", "target": "cpp_glucose"},
+    {"source": "add_cho_ipsc_aggregate_size_cpp", "rel": "influences", "target": "add_cho_ipsc_aggregate_oxygen_diffusion"},
+    {"source": "add_cho_ipsc_aggregate_oxygen_diffusion", "rel": "limits", "target": "cpp_viability"},
+    {"source": "add_cho_ipsc_aggregate_size_cpp", "rel": "triggers", "target": "tool_trigger_passage"},
+    {"source": "add_cho_ipsc_shear_sensitivity", "rel": "constrains", "target": "cpp_agitation"},
+    {"source": "add_cho_ipsc_mab_titer_objective", "rel": "contrasts_with", "target": "add_cho_ipsc_pluripotency_objective"},
+    {"source": "add_cho_ipsc_pluripotency_objective", "rel": "measured_by", "target": "add_cho_ipsc_qc_marker_panel"},
+    {"source": "add_cho_ipsc_qc_marker_panel", "rel": "implemented_by", "target": "monitoring_quality_offline"},
+    {"source": "add_cho_ipsc_pluripotency_objective", "rel": "optimizes", "target": "bbo"},
+    {"source": "add_cho_ipsc_transfer_caution", "rel": "governs", "target": "add_cho_ipsc_cpp_reinterpretation"},
+    {"source": "add_cho_ipsc_cpp_reinterpretation", "rel": "modifies", "target": "bbo"},
+    {"source": "add_cho_ipsc_cpp_reinterpretation", "rel": "modifies", "target": "recipe_executor"},
+    {"source": "src_add_cho_ipsc_manstein2021", "rel": "defines", "target": "add_cho_ipsc_ipsc_metabolism"},
+    {"source": "src_add_cho_ipsc_manstein2021", "rel": "defines", "target": "add_cho_ipsc_glucose_threshold"},
+    {"source": "src_add_cho_ipsc_manstein2021", "rel": "defines", "target": "add_cho_ipsc_lactate_threshold"},
+    {"source": "src_add_cho_ipsc_manstein2021", "rel": "defines", "target": "add_cho_ipsc_osmolality_threshold"},
+    {"source": "src_add_cho_ipsc_borys2021", "rel": "defines", "target": "add_cho_ipsc_aggregate_size_cpp"},
+    {"source": "src_add_cho_ipsc_borys2021", "rel": "defines", "target": "add_cho_ipsc_shear_sensitivity"},
+    {"source": "src_add_cho_ipsc_huang2020", "rel": "informs", "target": "add_cho_ipsc_aggregate_oxygen_diffusion"},
+    {"source": "src_add_cho_ipsc_xing2008", "rel": "informs", "target": "add_cho_ipsc_cho_metabolism"},
+    {"source": "src_add_cho_ipsc_toussaint2016", "rel": "illustrates", "target": "add_cho_ipsc_cho_metabolism"},
+    {"source": "src_add_cho_ipsc_mabion2025", "rel": "informs", "target": "add_cho_ipsc_cho_metabolism"},
+    {"source": "src_add_cho_ipsc_gfi2025", "rel": "informs", "target": "add_cho_ipsc_cho_metabolism"},
+    {"source": "src_add_cho_ipsc_seo2021", "rel": "informs", "target": "add_cho_ipsc_pluripotency_objective"},
+    {"source": "src_add_cho_ipsc_stemcellpis", "rel": "defines", "target": "add_cho_ipsc_aggregate_size_cpp"},
+    {"source": "src_add_cho_ipsc_amsbio", "rel": "defines", "target": "add_cho_ipsc_qc_marker_panel"},
+    {"source": "src_add_cho_ipsc_chen2014", "rel": "informs", "target": "add_cho_ipsc_aggregate_oxygen_diffusion"}
+  ],
+  "sources": [
+    {"id": "src_add_cho_ipsc_manstein2021", "url": "https://pubmed.ncbi.nlm.nih.gov/33660952/", "title": "Manstein et al. 2021, Stem Cells Transl Med 10(7):1063-1080 — high density hiPSC perfusion (DOI 10.1002/sctm.20-0453, PMID 33660952)"},
+    {"id": "src_add_cho_ipsc_borys2021", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/", "title": "Borys et al. 2021, Stem Cell Res Ther 12:55 — Vertical-Wheel hiPSC aggregate expansion (DOI 10.1186/s13287-020-02109-4)"},
+    {"id": "src_add_cho_ipsc_huang2020", "url": "https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/Process-development-and-scale-up-of-pluripotent-stem-cell-manufacturing", "title": "Huang et al. 2020, Cell Gene Ther Insights — 10 L PSC stirred tank manufacturing"},
+    {"id": "src_add_cho_ipsc_xing2008", "url": "https://pubmed.ncbi.nlm.nih.gov/18422365/", "title": "Xing et al. 2008, Biotechnol Prog 24:675 — CHO metabolite inhibition thresholds (DOI 10.1021/bp070466m)"},
+    {"id": "src_add_cho_ipsc_toussaint2016", "url": "https://www.sciencedirect.com/science/article/pii/S0168165615011794", "title": "Toussaint et al. 2016, J Biotechnol 217:122-131 — CHO lactate metabolism engineering (DOI 10.1016/j.jbiotec.2015.11.010)"},
+    {"id": "src_add_cho_ipsc_mabion2025", "url": "https://www.mabion.eu/science-hub/articles/metabolite-nutrient-analysis-upstream-process-optimization/", "title": "Mabion 2025 — Optimizing CHO Cell Cultures via Metabolite Analysis"},
+    {"id": "src_add_cho_ipsc_gfi2025", "url": "https://gfi.org/wp-content/uploads/2025/10/Technical-report-Optimizing-CM-Technoeconomics-2025.pdf", "title": "GFI 2025 — Technical Report: Optimizing CM Techno-economics (lactate/osmolality thresholds)"},
+    {"id": "src_add_cho_ipsc_seo2021", "url": "https://cdn.prod.website-files.com/62cc627d7fe73059b1484e97/67ef1e98493a7a613f404a2a_Bioreactor_iPSC_aggregate_stability_publication.pdf", "title": "Seo et al. 2021 — Addressing bioreactor hiPSC aggregate stability using DoE"},
+    {"id": "src_add_cho_ipsc_stemcellpis", "url": "https://cdn.stemcell.com/media/files/pis/10000031886-PIS_01.pdf", "title": "STEMCELL Technologies PIS 10000031886 — hPSC aggregate culture (50–200 µm target)"},
+    {"id": "src_add_cho_ipsc_amsbio", "url": "https://www.amsbio.com/research-areas/stem-cell/stem-cells-quality-control", "title": "Amsbio — Quality Control of Stem Cells (pluripotency markers)"},
+    {"id": "src_add_cho_ipsc_chen2014", "url": "https://www.cell.com/cell-stem-cell/fulltext/S1934-5909(13)00677-7", "title": "Chen et al. 2014, Cell Stem Cell 14:13-26 — hPSC culture considerations (oxygen diffusion)"}
+  ]
+}

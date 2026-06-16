@@ -34,3 +34,11 @@ uv run pytest
 
 > コア（plugin 基盤・WorldModel・ReAct ループ）は physical-ai-core 側。core を直すと
 > editable 参照で本 PJ に即反映される。
+
+## 設計文書
+
+- [`docs/design/adr/0001-control-architecture.md`](docs/design/adr/0001-control-architecture.md): L0–L3 制御アーキテクチャ
+- [`docs/design/kg_to_auto_cell.md`](docs/design/kg_to_auto_cell.md): KG → auto_cell 設計ブリッジ（CPP・観測性・デバイス IF）
+- [`docs/design/roadmap.md`](docs/design/roadmap.md): v1/Phase 2/Phase 3 技術ロードマップ（移行条件を数値化）
+- [`docs/design/regulatory_technical_controls.md`](docs/design/regulatory_technical_controls.md): Annex 22-ready 規制技術統制
+- [`docs/design/design_reconsideration_report.md`](docs/design/design_reconsideration_report.md): 設計再検討レポート

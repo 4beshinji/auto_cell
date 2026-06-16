@@ -1,0 +1,2980 @@
+@prefix : <https://tangletech.dev/ips-automation-kg#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:Concept a rdfs:Class .
+:Domain a rdfs:Class .
+:Player a rdfs:Class .
+:Root a rdfs:Class .
+:Source a rdfs:Class .
+:System a rdfs:Class .
+
+n_root a :Root ;
+    rdfs:label "iPS自動培養ソフトウェア"@ja ;
+    :content "患者血液→iPS樹立→維持/拡大→分化誘導→品質評価までを、画像判断・ロボット操作・規制対応を統合して自動制御するソフトウェアスタック。本マップはその実装に必要なドメイン知識の地図。"@ja ;
+    :hasSource [ dct:title "iPS財団 My iPSプロジェクト（自家細胞を自動作製）"@ja ; :url <https://www.nikkan.co.jp/articles/view/00745986> ] ,
+               [ dct:title "my iPSプロジェクト（iPS財団 公式）"@ja ; :url <https://www.cira-foundation.or.jp/j/about/project/myips/> ] ;
+    .
+
+n_d1 a :Domain ;
+    rdfs:label "細胞生物学・培養プロトコル"@ja ;
+    :inDomain :n_d1 ;
+    :content "自動化の対象そのもの。iPS細胞の樹立・維持・継代・分化誘導・量産の生物学的手順群で、各操作のパラメータが下流の制御変数になる。"@ja ;
+    :hasSource [ dct:title "CiRA ヒトiPS細胞 培養プロトコール集"@ja ; :url <https://www.cira.kyoto-u.ac.jp/j/research/protocol.html> ] ;
+    .
+
+n_d2 a :Domain ;
+    rdfs:label "画像取得・コンピュータビジョン"@ja ;
+    :inDomain :n_d2 ;
+    :content "ラベルフリー画像から細胞状態を定量し、意思決定の入力を生成する層。コンフルエンシー・形態・分化の判定が中核。"@ja ;
+    :hasSource [ dct:title "Deep learning for label-free monitoring of iPSC & organoids"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures> ] ;
+    .
+
+n_d3 a :Domain ;
+    rdfs:label "ロボティクス・液体ハンドリング"@ja ;
+    :inDomain :n_d3 ;
+    :content "培養操作を物理的に実行する装置・ロボット層。汎用双腕と閉鎖型専用機の二系統がある。"@ja ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ,
+               [ dct:title "Long-term iPSC maintenance by automated culture system（Konagaya 2015）"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/> ] ;
+    .
+
+n_d4 a :Domain ;
+    rdfs:label "プロセス制御・自律最適化"@ja ;
+    :inDomain :n_d4 ;
+    :content "観察→判断→操作の閉ループと、プロトコル最適化（ベイズ最適化等）を担う制御知能の層。"@ja ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ,
+               [ dct:title "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）"@ja ; :url <https://www.riken.jp/press/2020/20201204_1/index.html> ] ;
+    .
+
+n_d5 a :Domain ;
+    rdfs:label "ソフトウェア基盤・相互運用"@ja ;
+    :inDomain :n_d5 ;
+    :content "デバイス統合標準・ワークフローオーケストレーション・データ基盤。異種機器を跨ぐ統合の土台。"@ja ;
+    :hasSource [ dct:title "SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）"@ja ; :url <https://sila-standard.com/faq/> ] ,
+               [ dct:title "The SiLA 2 Manager（device discovery / data integrity）"@ja ; :url <https://www.sciencedirect.com/science/article/pii/S2352711022000103> ] ;
+    .
+
+n_d6 a :Domain ;
+    rdfs:label "GMP・規制・データインテグリティ"@ja ;
+    :inDomain :n_d6 ;
+    :content "製造ソフトが満たすべき規制・品質・電子記録の要件群。設計の制約条件を規定する。"@ja ;
+    :hasSource [ dct:title "GCTP適合性調査（PMDA）"@ja ; :url <https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html> ] ,
+               [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] ;
+    .
+
+n_d7 a :Domain ;
+    rdfs:label "センサ・環境モニタリング"@ja ;
+    :inDomain :n_d7 ;
+    :content "培養環境・無菌性の連続計測と、閉ループ制御への状態量供給。エッジ実装で分散計測。"@ja ;
+    :hasSource [ dct:title "Long-term iPSC maintenance by automated culture system（Konagaya 2015）"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/> ] ;
+    .
+
+n_d8 a :Domain ;
+    rdfs:label "エコシステム・プレイヤー"@ja ;
+    :inDomain :n_d8 ;
+    :content "財団・企業・装置など実在の担い手と製品。技術選定とパートナリングの地図。"@ja ;
+    :hasSource [ dct:title "iPS財団 My iPSプロジェクト（自家細胞を自動作製）"@ja ; :url <https://www.nikkan.co.jp/articles/view/00745986> ] ,
+               [ dct:title "Terumo BCT × CiRA Foundation 自動化提携（Quantum Flex）"@ja ; :url <https://www.terumo.com/newsrelease/detail/20240319/6146> ] ;
+    .
+
+n_maint a :Concept ;
+    rdfs:label "iPSC維持培養"@ja ;
+    :inDomain :n_d1 ;
+    :content "未分化状態を保つ日々の培地交換と環境維持。ヒトiPSは毎日の培地交換と約3日ごとの継代が必要で、熟練手技に依存する点が自動化の主対象。"@ja ;
+    :hasSource [ dct:title "CiRA ヒトiPS細胞 培養プロトコール集"@ja ; :url <https://www.cira.kyoto-u.ac.jp/j/research/protocol.html> ] ,
+               [ dct:title "Long-term iPSC maintenance by automated culture system（Konagaya 2015）"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/> ] ;
+    .
+
+n_passage a :Concept ;
+    rdfs:label "継代（剥離・分散）"@ja ;
+    :inDomain :n_d1 ;
+    :content "コロニーを剥離し新プレートへ植え継ぐ工程。単一細胞分散かクランプ維持か、ROCK阻害剤(Y-27632)添加、シェアストレス管理が品質を左右する。"@ja ;
+    :hasSource [ dct:title "CiRA ヒトiPS細胞 培養プロトコール集"@ja ; :url <https://www.cira.kyoto-u.ac.jp/j/research/protocol.html> ] ,
+               [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ;
+    .
+
+n_feeder a :Concept ;
+    rdfs:label "フィーダーフリー培養"@ja ;
+    :inDomain :n_d1 ;
+    :content "フィーダー細胞を用いず基質コート上で培養する方式。臨床・自動化に適し、画像解析でも背景が単純化しやすい。"@ja ;
+    :hasSource [ dct:title "CiRA ヒトiPS細胞 培養プロトコール集"@ja ; :url <https://www.cira.kyoto-u.ac.jp/j/research/protocol.html> ] ;
+    .
+
+n_diff a :Concept ;
+    rdfs:label "分化誘導プロトコル"@ja ;
+    :inDomain :n_d1 ;
+    :content "目的細胞へ誘導する多段階手順。iPSC→RPEは seeding / preconditioning / passage / induction / maintenance の5段階として定式化され、自動探索のテンプレになった。"@ja ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ;
+    .
+
+n_signal a :Concept ;
+    rdfs:label "シグナル制御（添加因子）"@ja ;
+    :inDomain :n_d1 ;
+    :content "分化方向を決める阻害剤の濃度・タイミング。RPE誘導では FGFR阻害剤・SB431542(TGFβ)・CKI-7(Wnt)・Y-27632 等が制御変数。これらが最適化の探索空間になる。"@ja ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ;
+    .
+
+n_suspension a :Concept ;
+    rdfs:label "浮遊・懸濁培養（量産）"@ja ;
+    :inDomain :n_d1 ;
+    :content "3次元浮遊撹拌で容積当たり密度を上げ量産する方式。突発的分化を化合物で抑制し、樹立→大量培養→直接凍結まで一貫化。自動化・スケールアップの基盤形態。"@ja ;
+    :hasSource [ dct:title "iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）"@ja ; :url <https://www.riken.jp/press/2024/20241120_1/index.html> ] ,
+               [ dct:title "iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）"@ja ; :url <https://stemcells.or.jp/ips-9/> ] ;
+    .
+
+n_reprog a :Concept ;
+    rdfs:label "iPSC樹立（初期化）"@ja ;
+    :inDomain :n_d1 ;
+    :content "体細胞をRNA等で初期化しコロニーを得る最難関工程。形態が動的で良質コロニー選抜が職人技。財団・パナソニックが2026年に樹立工程の自動化実証に着手。"@ja ;
+    :hasSource [ dct:title "パナソニックHD iPS樹立工程の自動化 実証実験（2026/4）"@ja ; :url <https://prtimes.jp/main/html/rd/p/000006702.000003442.html> ] ,
+               [ dct:title "ML label-free iPSC colony formation detection（Sci Rep）"@ja ; :url <https://www.nature.com/articles/s41598-017-13680-x> ] ;
+    .
+
+n_qccrit a :Concept ;
+    rdfs:label "細胞品質基準"@ja ;
+    :inDomain :n_d1 ;
+    :content "未分化マーカー発現・三胚葉分化能・核型など、製造物が満たすべき生物学的基準。自動判定の「正解ラベル」を定義し、画像代理指標と紐づける必要がある。"@ja ;
+    :hasSource [ dct:title "Parametric analysis of hPSC colony morphology for QC（Sci Rep）"@ja ; :url <https://www.nature.com/articles/srep34009> ] ,
+               [ dct:title "Long-term iPSC maintenance by automated culture system（Konagaya 2015）"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/> ] ;
+    .
+
+n_bf a :Concept ;
+    rdfs:label "明視野/位相差イメージング"@ja ;
+    :inDomain :n_d2 ;
+    :content "低光毒性で非侵襲なラベルフリー観察。一方で低コントラスト・不均一背景・ハロー/エッジ効果があり、頑健なセグメンテーションが難所。"@ja ;
+    :hasSource [ dct:title "Deep learning for label-free monitoring of iPSC & organoids"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures> ] ;
+    .
+
+n_conf a :Concept ;
+    rdfs:label "コンフルエンシー算出"@ja ;
+    :inDomain :n_d2 ;
+    :content "セグメンテーションで占有面積/コロニー面積を定量。継代や次工程移行の判断指標（例: 70-80%）として閾値化される中核メトリクス。"@ja ;
+    :hasSource [ dct:title "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system> ] ,
+               [ dct:title "Deep learning for label-free monitoring of iPSC & organoids"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures> ] ;
+    .
+
+n_morphcls a :Concept ;
+    rdfs:label "コロニー形態分類"@ja ;
+    :inDomain :n_d2 ;
+    :content "良/不良フェノタイプをCNN等で識別。形態パラメータが未分化性・クローン性維持能と相関し、選抜・除外の自動判断に使う。"@ja ;
+    :hasSource [ dct:title "QC of hPSC colonies by CNN image analysis"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9820636/> ] ,
+               [ dct:title "Parametric analysis of hPSC colony morphology for QC（Sci Rep）"@ja ; :url <https://www.nature.com/articles/srep34009> ] ;
+    .
+
+n_diffdet a :Concept ;
+    rdfs:label "分化領域検出"@ja ;
+    :inDomain :n_d2 ;
+    :content "未分化コロニー内の自発分化領域を検出・定量。分化率の閾値超過ウェルを除外したり、誘導の進行度評価に用いる専用DLモデル。"@ja ;
+    :hasSource [ dct:title "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system> ] ,
+               [ dct:title "Deep learning for label-free monitoring of iPSC & organoids"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures> ] ;
+    .
+
+n_growth a :Concept ;
+    rdfs:label "増殖曲線予測→継代トリガ"@ja ;
+    :inDomain :n_d2 ;
+    :content "定期観察から面積値の増殖曲線を推定し、目標密度到達の至適時刻を予測。これがスケジューラと継代操作のトリガになる閉ループの起点。"@ja ;
+    :hasSource [ dct:title "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）"@ja ; :url <https://www.riken.jp/press/2020/20201204_1/index.html> ] ,
+               [ dct:title "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system> ] ;
+    .
+
+n_dlmodel a :Concept ;
+    rdfs:label "DLモデル（分割/分類）"@ja ;
+    :inDomain :n_d2 ;
+    :content "セグメンテーション(面積/コンフルエンシー)と分類(形態・分化)の学習モデル群。ラベルフリー前提・低コントラスト対応・施設間汎化が実装課題。"@ja ;
+    :hasSource [ dct:title "Deep learning for label-free monitoring of iPSC & organoids"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures> ] ,
+               [ dct:title "QC of hPSC colonies by CNN image analysis"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9820636/> ] ;
+    .
+
+n_dualarm a :Concept ;
+    rdfs:label "双腕ヒューマノイド"@ja ;
+    :inDomain :n_d3 ;
+    :content "汎用器具をそのまま扱える人型双腕（例: LabDroid Maholo）。プロトコル変更に柔軟で、パラメータ探索や手作業の写像に向く。"@ja ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ,
+               [ dct:title "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）"@ja ; :url <https://www.riken.jp/press/2020/20201204_1/index.html> ] ;
+    .
+
+n_closeddev a :Concept ;
+    rdfs:label "閉鎖型専用培養装置"@ja ;
+    :inDomain :n_d3 ;
+    :content "装置内で取り出さず培養するクローズド機。無菌性・更衣簡略化・人為ミス低減に優れ、財団のmy iPS製造の中核アーキテクチャ。"@ja ;
+    :hasSource [ dct:title "iPS財団 My iPSプロジェクト（自家細胞を自動作製）"@ja ; :url <https://www.nikkan.co.jp/articles/view/00745986> ] ,
+               [ dct:title "Long-term iPSC maintenance by automated culture system（Konagaya 2015）"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/> ] ;
+    .
+
+n_dispense a :Concept ;
+    rdfs:label "自動分注・ピペッティング"@ja ;
+    :inDomain :n_d3 ;
+    :content "培地・試薬の精密分注と吸引。液面追従・体積制御・無菌チップ運用が再現性を決める。リキッドハンドラ統合の基本ユニット。"@ja ;
+    :hasSource [ dct:title "Long-term iPSC maintenance by automated culture system（Konagaya 2015）"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/> ] ;
+    .
+
+n_transport a :Concept ;
+    rdfs:label "プレート搬送・把持"@ja ;
+    :inDomain :n_d3 ;
+    :content "インキュベータ⇄顕微鏡⇄作業台間のプレート/容器搬送とグリッパ制御。スケジュールに沿う物流が自律運転の連続性を支える。"@ja ;
+    :hasSource [ dct:title "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）"@ja ; :url <https://www.riken.jp/press/2020/20201204_1/index.html> ] ,
+               [ dct:title "SiLA2: cell culture autopilot / vendor-agnostic"@ja ; :url <https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard> ] ;
+    .
+
+n_motioncap a :Concept ;
+    rdfs:label "熟練手技のモーション再現"@ja ;
+    :inDomain :n_d3 ;
+    :content "熟練者の作業を動作解析し数値化してロボットで再現する思想。「誰でもできるよう数値化して自動化」が財団の自動化方針の核。"@ja ;
+    :hasSource [ dct:title "免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）"@ja ; :url <https://scienceportal.jst.go.jp/newsflash/20250403_n01/> ] ,
+               [ dct:title "がん治療に役立つ細胞の分化・培養を自動化（Panasonic）"@ja ; :url <https://news.panasonic.com/jp/stories/17100> ] ;
+    .
+
+n_sched a :Concept ;
+    rdfs:label "スケジューリング"@ja ;
+    :inDomain :n_d4 ;
+    :content "12時間ごとの観察など定期タスクと、至適継代時刻のような条件起動タスクを編成。多細胞株・多バッチの並行運転を破綻なく回す制御層。"@ja ;
+    :hasSource [ dct:title "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）"@ja ; :url <https://www.riken.jp/press/2020/20201204_1/index.html> ] ;
+    .
+
+n_loop a :Concept ;
+    rdfs:label "クローズドループ判断"@ja ;
+    :inDomain :n_d4 ;
+    :content "観察→判断→操作のサイクルを人手介入なしで回す。画像メトリクスを意思決定点に変換し、通知か次工程実行かを分岐する制御ロジック。"@ja ;
+    :hasSource [ dct:title "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）"@ja ; :url <https://www.riken.jp/press/2020/20201204_1/index.html> ] ,
+               [ dct:title "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system> ] ;
+    .
+
+n_bbo a :Concept ;
+    rdfs:label "バッチベイズ最適化"@ja ;
+    :inDomain :n_d4 ;
+    :content "数百万通りの培養条件を、ガウス過程＋バッチ取得関数で効率探索。RPE分化率を反復改善した自律実験の中核解法（GPyOptベース）。"@ja ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ,
+               [ dct:title "LabDroid_optimizer（GitHub / GPyOpt）"@ja ; :url <https://github.com/labauto/LabDroid_optimizer> ] ;
+    .
+
+n_doe a :Concept ;
+    rdfs:label "実験計画の定式化"@ja ;
+    :inDomain :n_d4 ;
+    :content "プロトコルをパラメータ空間に写像し、最適化問題として定義する工程。各操作を変数化（濃度・日数・剥離強度等）し探索可能にする前処理。"@ja ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ;
+    .
+
+n_sdl a :Concept ;
+    rdfs:label "自律実験 / Self-driving Lab"@ja ;
+    :inDomain :n_d4 ;
+    :content "ロボットが自ら結果を評価し次実験を計画する枠組み。再現性ある細胞製造に向け、探索空間の系統的・無バイアス探索を加速する。"@ja ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ,
+               [ dct:title "Implementing robotics and AI（eLife digest）"@ja ; :url <https://elifesciences.org/articles/80609> ] ;
+    .
+
+n_rl a :Concept ;
+    rdfs:label "強化学習（発展領域）"@ja ;
+    :inDomain :n_d4 ;
+    :content "方策学習による操作・条件最適化。製造GMP文脈では検証可能性が壁で、現状は画像判断・BOが主流、RLは研究段階。"@ja ;
+    :hasSource [ dct:title "Implementing robotics and AI（eLife digest）"@ja ; :url <https://elifesciences.org/articles/80609> ] ;
+    .
+
+n_sila a :Concept ;
+    rdfs:label "SiLA 2（デバイス標準）"@ja ;
+    :inDomain :n_d5 ;
+    :content "HTTP/2＋Protocol BuffersとFeature Definition Languageで意味的に同一なデバイスIFを標準化。ベンダロックイン回避と統合工数削減の中核。"@ja ;
+    :hasSource [ dct:title "SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）"@ja ; :url <https://sila-standard.com/faq/> ] ,
+               [ dct:title "Tecan SiLA2 SDK（royalty-free, open-source）"@ja ; :url <https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext> ] ;
+    .
+
+n_opcua a :Concept ;
+    rdfs:label "OPC-UA / LADS"@ja ;
+    :inDomain :n_d5 ;
+    :content "産業で普及するM2M標準OPC-UAと、その研究室向けコンパニオン規格LADS。SiLA2と並ぶデバイス通信の選択肢で、製造ライン連携に強い。【P3】LADS v1.0.0(2024年1月, OPC Foundation+Spectaris+VDMA)はバイオリアクタを明示的にモデル化—Functional Unit×Function(analogセンサ/controller/program)構成で、auto_cellのchannel_config/tool_schemas/EBRに直接対応。Eppendorf DASware等プロセス制御機はOPC公開。A層バイオリアクタ制御のデバイスIF第一候補。"@ja ;
+    :hasSource [ dct:title "Tecan SiLA2 SDK（royalty-free, open-source）"@ja ; :url <https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext> ] ;
+    .
+
+n_mtp a :Concept ;
+    rdfs:label "MTP（モジュール型パッケージ）"@ja ;
+    :inDomain :n_d5 ;
+    :content "モジュール式・柔軟自動化を可能にする記述。SiLA2と組み合わせ、R&Dから製造へのスケールを支える構成管理の枠組み。"@ja ;
+    :hasSource [ dct:title "SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）"@ja ; :url <https://sila-standard.com/faq/> ] ;
+    .
+
+n_orch a :Concept ;
+    rdfs:label "ワークフロー・オーケストレーション"@ja ;
+    :inDomain :n_d5 ;
+    :content "タスクとデータと物理ハードを途切れなく統合する制御フレーム（AlabOS, Helao 等）。各機器をサービス化し横断ワークフローを管理。"@ja ;
+    :hasSource [ dct:title "SiLA2: cell culture autopilot / vendor-agnostic"@ja ; :url <https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard> ] ;
+    .
+
+n_gateway a :Concept ;
+    rdfs:label "レガシーデバイス・ゲートウェイ"@ja ;
+    :inDomain :n_d5 ;
+    :content "独自IFしか持たない既存機器を標準IFへ橋渡しするゲートウェイ層。GPIO/USB/シリアル接続と遠隔監視で「スマート化」する。"@ja ;
+    :hasSource [ dct:title "The SiLA 2 Manager（device discovery / data integrity）"@ja ; :url <https://www.sciencedirect.com/science/article/pii/S2352711022000103> ] ;
+    .
+
+n_lims a :Concept ;
+    rdfs:label "LIMS / LES（情報・実行系）"@ja ;
+    :inDomain :n_d5 ;
+    :content "検体・試薬・手順・結果を記録/指図する上位システム。デバイス層からのデータを集約し、バッチ記録・トレーサビリティに接続する。"@ja ;
+    :hasSource [ dct:title "The SiLA 2 Manager（device discovery / data integrity）"@ja ; :url <https://www.sciencedirect.com/science/article/pii/S2352711022000103> ] ,
+               [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] ;
+    .
+
+n_datamodel a :Concept ;
+    rdfs:label "データモデル / インジェスト"@ja ;
+    :inDomain :n_d5 ;
+    :content "画像・センサ・操作ログの標準化された取り込み。新旧機器の異種IFを跨いだ「データ取り込みギャップ」の解消が自律運転の前提。"@ja ;
+    :hasSource [ dct:title "SiLA2: cell culture autopilot / vendor-agnostic"@ja ; :url <https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard> ] ,
+               [ dct:title "The SiLA 2 Manager（device discovery / data integrity）"@ja ; :url <https://www.sciencedirect.com/science/article/pii/S2352711022000103> ] ;
+    .
+
+n_gctp a :Concept ;
+    rdfs:label "GCTP（再生医療等製品製造管理）"@ja ;
+    :inDomain :n_d6 ;
+    :content "再生医療等製品の製造・品質管理基準。製造設備に加え管理手法の適合性をPMDAが調査。製造ソフトの設計境界を規定する。"@ja ;
+    :hasSource [ dct:title "GCTP適合性調査（PMDA）"@ja ; :url <https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html> ] ;
+    .
+
+n_ramlaw a :Concept ;
+    rdfs:label "再生医療等安全性確保法 / 施設基準"@ja ;
+    :inDomain :n_d6 ;
+    :content "細胞培養加工施設の構造設備基準と適合性調査の根拠法。my iPS製造施設はこの枠組みでPMDA適合性調査を受け稼働を目指す。"@ja ;
+    :hasSource [ dct:title "再生医療等安全性確保法 関連（Science Portal）"@ja ; :url <https://scienceportal.jst.go.jp/newsflash/20250403_n01/> ] ,
+               [ dct:title "免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）"@ja ; :url <https://scienceportal.jst.go.jp/newsflash/20250403_n01/> ] ;
+    .
+
+n_alcoa a :Concept ;
+    rdfs:label "ALCOA+ データインテグリティ"@ja ;
+    :inDomain :n_d6 ;
+    :content "帰属性・判読性・同時性・原本性・正確性＋αを全ライフサイクルで満たす原則。製造/解析で生成する全データが従うべき設計要件。"@ja ;
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] ;
+    .
+
+n_csv a :Concept ;
+    rdfs:label "CSV / CSA（システムバリデーション）"@ja ;
+    :inDomain :n_d6 ;
+    :content "計算機システムが目的適合かつALCOA+準拠であることを文書化した証拠。技術的統制で担保するのは複雑で時間を要するが必須工程。"@ja ;
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] ;
+    .
+
+n_part11 a :Concept ;
+    rdfs:label "21 CFR Part 11 / Annex 11"@ja ;
+    :inDomain :n_d6 ;
+    :content "電子記録・電子署名の監査性と安全な取扱いを求めるFDA/EU規制。電子系の設計（権限・署名・改ざん防止）の直接要件。"@ja ;
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] ;
+    .
+
+n_ebr a :Concept ;
+    rdfs:label "電子バッチ記録（EBR）"@ja ;
+    :inDomain :n_d6 ;
+    :content "製造工程で生成される改ざん不能な電子記録。前工程データの検証で次工程の整合を担保し、逸脱時の是正を可能にする。"@ja ;
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] ;
+    .
+
+n_audit a :Concept ;
+    rdfs:label "監査証跡（Audit Trail）"@ja ;
+    :inDomain :n_d6 ;
+    :content "誰が・いつ・何を変更したかを追える記録。データインテグリティとPart11準拠の中核で、全操作のロギング設計が必要。"@ja ;
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] ;
+    .
+
+n_capa a :Concept ;
+    rdfs:label "CAPA / リスク管理（FMEA）"@ja ;
+    :inDomain :n_d6 ;
+    :content "逸脱・品質事象の根本原因分析と是正/予防措置。FMEA等のリスク評価が製品・工程設計の判断を導く。ソフトの逸脱検知設計に直結。"@ja ;
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] ;
+    .
+
+n_envmon a :Concept ;
+    rdfs:label "環境モニタリング（DO/pH/CO₂/温度）"@ja ;
+    :inDomain :n_d7 ;
+    :content "培養環境の連続計測。維持培養や量産の安定性を支え、閉ループ制御の状態量を供給する。エッジ実装（ESP32等）で分散計測が可能。"@ja ;
+    :hasSource [ dct:title "Long-term iPSC maintenance by automated culture system（Konagaya 2015）"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/> ] ;
+    .
+
+n_sterility a :Concept ;
+    rdfs:label "無菌性・コンタミ監視"@ja ;
+    :inDomain :n_d7 ;
+    :content "菌混入や逸脱の検知。閉鎖系では更衣簡略化と引換えに監視設計が重要で、9日連続運転でも重大エラー/汚染ゼロが品質目標水準。"@ja ;
+    :hasSource [ dct:title "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）"@ja ; :url <https://www.riken.jp/press/2020/20201204_1/index.html> ] ,
+               [ dct:title "免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）"@ja ; :url <https://scienceportal.jst.go.jp/newsflash/20250403_n01/> ] ;
+    .
+
+n_cpv a :Concept ;
+    rdfs:label "インライン/アットライン分析（CPV）"@ja ;
+    :inDomain :n_d7 ;
+    :content "工程内・近接でのリアルタイム計測で工程性能を継続検証(CPV)。AI/自動化が高スループットQCと工程安定性監視を可能にする。【P5】具体スタック(2026-06-15調査): VCD=in-line capacitance(Aber FUTURA/Hamilton Incyte, Manstein iPSCで定性検証), 代謝物=in-line Raman(CHOで閉ループglucose制御実証)＋at-line Nova BioProfile FLEX2(16項＋osmolality/viability), 凝集体径=in-line DHM(Ovizio)/FBRM(CLD≠径) or at-line画像(Kropp2019/FlowCam, 日次)。品質(未分化/同一性)・無菌はoffline=BO目的関数専用。"@ja ;
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] ,
+               [ dct:title "Krause et al. 2023, Curr Opin Biotechnol — biocapacitance online biomass"@ja ; :url <https://www.sciencedirect.com/science/article/pii/S0958166923000897> ] ,
+               [ dct:title "Graf/Wei et al. 2022, Front Bioeng — in-line Raman closed-loop glucose (PID)"@ja ; :url <https://www.frontiersin.org/journals/bioengineering-and-biotechnology/articles/10.3389/fbioe.2022.719614/full> ] ,
+               [ dct:title "Nova Biomedical BioProfile FLEX2 (16-parameter at-line analyzer)"@ja ; :url <https://www.novabiomedical.com/cell-culture-analyzers/bioprofile-flex2-basic/> ] ,
+               [ dct:title "Kropp et al. 2019, Sci Rep — at-line bypass imaging of hiPSC aggregates"@ja ; :url <https://www.nature.com/articles/s41598-019-48814-w> ] ;
+    .
+
+n_edge a :Concept ;
+    rdfs:label "エッジセンサ統合"@ja ;
+    :inDomain :n_d7 ;
+    :content "マイコン/IoTによる多点センサ取得とデバイス層への配信。標準IF（SiLA2/OPC-UA）やゲートウェイ経由で上位へ集約する接点。"@ja ;
+    :hasSource [ dct:title "The SiLA 2 Manager（device discovery / data integrity）"@ja ; :url <https://www.sciencedirect.com/science/article/pii/S2352711022000103> ] ;
+    .
+
+n_cira a :Player ;
+    rdfs:label "CiRA財団 / my iPS"@ja ;
+    :inDomain :n_d8 ;
+    :content "自家iPSの閉鎖系フル自動製造を推進。約3週間・原材料費約100万円/人を掲げ、PMDA適合性調査・非臨床を経て2028年度の治験開始を目標。"@ja ;
+    :hasSource [ dct:title "iPS財団 My iPSプロジェクト（自家細胞を自動作製）"@ja ; :url <https://www.nikkan.co.jp/articles/view/00745986> ] ,
+               [ dct:title "免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）"@ja ; :url <https://scienceportal.jst.go.jp/newsflash/20250403_n01/> ] ,
+               [ dct:title "my iPSプロジェクト（iPS財団 公式）"@ja ; :url <https://www.cira-foundation.or.jp/j/about/project/myips/> ] ;
+    .
+
+n_terumo a :System ;
+    rdfs:label "Terumo BCT / Quantum Flex"@ja ;
+    :inDomain :n_d8 ;
+    :content "2024年に財団と提携。Quantum Flex Cell Expansion System上で閉鎖・自動・統合プロセスを構築し、デジタル技術で効率と制御を高める。【P3】Quantum FlexはCPAソフト(プロトコルビルダ/最大100台フリート/cGMP)の閉鎖ターンキーで、公開デバイスAPIは確認できず＝自前ブレインの閉ループ制御対象ではなく商用/臨床エンドポイント(連携するなら監視のみ)。"@ja ;
+    :hasSource [ dct:title "Terumo BCT × CiRA Foundation 自動化提携（Quantum Flex）"@ja ; :url <https://www.terumo.com/newsrelease/detail/20240319/6146> ] ;
+    .
+
+n_pana a :Player ;
+    rdfs:label "パナソニックHD"@ja ;
+    :inDomain :n_d8 ;
+    :content "岩田研由来の閉鎖型自動培養の系譜。2026年4月、中之島クロスでiPS樹立工程の自動化実証を開始し、最難関の樹立に踏み込む。"@ja ;
+    :hasSource [ dct:title "パナソニックHD iPS樹立工程の自動化 実証実験（2026/4）"@ja ; :url <https://prtimes.jp/main/html/rd/p/000006702.000003442.html> ] ,
+               [ dct:title "がん治療に役立つ細胞の分化・培養を自動化（Panasonic）"@ja ; :url <https://news.panasonic.com/jp/stories/17100> ] ;
+    .
+
+n_kaneka a :Player ;
+    rdfs:label "カネカ × 理研（林洋平ら）"@ja ;
+    :inDomain :n_d8 ;
+    :content "財団研究開発センターと共同で、樹立から大量培養までを一貫させた浮遊培養をeLifeに報告。量産・自動化の基盤形態を提供。"@ja ;
+    :hasSource [ dct:title "iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）"@ja ; :url <https://www.riken.jp/press/2024/20241120_1/index.html> ] ,
+               [ dct:title "iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）"@ja ; :url <https://stemcells.or.jp/ips-9/> ] ;
+    .
+
+n_rbi a :System ;
+    rdfs:label "Robotic Biology Institute / Maholo"@ja ;
+    :inDomain :n_d8 ;
+    :content "双腕ヒューマノイドLabDroid Maholoの提供元。汎用器具操作と高再現性で、自律探索プラットフォームの物理基盤を担う。"@ja ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ;
+    .
+
+n_epistra a :Player ;
+    rdfs:label "Epistra（自律最適化）"@ja ;
+    :inDomain :n_d8 ;
+    :content "Maholo×AIの自律実験を支えた企業の一つ。実験計画・ベイズ最適化など最適化エンジン側で関与。"@ja ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ;
+    .
+
+n_moldev a :System ;
+    rdfs:label "Molecular Devices / CellXpress.ai"@ja ;
+    :inDomain :n_d8 ;
+    :content "イメージングベースのAI判断で給餌・継代を自動化する商用システム。DLで形態/分化を識別し、24/365運転で複数株を拡大。"@ja ;
+    :hasSource [ dct:title "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system> ] ,
+               [ dct:title "Deep learning for label-free monitoring of iPSC & organoids"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures> ] ;
+    .
+
+n_astellas a :Player ;
+    rdfs:label "アステラス製薬（双腕ロボ）"@ja ;
+    :inDomain :n_d8 ;
+    :content "双腕ロボットでiPS培養を自動化し、治験用供給を企図。製薬側からの製造自動化プレイヤー。"@ja ;
+    :hasSource [ dct:title "iPS細胞をロボが培養（アステラス, 日経）"@ja ; :url <https://www.nikkei.com/article/DGKKZO75692350Z21C23A0TB0000/> ] ;
+    .
+
+n_src_kanda a :Source ;
+    rdfs:label "Kanda et al. 2022 (eLife)"@ja ;
+    :inDomain :n_d4 ;
+    :content "自律ロボット×バッチベイズ最適化でiPSC-RPE分化を最適化した記念碑的論文。プロトコルの5段階定式化とパラメータ探索、コード公開を含む。"@ja ;
+    :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ,
+               [ dct:title "LabDroid_optimizer（GitHub / GPyOpt）"@ja ; :url <https://github.com/labauto/LabDroid_optimizer> ] ;
+    .
+
+n_src_riken2020 a :Source ;
+    rdfs:label "理研 自律培養 2020"@ja ;
+    :inDomain :n_d2 ;
+    :content "人型ロボット×AIで12h観察→増殖予測→至適継代を9日間自律実行。閉ループ自律培養の国内先行実証。"@ja ;
+    :hasSource [ dct:title "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）"@ja ; :url <https://www.riken.jp/press/2020/20201204_1/index.html> ] ;
+    .
+
+n_src_sila a :Source ;
+    rdfs:label "SiLA 2 標準群"@ja ;
+    :inDomain :n_d5 ;
+    :content "デバイス相互運用の標準。Tecan SDK・SiLA2 Manager・cell culture autopilot事例まで、実装に直接使える資源群。"@ja ;
+    :hasSource [ dct:title "Tecan SiLA2 SDK（royalty-free, open-source）"@ja ; :url <https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext> ] ,
+               [ dct:title "The SiLA 2 Manager（device discovery / data integrity）"@ja ; :url <https://www.sciencedirect.com/science/article/pii/S2352711022000103> ] ,
+               [ dct:title "SiLA2: cell culture autopilot / vendor-agnostic"@ja ; :url <https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard> ] ,
+               [ dct:title "SiLA 2 FAQ（HTTP/2 + Protocol Buffers）"@ja ; :url <https://sila-standard.com/faq/> ] ;
+    .
+
+n_src_gctp a :Source ;
+    rdfs:label "PMDA GCTP / 適合性調査"@ja ;
+    :inDomain :n_d6 ;
+    :content "再生医療等製品の製造・品質管理の適合性を定める一次情報。製造ソフトの規制要件の出発点。"@ja ;
+    :hasSource [ dct:title "GCTP適合性調査（PMDA）"@ja ; :url <https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html> ] ;
+    .
+
+n_src_cgt a :Source ;
+    rdfs:label "CGT QC/QA（ALCOA・Part11）"@ja ;
+    :inDomain :n_d6 ;
+    :content "データインテグリティ・CSV・CAPA・CPVを横断する実務解説。電子系設計の要件マップとして有用。"@ja ;
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] ;
+    .
+
+n_src_cxa a :Source ;
+    rdfs:label "CellXpress.ai 適用ノート"@ja ;
+    :inDomain :n_d2 ;
+    :content "コンフルエンシー/分化のDL2モデルと閾値起動の自動継代を具体記述。画像→意思決定の設計参照。"@ja ;
+    :hasSource [ dct:title "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system> ] ,
+               [ dct:title "Deep learning for label-free monitoring of iPSC & organoids"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures> ] ;
+    .
+
+n_src_susp a :Source ;
+    rdfs:label "浮遊培養 一貫化（eLife）"@ja ;
+    :inDomain :n_d1 ;
+    :content "樹立→大量培養→直接凍結まで浮遊系で一貫。量産・自動化の生物学的基盤。財団・理研・カネカ共同。"@ja ;
+    :hasSource [ dct:title "iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）"@ja ; :url <https://www.riken.jp/press/2024/20241120_1/index.html> ] ,
+               [ dct:title "iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）"@ja ; :url <https://stemcells.or.jp/ips-9/> ] ;
+    .
+
+n_kinetics a :Concept ;
+    rdfs:label "浮遊培養速度論モデル（Tier2 plant 原典）"@ja ;
+    :inDomain :n_d1 ;
+    :content "iPSC浮遊培養の比増殖速度をMonod型で表すin silicoモデル。auto_cell Tier2 plant_modelの原典はManstein & Zweigerdt 2021（SCTM/STAR Protocols, src_manstein）で、グルコース・乳酸・グルタミン・浸透圧・凝集体径の阻害項を持ち、灌流で7日35×10⁶ cells/mLを達成した過程制御モデル。Table1定数(µ=1.35/d, KGlc=1.5mM, KLac=50mM, KGln=0.01mM, KOsm=500mOsm/kg, KAgg=350/2=175µm径)はplant_modelと完全一致。Galvanauskas 2019(src_galv)は3項のみの近縁別モデル。"@ja ;
+    :hasSource [ dct:title "Kinetic modeling of hiPSC expansion in suspension culture（Galvanauskas et al., Regen Therapy 2019;12:88-93）"@ja ; :url <https://pmc.ncbi.nlm.nih.gov/articles/PMC6933447/> ] ;
+    .
+
+n_src_galv a :Source ;
+    rdfs:label "Galvanauskas et al. 2019 (近縁の3項モデル)"@ja ;
+    :inDomain :n_d1 ;
+    :content "iPSC浮遊培養速度論の近縁モデル(Galvanauskas/Kino-Oka 2019, Regen Therapy 12:88-93)。グルコースMonod＋乳酸阻害＋凝集体体積阻害の3項のみで、グルタミン制限/浸透圧項は持たない(明示的に省略)。定数もplant_modelと異なる(µmax≈2.35/d, KG≈7mM, KAgg=5.6e6µm³体積)。deep-researchが一旦原典と誤推定したが、真の原典はManstein 2021(src_manstein)。"@ja ;
+    :hasSource [ dct:title "Kinetic modeling of hiPSC expansion in suspension culture（PMC6933447）"@ja ; :url <https://pmc.ncbi.nlm.nih.gov/articles/PMC6933447/> ] ,
+               [ dct:title "PubMed 31890771"@ja ; :url <https://pubmed.ncbi.nlm.nih.gov/31890771/> ] ;
+    .
+
+n_src_borys a :Source ;
+    rdfs:label "Borys et al. 2021 (Stem Cell Res Ther)"@ja ;
+    :inDomain :n_d4 ;
+    :content "iPSC Vertical-Wheel(PBS Biotech)撹拌最適化。40rpmが最大増殖(day6で32.3±3.2倍)、day5凝集体径169-275µm、>400µmで壊死予想。撹拌CPPの文献アンカー(最適40-60rpm、auto_cellの50-120rpm上限は高め)。"@ja ;
+    :hasSource [ dct:title "Borys et al. 2021, Stem Cell Res Ther 12:55（PMC7805206）"@ja ; :url <https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/> ] ;
+    .
+
+n_src_kropp a :Source ;
+    rdfs:label "Kropp/Lipsitz et al. 2015 (BMC Proceedings)"@ja ;
+    :inDomain :n_d4 ;
+    :content "hPSC撹拌懸濁のBox-Behnken DoE。pH7.3/37℃、毎日給餌で高密度、播種2×10⁵が最適、DOは本研究で非有意。注: HES2(ESC)・Micro-24振盪式(400rpm=振盪周波数)でiPSC/インペラ槽への転用に注意。"@ja ;
+    :hasSource [ dct:title "Kropp et al. 2015, BMC Proceedings（PMC4685349）"@ja ; :url <https://pmc.ncbi.nlm.nih.gov/articles/PMC4685349/> ] ;
+    .
+
+n_src_traj a :Source ;
+    rdfs:label "Nogueira 2019 / Olmer 2012（到達密度 実測）"@ja ;
+    :inDomain :n_d1 ;
+    :content "バッチ vs 灌流の到達密度差。標準バッチはNogueira(Vertical-Wheel)=peak 2.3×10⁶、Olmer(撹拌槽)=2.4×10⁶ cells/mL止まり。plant_modelの検証目標35×10⁶はManstein 2021の灌流プロセス(src_manstein)で達成される値で、バッチでは到達しない。"@ja ;
+    :hasSource [ dct:title "Nogueira et al. 2019, J Biol Eng（PMC6744632）"@ja ; :url <https://pmc.ncbi.nlm.nih.gov/articles/PMC6744632/> ] ,
+               [ dct:title "Olmer et al. 2012, Tissue Eng Part C（PMC3460618）"@ja ; :url <https://pmc.ncbi.nlm.nih.gov/articles/PMC3460618/> ] ;
+    .
+
+n_src_manstein a :Source ;
+    rdfs:label "Manstein & Zweigerdt 2021（plant_model 原典）"@ja ;
+    :inDomain :n_d4 ;
+    :content "auto_cell Tier2 plant_modelの真の原典。hPSC灌流撹拌槽培養をpH7.1/DO40%/浸透圧ピーク抑制/灌流で制御し、7日で70倍・35×10⁶ cells/mL(150mLで52.5億細胞)を達成。Monod型in silicoモデル(Table1: µ=1.35/d, KGlc=1.5mM, KLac=50mM, KGln=0.01mM, KOsm=500mOsm/kg, KAgg=350/2=175µm)はplant_modelの6定数と完全一致。撹拌80rpm(150mLスケール)。"@ja ;
+    :hasSource [ dct:title "Manstein et al. 2021, Stem Cells Transl Med 10(7):1063-1080（DOI 10.1002/sctm.20-0453, PMID 33660952）"@ja ; :url <https://pubmed.ncbi.nlm.nih.gov/33660952/> ] ,
+               [ dct:title "Manstein et al. 2021, STAR Protocols 2(4):100988 — in silico model Table 1（PMC8666714）"@ja ; :url <https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/> ] ;
+    .
+
+n_src_lads a :Source ;
+    rdfs:label "OPC UA LADS v1.0.0 (OPC Foundation)"@ja ;
+    :inDomain :n_d5 ;
+    :content "Laboratory and Analytical Device Standard。OPC-UAコンパニオン規格(2024-01, OPC Foundation+Spectaris+VDMA, OPC 30500-1)。Functional Unit/Function(sensor analog/discrete/multi-state, controller, actuator)＋Program/Result管理＋Asset/保守。バイオリアクタを明示例として槽=Functional Unit(温度センサ+モータ+program)でモデル化。auto_cellのDomainVertical面に直対応。"@ja ;
+    :hasSource [ dct:title "OPC UA for LADS Part 1 Basics (OPC 30500-1) — reference.opcfoundation.org"@ja ; :url <https://reference.opcfoundation.org/LADS/v100/docs/> ] ,
+               [ dct:title "OPC UA LADS (SLAS standards)"@ja ; :url <https://www.slas.org/resources/standards/opc-ua-lads/> ] ,
+               [ dct:title "OPC UA for Laboratory & Analytical Device Standard (LADS) Part 1: Basics (OPC 30500-1)"@ja ; :url <https://reference.opcfoundation.org/specs/OPC-30500-1/4.1> ] ;
+    .
+
+n_ctrl_split a :Concept ;
+    rdfs:label "制御権限の二層分界"@ja ;
+    :inDomain :n_d4 ;
+    :content "協業前提でデバイスを設計指定するとき、安全クリティカルな高速ループはデバイス局所コントローラ(検証済PID: 温度37℃/pH7.1/DO40%/撹拌rpm, 秒オーダ・決定的)に置き、ReActブレインは監督制御(設定点変更・灌流/給餌率・サンプリング/継代トリガ・アラーム応答, 30秒+オーダ)に限定する。LLMは高速ループを閉じない(安全/CSV)。緊急停止・無菌バリア・ハード保安連動は安全系のみが強制し、ブレインは読み取りのみ。"@ja ;
+    :hasSource [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] ;
+    .
+
+n_devprofile a :Concept ;
+    rdfs:label "デバイスプロファイル / ICD（協業の成果物）"@ja ;
+    :inDomain :n_d5 ;
+    :content "協業でデバイス側に実装を指定する単一の情報モデル(Interface Control Document)。LADS/OPC-UAのFunctional Unit/Function/Programで表現し、これがdevice実装とauto_cellのDomainVertical(channel↔sensor Function, tool↔controller Function/method, EBR↔Program/Result, event↔alarm)を束ねる。setpoint範囲・単位・検証済包絡線を含み、second-source(別ベンダ実装)を可能にする。bespoke REST/gRPCを一次契約にしない。"@ja ;
+    :hasSource [ dct:title "OPC UA for LADS Part 1 Basics (OPC 30500-1) — reference.opcfoundation.org"@ja ; :url <https://reference.opcfoundation.org/LADS/v100/docs/> ] ;
+    .
+
+n_recipe_executor a :Concept ;
+    rdfs:label "L1 決定的レシピ実行器"@ja ;
+    :inDomain :n_d4 ;
+    :content "ADR-0001 で採用された L1 層。レシピ DSL とルールエンジンに基づき、灌流/給餌/撹拌/サンプリング/継代要否を状態とレシピから決定的に実行する。LLM は per-cycle には入らない。"@ja ;
+    .
+
+n_recipe_dsl a :Concept ;
+    rdfs:label "レシピ DSL"@ja ;
+    :inDomain :n_d4 ;
+    :content "培養フェーズ・条件起動ロジック・setpoint 包絡線を宣言的に記述する軽量ドメイン特化言語（YAML/JSON 想定）。Manstein 型灌流 0→7 vvd の条件起動を記述可能。"@ja ;
+    .
+
+n_rule_engine a :Concept ;
+    rdfs:label "ルールエンジン"@ja ;
+    :inDomain :n_d4 ;
+    :content "イベント（glucose_low/lactate_high/osmolality_high/vcd_target_reached/contamination_suspected 等）からアクションへの決定的マッピングを実行するエンジン。"@ja ;
+    .
+
+n_state_machine_l1 a :Concept ;
+    rdfs:label "L1 状態機械"@ja ;
+    :inDomain :n_d4 ;
+    :content "L1 レシピ実行器内のフェーズ遷移（seed → perfusion_ramp → passage_ready → hold 等）を明確に管理する状態機械。"@ja ;
+    .
+
+n_l0_local_pid a :Concept ;
+    rdfs:label "L0 局所 PID"@ja ;
+    :inDomain :n_d4 ;
+    :content "バイオリアクター本体の局所コントローラ。温度/pH/DO/撹拌の高速安全ループを秒オーダで決定的に制御する。"@ja ;
+    .
+
+n_l0_fail_safe a :Concept ;
+    rdfs:label "L0 フェイルセーフ"@ja ;
+    :inDomain :n_d4 ;
+    :content "ブレイン/通信断時に局所 PID が最終検証済 setpoint を保持し続ける設計。ブレイン停止時も培養を継続させる。"@ja ;
+    .
+
+n_ax_bayesian a :System ;
+    rdfs:label "Ax Bayesian optimization"@ja ;
+    :inDomain :n_d4 ;
+    :content "Meta が開発する高レベルベイズ最適化プラットフォーム。制約付き BO、バッチ BO、多忠実度をサポートし、auto_cell L2 の実装候補。"@ja ;
+    .
+
+n_botorch a :System ;
+    rdfs:label "BoTorch"@ja ;
+    :inDomain :n_d4 ;
+    :content "PyTorch ベースの低レベルベイズ最適化ライブラリ。qEI/qNEHVI、MultiFidelityGP、KnowledgeGradient 等を提供。"@ja ;
+    .
+
+n_multi_fidelity a :Concept ;
+    rdfs:label "多忠実度 BO"@ja ;
+    :inDomain :n_d4 ;
+    :content "Tier2 plant_model（低忠実度・低コスト）と実バイオリアクタ run（高忠実度・高コスト）を統合したベイズ最適化。"@ja ;
+    .
+
+n_safe_bo a :Concept ;
+    rdfs:label "Safe BO"@ja ;
+    :inDomain :n_d4 ;
+    :content "CPP 包絡線（pH/DO/乳酸/浸透圧/凝集体径等）を侵害しないよう制約を課したベイズ最適化。"@ja ;
+    .
+
+n_batch_bo a :Concept ;
+    rdfs:label "バッチ BO"@ja ;
+    :inDomain :n_d4 ;
+    :content "複数バイオリアクタを並行運転するためのバッチ取得関数（qEI/qNEHVI）に基づく実験計画。"@ja ;
+    .
+
+n_llm_orchestrator a :Concept ;
+    rdfs:label "L3 薄い LLM オーケストレータ"@ja ;
+    :inDomain :n_d4 ;
+    :content "ADR-0001 で採用された L3 層。ワークフロー dispatch、曖昧知覚解釈、新規例外処理、研究者対話・承認仲介をイベント駆動で実行。定常制御には関与しない。"@ja ;
+    .
+
+n_human_approval a :Concept ;
+    rdfs:label "Human-on-the-loop 承認"@ja ;
+    :inDomain :n_d6 ;
+    :content "包絡線を外れる setpoint 変更、継代実行、BO 提案採用、緊急停止/ホールド等に対する研究者/オペレータの承認。"@ja ;
+    .
+
+n_approval_workflow a :Concept ;
+    rdfs:label "Human-on-the-loop 承認ワークフロー"@ja ;
+    :inDomain :n_d4 ;
+    :content "requested → pending → approved/rejected/timeout → executed/cancelled の状態遷移。タイムアウト時は安全側に倒す。  [merged from multiple agents] L1/L2/L3 が自律実行しようとする包絡線外・重大アクションに対し、研究者の明示承認を得てから実行する状態遷移機構。requested → approved/rejected/pending_timeout → executed/cancelled。承認結果は監査証跡に不変ログ化される。"@ja ;
+    :hasSource [ dct:title "auto_cell A 層要求仕様（Human-on-the-loop）"@ja ; :url <docs/design/requirements.md> ] ,
+               [ dct:title "NIST AI Risk Management Framework（human-in-the-loop 概念）"@ja ; :url <https://www.nist.gov/itl/ai-risk-management-framework> ] ;
+    .
+
+n_idempotency a :Concept ;
+    rdfs:label "冪等性"@ja ;
+    :inDomain :n_d5 ;
+    :content "L1→L0 の setpoint 変更を idempotency key 付き request-response とし、ブレイン再起動後も同一コマンドを再発行可能にする性質。"@ja ;
+    .
+
+n_validate_tool_call a :Concept ;
+    rdfs:label "ツール呼び出し検証"@ja ;
+    :inDomain :n_d6 ;
+    :content "副作用ツール呼び出し前に CPP 包絡線・変化率制限・競合を決定的に検証する仕組み。"@ja ;
+    .
+
+n_set_perfusion_rate a :Concept ;
+    rdfs:label "set_perfusion_rate"@ja ;
+    :inDomain :n_d4 ;
+    :content "灌流率（0→7 vvd）を設定する L1 副作用ツール。glucose/lactate/osmolality トリガで条件起動する。"@ja ;
+    .
+
+n_set_agitation_rpm a :Concept ;
+    rdfs:label "set_agitation_rpm"@ja ;
+    :inDomain :n_d4 ;
+    :content "撹拌回転数（50–120 rpm）を設定する L1 副作用ツール。凝集体径制御とシアストレス管理に用いる。"@ja ;
+    .
+
+n_trigger_passage_l1 a :Concept ;
+    rdfs:label "trigger_passage (L1)"@ja ;
+    :inDomain :n_d4 ;
+    :content "VCD 目標到達または凝集体径逸脱時に継代を要求する L1 アクション。実行には原則として Human-on-the-loop 承認が必要。"@ja ;
+    .
+
+n_take_sample_l1 a :Concept ;
+    rdfs:label "take_sample (L1)"@ja ;
+    :inDomain :n_d4 ;
+    :content "定期または条件起動で at-line サンプリングを行う L1 アクション。cpv へデータを供給する。"@ja ;
+    .
+
+n_src_ax a :Source ;
+    rdfs:label "Ax Adaptive Experimentation Platform"@ja ;
+    :inDomain :n_d4 ;
+    :content "Facebook/Meta の実験最適化プラットフォーム。BoTorch 上に構築され、探索空間・制約・多忠実度の管理に向く。"@ja ;
+    .
+
+n_src_botorch a :Source ;
+    rdfs:label "BoTorch（ベイズ最適化）"@ja ;
+    :inDomain :n_d4 ;
+    :content "PyTorch ベースのベイズ最適化ライブラリ。多忠実度・制約付き BO に強く、L2 層の実装候補。"@ja ;
+    .
+
+n_cpp_ph a :Concept ;
+    rdfs:label "CPP: pH"@ja ;
+    :inDomain :n_d7 ;
+    :content "A-layer pH setpoint 7.1; L0 local PID maintains, L1 may shift within envelope."@ja ;
+    .
+
+n_cpp_do a :Concept ;
+    rdfs:label "CPP: dissolved oxygen"@ja ;
+    :inDomain :n_d7 ;
+    :content "A-layer DO setpoint 40% -> 10% at high density; L0 local PID with agitation cascade."@ja ;
+    .
+
+n_cpp_temp a :Concept ;
+    rdfs:label "CPP: temperature"@ja ;
+    :inDomain :n_d7 ;
+    :content "A-layer temperature setpoint 37 C; L0 local PID."@ja ;
+    .
+
+n_cpp_agitation a :Concept ;
+    rdfs:label "CPP: agitation rpm"@ja ;
+    :inDomain :n_d4 ;
+    :content "A-layer agitation 50-120 rpm; Borys 2021 optimum 40-60 rpm for Vertical-Wheel iPSC."@ja ;
+    .
+
+n_cpp_glucose a :Concept ;
+    rdfs:label "CPP: glucose"@ja ;
+    :inDomain :n_d7 ;
+    :content "A-layer glucose >1.5 mM; K_Glc=1.5 mM from Manstein 2021 Table 1; perfusion trigger source."@ja ;
+    .
+
+n_cpp_lactate a :Concept ;
+    rdfs:label "CPP: lactate"@ja ;
+    :inDomain :n_d7 ;
+    :content "A-layer lactate <50 mM; K_Lac=50 mM from Manstein 2021 Table 1; perfusion trigger source."@ja ;
+    .
+
+n_cpp_glutamine a :Concept ;
+    rdfs:label "CPP: glutamine"@ja ;
+    :inDomain :n_d7 ;
+    :content "A-layer glutamine >0.01 mM; K_Gln=0.01 mM from Manstein 2021 Table 1."@ja ;
+    .
+
+n_cpp_osmolality a :Concept ;
+    rdfs:label "CPP: osmolality"@ja ;
+    :inDomain :n_d7 ;
+    :content "A-layer osmolality <500 mOsm/kg; K_Osm=500 mOsm/kg from Manstein 2021 Table 1; perfusion trigger source."@ja ;
+    .
+
+n_cpp_ammonia a :Concept ;
+    rdfs:label "CPP: ammonia (monitoring)"@ja ;
+    :inDomain :n_d7 ;
+    :content "Ammonia monitoring-only CPP for v1; mammalian toxicity threshold 4-6 mM, iPSC-native threshold not yet established."@ja ;
+    .
+
+n_cpp_aggregate_diameter a :Concept ;
+    rdfs:label "CPP: aggregate diameter"@ja ;
+    :inDomain :n_d7 ;
+    :content "A-layer aggregate diameter 150-350 um; Borys 2021 reports >400 um necrosis risk."@ja ;
+    .
+
+n_cpp_vcd a :Concept ;
+    rdfs:label "CPP: viable cell density"@ja ;
+    :inDomain :n_d7 ;
+    :content "A-layer VCD target ~35e6 cells/mL; measured by in-line capacitance; triggers passage."@ja ;
+    .
+
+n_cpp_viability a :Concept ;
+    rdfs:label "CPP: viability"@ja ;
+    :inDomain :n_d7 ;
+    :content "A-layer viability target >90%; primarily BO objective input, not L1 control target."@ja ;
+    .
+
+n_cpp_perfusion_rate a :Concept ;
+    rdfs:label "CPP: perfusion rate"@ja ;
+    :inDomain :n_d4 ;
+    :content "A-layer main actuator 0->7 vvd (Manstein 2021 Table 3); conditionally triggered by glucose/lactate/osmolality."@ja ;
+    .
+
+n_ramp_limit a :Concept ;
+    rdfs:label "ramp rate limit"@ja ;
+    :inDomain :n_d4 ;
+    :content "Maximum per-unit-time change for perfusion/agitation/DO setpoints to avoid shear/osmotic shock."@ja ;
+    .
+
+n_perfusion_trigger a :Concept ;
+    rdfs:label "perfusion ramp trigger"@ja ;
+    :inDomain :n_d4 ;
+    :content "L1 rule event that raises perfusion rate when glucose/lactate/osmolality cross thresholds."@ja ;
+    .
+
+n_y_27632 a :Concept ;
+    rdfs:label "Y-27632 ROCK inhibitor"@ja ;
+    :inDomain :n_d1 ;
+    :content "Standard ROCK inhibitor added during dissociation passage to improve iPSC survival."@ja ;
+    .
+
+n_tool_set_perfusion_rate a :Concept ;
+    rdfs:label "tool: set_perfusion_rate"@ja ;
+    :inDomain :n_d5 ;
+    :content "LADS controller Function / DomainVertical tool for perfusion rate. Maps to devprofile."@ja ;
+    .
+
+n_tool_set_agitation_rpm a :Concept ;
+    rdfs:label "tool: set_agitation_rpm"@ja ;
+    :inDomain :n_d5 ;
+    :content "LADS controller Function / DomainVertical tool for agitation setpoint."@ja ;
+    .
+
+n_tool_trigger_passage a :Concept ;
+    rdfs:label "tool: trigger_passage"@ja ;
+    :inDomain :n_d5 ;
+    :content "LADS Program / DomainVertical tool for dissociation passage with Y-27632."@ja ;
+    .
+
+n_src_yehya2024 a :Source ;
+    rdfs:label "Yehya et al. 2024 (Stem Cell Res Ther)"@ja ;
+    :inDomain :n_d4 ;
+    :content "Vertical-Wheel agitation DoE supporting lower optimum rpm (40-60 rpm)."@ja ;
+    .
+
+n_src_xing2008 a :Source ;
+    rdfs:label "Xing et al. 2008 (Biotechnol Prog)"@ja ;
+    :inDomain :n_d1 ;
+    :content "CHO osmolality threshold reference; iPSC-native value not established."@ja ;
+    .
+
+n_src_nova_flex2 a :Source ;
+    rdfs:label "Nova BioProfile FLEX2"@ja ;
+    :inDomain :n_d7 ;
+    :content "16-parameter at-line analyzer for metabolites, osmolality, viability, cell diameter.  [merged from multiple agents] Nova Biomedical, BioProfile FLEX2 cell culture analyzer."@ja ;
+    .
+
+n_src_mqtt5 a :Source ;
+    rdfs:label "MQTT Version 5.0 | OASIS Standard"@ja ;
+    :inDomain :n_d5 ;
+    :content "MQTT 5.0 標準仕様。Response Topic、Correlation Data、Message Expiry Interval、Reason Code 等により request-response とエラーハンドリングを規定。"@ja ;
+    .
+
+n_lads_functional_unit a :Concept ;
+    rdfs:label "LADS Functional Unit"@ja ;
+    :inDomain :n_d5 ;
+    :content "LADS v1.0.0 で定義される機能単位。バイオリアクタ槽を 1 つの仮想デバイスとして集約し、内部に Sensor/Controller/Actuator Function と ProgramManager を持つ。"@ja ;
+    .
+
+n_lads_sensor_function a :Concept ;
+    rdfs:label "LADS Sensor Function"@ja ;
+    :inDomain :n_d5 ;
+    :content "LADS Functional Unit に属するセンサ機能（analog/discrete/multi-state）。pH/DO/Temp/Agitation/Capacitance/Raman/Pressure/Level/Foam 等が該当。"@ja ;
+    .
+
+n_lads_controller_function a :Concept ;
+    rdfs:label "LADS Controller Function"@ja ;
+    :inDomain :n_d5 ;
+    :content "LADS Functional Unit に属する制御機能。局所 PID（pH/DO/Temp/Agitation）の制御ロジックを内包し、ブレインからの検証済設定点を受け取る。"@ja ;
+    .
+
+n_lads_actuator_function a :Concept ;
+    rdfs:label "LADS Actuator Function"@ja ;
+    :inDomain :n_d5 ;
+    :content "LADS Functional Unit に属する駆動機能。灌流ポンプ、給餌ポンプ、培地交換弁、サンプリング弁等の離散/連続駆動素子を表す。"@ja ;
+    .
+
+n_lads_program_result a :Concept ;
+    rdfs:label "LADS Program/Result"@ja ;
+    :inDomain :n_d5 ;
+    :content "LADS ProgramManager が管理するプログラム（seed/passage/perfusion_ramp/clean）とその実行結果。EBR 導出の原材料となる。"@ja ;
+    .
+
+n_sila_feature a :Concept ;
+    rdfs:label "SiLA2 Feature"@ja ;
+    :inDomain :n_d5 ;
+    :content "SiLA2 Feature Definition Language（FDL）で定義される機能単位。サンプリングロボ、分注、at-line 分析器等のコマンド/property を記述。"@ja ;
+    .
+
+n_mqtt_topic_contract a :Concept ;
+    rdfs:label "MQTT topic contract"@ja ;
+    :inDomain :n_d5 ;
+    :content "auto_cell brain と device_gateway 間の MQTT topic 命名規則。cell/{culture_unit_id}/{direction}/{category}/{device_id}/{function_id} の形式。"@ja ;
+    .
+
+n_gateway_cmd_ack a :Concept ;
+    rdfs:label "Gateway command/ack correlation"@ja ;
+    :inDomain :n_d5 ;
+    :content "MQTT 5.0 Response Topic + Correlation Data を使った非同期 request-response。冪等キーと Message Expiry Interval による重複/stale コマンド防止。"@ja ;
+    .
+
+n_icd_setpoint_envelope a :Concept ;
+    rdfs:label "ICD setpoint envelope"@ja ;
+    :inDomain :n_d4 ;
+    :content "協業 ICD に定義された設定点範囲・単位・変化率制限。validate_tool_call と gateway 側の二重検証に使われる。"@ja ;
+    .
+
+n_peripheral_sampler a :System ;
+    rdfs:label "SiLA2 サンプリングロボ"@ja ;
+    :inDomain :n_d8 ;
+    :content "SiLA2 で統合される at-line サンプリングロボ。take_sample コマンドを提供。"@ja ;
+    .
+
+n_peripheral_dispenser a :System ;
+    rdfs:label "SiLA2 自動分注器"@ja ;
+    :inDomain :n_d8 ;
+    :content "SiLA2 で統合される液体分注器。feed/exchange_media 等の培地操作を実行。"@ja ;
+    .
+
+n_peripheral_atline_analyzer a :System ;
+    rdfs:label "SiLA2 at-line 分析器"@ja ;
+    :inDomain :n_d8 ;
+    :content "SiLA2 で統合される at-line 分析器（例: Nova BioProfile FLEX2）。代謝物パネル・浸透圧・生存率を提供。"@ja ;
+    .
+
+n_src_mqtt5_reqresp a :Source ;
+    rdfs:label ""@ja ;
+    :inDomain :n_d5 ;
+    .
+
+n_src_sila_comm a :Source ;
+    rdfs:label ""@ja ;
+    :inDomain :n_d5 ;
+    .
+
+n_measurement_vcd_capacitance a :Concept ;
+    rdfs:label "in-line capacitance VCD"@ja ;
+    :inDomain :n_d7 ;
+    :content "Aber/Hamilton/Sartorius 等の誘電分光/インピーダンスセンサによる生細胞密度の連続計測。iPSC 高密度では offline VCD・細胞径・生存率を用いた校正が必要。"@ja ;
+    .
+
+n_measurement_raman_inline a :Concept ;
+    rdfs:label "in-line Raman 代謝物計測"@ja ;
+    :inDomain :n_d7 ;
+    :content "in-line Raman 分光による glucose/lactate/glutamine/glutamate の同時推定。CHO で PID 閉ループ実証あり。iPSC では chemometric 再校正が必要。"@ja ;
+    .
+
+n_measurement_atline_nova a :Concept ;
+    rdfs:label "at-line Nova FLEX2 マルチパラメータ"@ja ;
+    :inDomain :n_d7 ;
+    :content "Nova BioProfile FLEX2 による 16 項目（代謝物/ガス/電解質/細胞密度/生存率/細胞径/浸透圧）のアットライン分析。Raman 校正・BO 入力の正解ラベル源。"@ja ;
+    .
+
+n_measurement_aggregate_imaging a :Concept ;
+    rdfs:label "at-line 凝集体画像計測"@ja ;
+    :inDomain :n_d7 ;
+    :content "FlowCam または Kropp 型バイパス顕微鏡による凝集体径・形態の画像解析。v1 では離散/日次運用が現実的。"@ja ;
+    .
+
+n_measurement_fbrm_cld a :Concept ;
+    rdfs:label "FBRM 弦長分布計測"@ja ;
+    :inDomain :n_d7 ;
+    :content "Mettler Toledo ParticleTrack による Focused Beam Reflectance Measurement。連続計測可能だが、CLD は真の粒径分布ではなく凝集体形状に依存。"@ja ;
+    .
+
+n_measurement_ovizio_dhm a :Concept ;
+    rdfs:label "Ovizio D3HM ホログラフィ計測"@ja ;
+    :inDomain :n_d7 ;
+    :content "Ovizio iLINE-F PRO の Double Differential Digital Holographic Microscopy。ラベルフリー連続細胞/凝集体モニタリング。iPSC 実証は限定的。"@ja ;
+    .
+
+n_monitoring_ammonia_atline a :Concept ;
+    rdfs:label "at-line アンモニウムモニタリング"@ja ;
+    :inDomain :n_d7 ;
+    :content "Nova FLEX2 による NH4+ のアットライン計測。CPP ではないが、代謝毒性早期発見のため監視。"@ja ;
+    .
+
+n_monitoring_quality_offline a :Concept ;
+    rdfs:label "offline 品質マーカー計測"@ja ;
+    :inDomain :n_d7 ;
+    :content "未分化/多能性マーカー（OCT4/SOX2/NANOG/SSEA/TRA）、核型/同一性、自発分化等の offline/run 単位計測。BO 目的関数専用。"@ja ;
+    .
+
+n_monitoring_sterility_offline a :Concept ;
+    rdfs:label "offline/rapid 無菌性計測"@ja ;
+    :inDomain :n_d7 ;
+    :content "汚染/無菌性の offline または rapid micro 検査。現時点で検証済み online 手段は未確認。CAPA トリガ源。"@ja ;
+    .
+
+n_instr_aber_futura a :System ;
+    rdfs:label "Aber FUTURA"@ja ;
+    :inDomain :n_d7 ;
+    :content "Aber Instruments の in-line capacitance biomass センサ。580 kHz 線形モデルで VCD を推定。"@ja ;
+    .
+
+n_instr_hamilton_incytes a :System ;
+    rdfs:label "Hamilton Incyte Arc"@ja ;
+    :inDomain :n_d7 ;
+    :content "Hamilton の in-line permittivity ベース VCD センサ。RS485 Modbus 出力、哺乳類 5e5–8e9 cells/mL レンジ。"@ja ;
+    .
+
+n_instr_sartorius_viamass a :System ;
+    rdfs:label "Sartorius BioPAT ViaMass"@ja ;
+    :inDomain :n_d7 ;
+    :content "Sartorius の in-line capacitance biomass センサ。Aber 技術ベース、BioPAT MFCS/DCU 統合。"@ja ;
+    .
+
+n_instr_nova_flex2 a :System ;
+    rdfs:label "Nova BioProfile FLEX2"@ja ;
+    :inDomain :n_d7 ;
+    :content "Nova Biomedical の 16 項目 at-line 細胞培養分析器。275 µL・4.5 分、OLS による自動サンプリング対応。"@ja ;
+    .
+
+n_instr_ovizio_ilinef a :System ;
+    rdfs:label "Ovizio iLINE-F PRO"@ja ;
+    :inDomain :n_d7 ;
+    :content "Ovizio の D3HM ベース in-line ホログラフィ細胞/凝集体モニタリングシステム。OPC UA 対応。"@ja ;
+    .
+
+n_instr_fbrm_g400 a :System ;
+    rdfs:label "Mettler Toledo ParticleTrack G400"@ja ;
+    :inDomain :n_d7 ;
+    :content "FBRM 技術による in-situ 弦長分布計測器。0.5–2000 µm レンジ。"@ja ;
+    .
+
+n_instr_flowcam a :System ;
+    rdfs:label "FlowCam"@ja ;
+    :inDomain :n_d7 ;
+    :content "Fluid Imaging Technologies のフローイメージング顕微鏡。2 µm–1 mm の粒子/凝集体画像解析。"@ja ;
+    .
+
+n_src_aber_futura a :Source ;
+    rdfs:label "Aber FUTURA app note"@ja ;
+    :inDomain :n_d7 ;
+    :content "Aber Instruments, FUTURA capacitance perfusion monitoring."@ja ;
+    .
+
+n_src_hamilton_incytes a :Source ;
+    rdfs:label "Hamilton Incyte Arc specs"@ja ;
+    :inDomain :n_d7 ;
+    :content "Hamilton Company, Incyte Arc Viable Cell Density Sensor specifications."@ja ;
+    .
+
+n_src_sartorius_viamass a :Source ;
+    rdfs:label "Sartorius BioPAT ViaMass"@ja ;
+    :inDomain :n_d7 ;
+    :content "Sartorius, BioPAT ViaMass inline biomass measurement system."@ja ;
+    .
+
+n_src_ovizio_ilinef a :Source ;
+    rdfs:label "Ovizio iLINE-F PRO press release"@ja ;
+    :inDomain :n_d7 ;
+    :content "Ovizio Imaging Systems, iLINE-F PRO holographic in-line cell monitoring."@ja ;
+    .
+
+n_src_fbrm_g400 a :Source ;
+    rdfs:label "Mettler Toledo ParticleTrack FBRM"@ja ;
+    :inDomain :n_d7 ;
+    :content "Mettler Toledo, ParticleTrack with FBRM technology."@ja ;
+    .
+
+n_src_flowcam a :Source ;
+    rdfs:label "FlowCam overview"@ja ;
+    :inDomain :n_d7 ;
+    :content "Fluid Imaging Technologies, FlowCam imaging particle analyzer overview."@ja ;
+    .
+
+n_src_raman_graf2022 a :Source ;
+    rdfs:label "Graf/Wei 2022 in-line Raman PID glucose"@ja ;
+    :inDomain :n_d7 ;
+    :content "Graf/Wei et al. 2022, Frontiers in Bioengineering, in-line Raman closed-loop glucose control."@ja ;
+    .
+
+n_src_krause2023 a :Source ;
+    rdfs:label "Krause 2023 capacitance review"@ja ;
+    :inDomain :n_d7 ;
+    :content "Krause et al. 2023, Curr Opin Biotechnol, biocapacitance online biomass monitoring."@ja ;
+    .
+
+n_tech_control a :Concept ;
+    rdfs:label "技術的統制"@ja ;
+    :inDomain :n_d6 ;
+    :content "R&D一次でありつつ将来GMP移行を妨げないよう、ソフトウェアに織り込むALCOA+/Part11/CSV/CSA/EBR/CAPAの実装上の統制群。"@ja ;
+    :hasSource [ dct:title "FDA Guidance for Industry: Data Integrity and Compliance With Drug CGMP Questions and Answers (2018)"@ja ; :url <https://www.fda.gov/regulatory-information/search-fda-guidance-documents/data-integrity-and-compliance-drug-cgmp-questions-and-answers> ] ;
+    .
+
+n_audit_schema a :Concept ;
+    rdfs:label "監査ログスキーマ"@ja ;
+    :inDomain :n_d6 ;
+    :content "副作用ツール呼び出し、承認状態遷移、センサ取り込み、システム状態変化をALCOA+/Part11準拠で記録するための構造化ログスキーマ。"@ja ;
+    :hasSource [ dct:title "21 CFR Part 11 — Electronic Records; Electronic Signatures"@ja ; :url <https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11> ] ;
+    .
+
+n_approval_log a :Concept ;
+    rdfs:label "承認記録"@ja ;
+    :inDomain :n_d6 ;
+    :content "Human-on-the-loopにおけるrequested→approved/rejected/timeout→executed/cancelledの承認状態遷移を記録する監査証跡。"@ja ;
+    :hasSource [ dct:title "21 CFR Part 11 — Electronic Records; Electronic Signatures"@ja ; :url <https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11> ] ;
+    .
+
+n_data_lifecycle a :Concept ;
+    rdfs:label "データライフサイクル管理"@ja ;
+    :inDomain :n_d6 ;
+    :content "生データの生成・処理・レビュー・保存・検索・廃棄までのALCOA+/Endurable/Availableを担保するライフサイクル管理。"@ja ;
+    :hasSource [ dct:title "WHO Good Data and Record Management Practice"@ja ; :url <https://www.who.int/teams/regulation-prequalification/regulation-and-safety/good-data-and-record-management-practice> ] ;
+    .
+
+n_llm_validation a :Concept ;
+    rdfs:label "LLM層検証戦略"@ja ;
+    :inDomain :n_d6 ;
+    :content "L3薄いLLMオーケストレータの非決定性を抑え、プロンプトバージョニング・出力根拠ログ・性能モニタリングでGAMP5 AI/ML要件に対応する戦略。"@ja ;
+    :hasSource [ dct:title "ISPE GAMP Guide: Artificial Intelligence (2025)"@ja ; :url <https://ispe.org/publications/guidance-documents/gamp-guide-artificial-intelligence> ] ;
+    .
+
+n_ebr_derivation a :Concept ;
+    rdfs:label "EBR導出ビュー"@ja ;
+    :inDomain :n_d6 ;
+    :content "1培養ラン=1EBRをevent_storeから導出するためのビュー。R&D一次ではEBR-like実験プロビナンスレポートとして運用。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 Annex 11 — Computerised Systems"@ja ; :url <https://health.ec.europa.eu/document/download/2c252435-6383-4ced-8206-8fef57024cc1_en> ] ;
+    .
+
+n_event_store a :Concept ;
+    rdfs:label "イベントストア"@ja ;
+    :inDomain :n_d5 ;
+    :content "時系列のイミュータブルイベントログを格納するデータ基盤。EBR導出、監査証跡、LADS Program/Result対応の基盤。"@ja ;
+    :hasSource [ dct:title "OPC UA for LADS Part 1 Basics (OPC 30500-1)"@ja ; :url <https://reference.opcfoundation.org/LADS/v100/docs/> ] ;
+    .
+
+n_src_fda_data_integrity a :Source ;
+    rdfs:label "FDA 2018 Data Integrity Guidance"@ja ;
+    :inDomain :n_d6 ;
+    :content "FDA 'Data Integrity and Compliance With Drug CGMP Questions and Answers' (2018)。ALCOA+原則を医薬品製造のデータインテグリティに適用したガイダンス。"@ja ;
+    :hasSource [ dct:title "FDA Guidance for Industry: Data Integrity and Compliance With Drug CGMP Questions and Answers (2018)"@ja ; :url <https://www.fda.gov/regulatory-information/search-fda-guidance-documents/data-integrity-and-compliance-drug-cgmp-questions-and-answers> ] ;
+    .
+
+n_src_part11 a :Source ;
+    rdfs:label "21 CFR Part 11"@ja ;
+    :inDomain :n_d6 ;
+    :content "FDA regulation 'Electronic Records; Electronic Signatures'。電子記録・電子署名・監査証跡の技術的要件を定める。"@ja ;
+    :hasSource [ dct:title "21 CFR Part 11 — Electronic Records; Electronic Signatures"@ja ; :url <https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11> ] ;
+    .
+
+n_src_fda_csa a :Source ;
+    rdfs:label "FDA CSA Guidance"@ja ;
+    :inDomain :n_d6 ;
+    :content "FDA 'Computer Software Assurance for Production and Quality System Software' (2022 draft / 2025 final)。リスクベースでソフトウェア保証活動を選定する現代的CSV/CSAアプローチ。"@ja ;
+    :hasSource [ dct:title "FDA Guidance: Computer Software Assurance for Production and Quality System Software"@ja ; :url <https://www.fda.gov/regulatory-information/search-fda-guidance-documents/computer-software-assurance-production-and-quality-system-software> ] ;
+    .
+
+n_src_gamp5 a :Source ;
+    rdfs:label "ISPE GAMP 5 2nd Edition"@ja ;
+    :inDomain :n_d6 ;
+    :content "ISPE GAMP 5 Guide: A Risk-Based Approach to Compliant GxP Computerized Systems, Second Edition (2022)。Cat.1/3/4/5とAI/ML Appendix D11を含む。"@ja ;
+    :hasSource [ dct:title "ISPE GAMP 5 Guide 2nd Edition (2022)"@ja ; :url <https://ispe.org/publications/guidance-documents/gamp-5-guide-2nd-edition> ] ;
+    .
+
+n_src_gamp5_ai a :Source ;
+    rdfs:label "ISPE GAMP Guide: Artificial Intelligence"@ja ;
+    :inDomain :n_d6 ;
+    :content "ISPE GAMP Guide: Artificial Intelligence (2025)。AI有効化コンピュータ化システムのライフサイクル全体の検証・データガバナンス・モデルリスク管理を扱う。"@ja ;
+    :hasSource [ dct:title "ISPE GAMP Guide: Artificial Intelligence (2025)"@ja ; :url <https://ispe.org/publications/guidance-documents/gamp-guide-artificial-intelligence> ] ;
+    .
+
+n_src_annex11 a :Source ;
+    rdfs:label "EudraLex Annex 11"@ja ;
+    :inDomain :n_d6 ;
+    :content "EudraLex Volume 4 Annex 11 — Computerised Systems。EUのGMPデータコンピュータ化システム要件。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 Annex 11 — Computerised Systems"@ja ; :url <https://health.ec.europa.eu/document/download/2c252435-6383-4ced-8206-8fef57024cc1_en> ] ;
+    .
+
+n_src_pics041 a :Source ;
+    rdfs:label "PIC/S PI 041-1"@ja ;
+    :inDomain :n_d6 ;
+    :content "PIC/S PI 041-1 — Good Practices for Data Management and Integrity in Regulated GMP/GDP Environments (2021)。ALCOA+運用の国際的実務指針。"@ja ;
+    :hasSource [ dct:title "PIC/S PI 041-1 (2021)"@ja ; :url <https://picscheme.org/en/publications> ] ;
+    .
+
+n_src_who_gdrp a :Source ;
+    rdfs:label "WHO Good Data and Record Management Practice"@ja ;
+    :inDomain :n_d6 ;
+    :content "WHO Good Data and Record Management Practice。ALCOA+とデータライフサイクルのWHO解釈。"@ja ;
+    :hasSource [ dct:title "WHO Good Data and Record Management Practice"@ja ; :url <https://www.who.int/teams/regulation-prequalification/regulation-and-safety/good-data-and-record-management-practice> ] ;
+    .
+
+n_tier2_plant_model a :Concept ;
+    rdfs:label "Tier2 plant_model（in-silico 検証リグ）"@ja ;
+    :inDomain :n_d4 ;
+    :content "auto_cell の Tier2 シミュレーション層。Manstein 2021 の 6 項 Monod 型 ODE を step(actuators)->sensors IF で実装し、L1 制御ループの回帰検証と L2 BO の低忠実度評価に使う。"@ja ;
+    .
+
+n_plant_model_interface a :Concept ;
+    rdfs:label "plant_model step IF"@ja ;
+    :inDomain :n_d4 ;
+    :content "step(actuators)->sensors という決定的インターフェース。アクチュエータ（perfusion_rate_vvd, agitation_rpm, gas setpoints, feed bolus）を受け、センサ軌道（VCD/代謝物/凝集体径）を返す。"@ja ;
+    .
+
+n_plant_model_calibration a :Concept ;
+    rdfs:label "plant_model パラメータ同定・不確実性"@ja ;
+    :inDomain :n_d4 ;
+    :content "文献値を prior とし、実 run データでベイズ推定または最小二乗により校正。パラメタ事後分布・GP バイアス・構造候補モデルで不確実性を表現。"@ja ;
+    .
+
+n_multifidelity_sim a :Concept ;
+    rdfs:label "多忠実度シミュレーション接続"@ja ;
+    :inDomain :n_d4 ;
+    :content "L2 BO への多忠実度接続。Tier2 plant_model を低コスト低忠実度評価、実バイオリアクタ run を高忠実度評価として組み込む。"@ja ;
+    .
+
+n_plant_model_regression a :Concept ;
+    rdfs:label "plant_model 回帰テスト"@ja ;
+    :inDomain :n_d4 ;
+    :content "同一アクチュエータ系列 → 同一センサ軌道の決定性を保証するゴールデンテスト。CSV/CSA 観点から L1 制御ループの検証リグとして運用。"@ja ;
+    .
+
+n_cobrapy_gem a :Concept ;
+    rdfs:label "COBRApy + GEM 差替候補"@ja ;
+    :inDomain :n_d4 ;
+    :content "将来のゲノム規模代謝モデル（COBRApy）への差替候補。培地組成を制約ベースで解き、代謝物収支を予測。"@ja ;
+    .
+
+n_aggregate_formation_model a :Concept ;
+    rdfs:label "凝集体形成動力学モデル"@ja ;
+    :inDomain :n_d1 ;
+    :content "凝集体の形成・合体・破砕を表す動的サブモデル。撹拌速度・細胞密度と凝集体径の関係を追加する拡張。"@ja ;
+    .
+
+n_shear_stress_model a :Concept ;
+    rdfs:label "シアストレスモデル"@ja ;
+    :inDomain :n_d4 ;
+    :content "撹拌速度・粘度・凝集体径から Kolmogorov 長またはエネルギー散逸率を推定し、細胞傷害閾値を設計する拡張。"@ja ;
+    .
+
+n_src_scipy a :Source ;
+    rdfs:label "SciPy（数値積分）"@ja ;
+    :inDomain :n_d5 ;
+    :content "Python の科学技術計算ライブラリ。plant_model の ODE 数値積分（solve_ivp 等）に使用。"@ja ;
+    .
+
+n_src_cobrapy a :Source ;
+    rdfs:label "COBRApy"@ja ;
+    :inDomain :n_d5 ;
+    :content "Python によるゲノム規模代謝モデリングライブラリ。将来の COBRApy+GEM バックエンド差替の基盤。"@ja ;
+    .
+
+n_hmi_dashboard a :Concept ;
+    rdfs:label "HMI ダッシュボード"@ja ;
+    :inDomain :n_d4 ;
+    :content "研究者が培養状態・承認待ち・アラート・BO 提案を一目で把握するメイン画面。CPP 現在値・トレンド・phase・承認キューを表示し、on-the-loop の接点となる。"@ja ;
+    :hasSource [ dct:title "ISA-101 HMI Design Standards（プロセス制御 HMI）"@ja ; :url <https://www.isa.org/standards-and-publications/isa-standards/isa-101> ] ,
+               [ dct:title "IEC 62366-1 Medical devices — Application of usability engineering"@ja ; :url <https://www.iso.org/standard/63179.html> ] ;
+    .
+
+n_alert_matrix a :Concept ;
+    rdfs:label "アラート/通知マトリクス"@ja ;
+    :inDomain :n_d4 ;
+    :content "各イベントの優先度（P0-P3）、抑制窓、通知チャネル、既定動作を定義したマトリクス。contamination_suspected は抑制不可（0 s）、BO 提案は run 単位（86400 s）など。"@ja ;
+    :hasSource [ dct:title "auto_cell A 層要求仕様（NFR-T, NFR-S）"@ja ; :url <docs/design/requirements.md> ] ,
+               [ dct:title "ISA-101 HMI Design Standards"@ja ; :url <https://www.isa.org/standards-and-publications/isa-standards/isa-101> ] ;
+    .
+
+n_escalation_policy a :Concept ;
+    rdfs:label "承認エスカレーションポリシー"@ja ;
+    :inDomain :n_d4 ;
+    :content "承認要求がタイムアウト・却下・実行失敗した場合のエスカレーションルール。安全側へ倒す（キャンセル/ホールド）を基本とし、リトライ上限超過時は人間介入待ち。"@ja ;
+    :hasSource [ dct:title "auto_cell A 層要求仕様（FR-4, NFR-S）"@ja ; :url <docs/design/requirements.md> ] ;
+    .
+
+n_contamination_response a :Concept ;
+    rdfs:label "汚染疑い応答フロー"@ja ;
+    :inDomain :n_d7 ;
+    :content "contamination_suspected 検知時の P0 即時対応。ブレインは安全系へのホールド要求を出し、デバイス局所が強制停止。研究者確認・誤検知記録・CAPA 起票の分岐。"@ja ;
+    :hasSource [ dct:title "KG → auto_cell 設計ブリッジ（sterility/capa 節）"@ja ; :url <docs/design/kg_to_auto_cell.md> ] ,
+               [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] ;
+    .
+
+n_degraded_mode a :Concept ;
+    rdfs:label "縮退運転モード"@ja ;
+    :inDomain :n_d4 ;
+    :content "ブレイン/LLM/通信断時にも L0 局所 PID と L1 最終検証済レシピで培養を継続するモード。再起動耐性・冪等性・安全を担保。"@ja ;
+    :hasSource [ dct:title "ADR-0001（L0-L3 分離、C4 縮退運転）"@ja ; :url <docs/design/adr/0001-control-architecture.md> ] ,
+               [ dct:title "auto_cell A 層要求仕様（NFR-S, NFR-R）"@ja ; :url <docs/design/requirements.md> ] ;
+    .
+
+n_human_on_the_loop a :Concept ;
+    rdfs:label "Human-on-the-loop"@ja ;
+    :inDomain :n_d4 ;
+    :content "監視・判断・包絡線内アクションは自律、包絡線外や重大アクションは人の承認を要する運転形態。auto_cell A 層の自律度。"@ja ;
+    :hasSource [ dct:title "auto_cell A 層要求仕様"@ja ; :url <docs/design/requirements.md> ] ;
+    .
+
+n_audit_ui a :Concept ;
+    rdfs:label "監査/EBR UI"@ja ;
+    :inDomain :n_d6 ;
+    :content "event_store から 1 培養ランの操作ログ・イベント・承認履歴を検索/エクスポートするビュー。ALCOA+ と EBR 再構成を支援。"@ja ;
+    :hasSource [ dct:title "KG → auto_cell 設計ブリッジ（ALCOA+/EBR 節）"@ja ; :url <docs/design/kg_to_auto_cell.md> ] ,
+               [ dct:title "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）"@ja ; :url <https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc> ] ;
+    .
+
+n_approval_request_event a :Concept ;
+    rdfs:label "承認要求イベント"@ja ;
+    :inDomain :n_d4 ;
+    :content "承認ワークフローで発行されるイベント型。request_id、提案アクション、根拠、要求時刻、レビュー、決定、実行結果を含む。event_store に append-only で記録。"@ja ;
+    :hasSource [ dct:title "auto_cell A 層要求仕様（FR-4, FR-9）"@ja ; :url <docs/design/requirements.md> ] ;
+    .
+
+n_notification_suppression a :Concept ;
+    rdfs:label "通知抑制（suppression_defaults）"@ja ;
+    :inDomain :n_d4 ;
+    :content "同一イベントの短時間再発を抑制し HMI/push のフラッディングを防ぐ仕組み。contamination_suspected は抑制不可とする。"@ja ;
+    :hasSource [ dct:title "KG → auto_cell 設計ブリッジ（DomainVertical slot 節）"@ja ; :url <docs/design/kg_to_auto_cell.md> ] ;
+    .
+
+n_src_nist_ai_rmf a :Source ;
+    rdfs:label "NIST AI Risk Management Framework"@ja ;
+    :inDomain :n_d4 ;
+    :content "NIST が公開する AI リスク管理フレームワーク。Human-on-the-loop / human-in-the-loop による AI システムのガバナンスと監視を含む。"@ja ;
+    :hasSource [ dct:title "NIST AI Risk Management Framework"@ja ; :url <https://www.nist.gov/itl/ai-risk-management-framework> ] ;
+    .
+
+n_src_iec62366 a :Source ;
+    rdfs:label "IEC 62366-1（医療機器ユーザビリティ）"@ja ;
+    :inDomain :n_d4 ;
+    :content "医療機器のユーザビリティエンジニアリングを規定する国際標準。HMI 設計の人因工学基準。"@ja ;
+    :hasSource [ dct:title "IEC 62366-1:2015+AMD1:2020"@ja ; :url <https://www.iso.org/standard/63179.html> ] ;
+    .
+
+n_src_isa101 a :Source ;
+    rdfs:label "ISA-101（プロセス制御 HMI 設計）"@ja ;
+    :inDomain :n_d4 ;
+    :content "ISA-101 標準群。プロセス産業向け HMI の視覚設計、アラーム管理、パフォーマンス指向ディスプレイを規定。"@ja ;
+    :hasSource [ dct:title "ISA-101 HMI Design Standards"@ja ; :url <https://www.isa.org/standards-and-publications/isa-standards/isa-101> ] ;
+    .
+
+n_mpc a :Concept ;
+    rdfs:label "Model Predictive Control"@ja ;
+    :inDomain :n_d4 ;
+    :content "プロセスモデルを用いて未来の挙動を予測し、制約内で最適な操作変数を逐次計算する制御手法。A 層では灌流率・feed bolus を操作変数とする将来拡張候補。"@ja ;
+    :hasSource [ dct:title "Model Predictive Controller Design for Bioprocesses (Rashedi et al., DYCOPS-2022)"@ja ; :url <https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf> ] ,
+               [ dct:title "フィジカルAI包括調査レポート §6.1"@ja ; :url </home/sin/Downloads/report/report.md> ] ;
+    .
+
+n_mpc_ipsc_perfusion a :Concept ;
+    rdfs:label "iPSC 浮遊灌流 MPC"@ja ;
+    :inDomain :n_d4 ;
+    :content "iPSC 浮遊凝集体灌流プロセスに特化した MPC。状態 = VCD/viability/glucose/lactate/glutamine/osmolality/aggregate diameter、操作変数 = perfusion rate/feed bolus、制約 = CPP 包絡線・pump ramp・凝集体シア。現時点で直接実証例は限定的。"@ja ;
+    :hasSource [ dct:title "Process development and scale-up of pluripotent stem cell manufacturing (Huang et al. 2020)"@ja ; :url <https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/> ] ,
+               [ dct:title "Manstein & Zweigerdt 2021, STAR Protocols Table 1"@ja ; :url <https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/> ] ;
+    .
+
+n_mpc_lactate_feedback a :Concept ;
+    rdfs:label "乳酸フィードバック MPC"@ja ;
+    :inDomain :n_d4 ;
+    :content "累積乳酸濃度を細胞成長の soft sensor として、培地交換量を入力とする MPC。MSC 培養で実証されており、iPSC 浮遊灌流への転用可能性がある。"@ja ;
+    :hasSource [ dct:title "Van Beylen et al. 2020, Lactate-Based Model Predictive Control Strategy of Cell Growth for Cell Therapy Applications"@ja ; :url <https://doi.org/10.3390/bioengineering7030078> ] ;
+    .
+
+n_mpc_model_types a :Concept ;
+    rdfs:label "MPC モデルタイプ"@ja ;
+    :inDomain :n_d4 ;
+    :content "線形 MPC（LMPC）、非線形 MPC（NMPC）、経済 MPC（EMPC）、ハイブリッド MPC（PINN+ODE）、データ駆動 MPC（DARX/サブスペース）の分類。A 層では plant_model（Manstein ODE）起点で NMPC → ハイブリッド MPC へ段階拡大。"@ja ;
+    :hasSource [ dct:title "Model Predictive Controller Design for Bioprocesses (Rashedi et al., DYCOPS-2022)"@ja ; :url <https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf> ] ,
+               [ dct:title "Van Beylen et al. 2020, Bioengineering"@ja ; :url <https://doi.org/10.3390/bioengineering7030078> ] ;
+    .
+
+n_mpc_constraints a :Concept ;
+    rdfs:label "MPC 制約集合"@ja ;
+    :inDomain :n_d4 ;
+    :content "MPC で考慮する制約群：CPP 包絡線（glucose/lactate/osmolality/aggregate diameter）、perfusion rate 範囲（0–7 vvd）、pump ramp 制限、凝集体シア上限、培地コスト。"@ja ;
+    :hasSource [ dct:title "Manstein & Zweigerdt 2021, STAR Protocols Table 1"@ja ; :url <https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/> ] ,
+               [ dct:title "Process development and scale-up of pluripotent stem cell manufacturing (Huang et al. 2020)"@ja ; :url <https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/> ] ;
+    .
+
+n_mpc_prediction_horizon a :Concept ;
+    rdfs:label "MPC 予測ホライズン"@ja ;
+    :inDomain :n_d4 ;
+    :content "MPC が未来のプロセス挙動を予測する時間幅。iPSC 培養ではバッチ尺が数日～数週間のため、時間単位～日単位の予測ホライズンが妥当。CHO fed-batch 例では 30 日が報告されているが、iPSC では未確定。"@ja ;
+    :hasSource [ dct:title "Model Predictive Controller Design for Bioprocesses (Rashedi et al., DYCOPS-2022)"@ja ; :url <https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf> ] ;
+    .
+
+n_mpc_control_horizon a :Concept ;
+    rdfs:label "MPC 制御ホライズン"@ja ;
+    :inDomain :n_d4 ;
+    :content "MPC が最適化する未来の操作変数系列の長さ。予測ホライズン以下。iPSC では求解コストと制御性能のトレードオフで選定。CHO 例では 8 日。"@ja ;
+    :hasSource [ dct:title "Model Predictive Controller Design for Bioprocesses (Rashedi et al., DYCOPS-2022)"@ja ; :url <https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf> ] ;
+    .
+
+n_mpc_adaptive_update a :Concept ;
+    rdfs:label "MPC 適応更新"@ja ;
+    :inDomain :n_d4 ;
+    :content "オンライン/at-line データを用いて MPC 内部モデルのパラメータを逐次更新する機構。プロセス・モデルミスマッチ、細胞株変動、ドナー変動に対応。"@ja ;
+    :hasSource [ dct:title "Van Beylen et al. 2020, Bioengineering"@ja ; :url <https://doi.org/10.3390/bioengineering7030078> ] ;
+    .
+
+n_mpc_fail_safe a :Concept ;
+    rdfs:label "MPC フェイルセーフ"@ja ;
+    :inDomain :n_d4 ;
+    :content "MPC ソルバー非収束・異常予測・制約違反時に、L1 が最後の検証済 setpoint または安全側デフォルト灌流率を保持する機構。"@ja ;
+    :hasSource [ dct:title "ADR-0001 Control architecture"@ja ; :url <docs/design/adr/0001-control-architecture.md> ] ;
+    .
+
+n_mpc_human_on_the_loop a :Concept ;
+    rdfs:label "MPC Human-on-the-loop"@ja ;
+    :inDomain :n_d6 ;
+    :content "MPC の提案軌道・包絡線外 setpoint・低信頼度予測に対して研究者が承認/調整/却下する仕組み。Annex 22 対応の決定論的下位制御器としての位置づけと両立。"@ja ;
+    :hasSource [ dct:title "requirements.md FR-4"@ja ; :url <docs/design/requirements.md> ] ,
+               [ dct:title "PIC/S GMP Annex 22 AI applicability (CiRA/Sugihara PMC11975184)"@ja ; :url <https://pmc.ncbi.nlm.nih.gov/articles/PMC11975184/> ] ;
+    .
+
+n_mpc_implementation_libraries a :Concept ;
+    rdfs:label "MPC 実装ライブラリ群"@ja ;
+    :inDomain :n_d5 ;
+    :content "A 層 MPC 実装候補ライブラリ：CasADi（記号計算）、do-mpc（プロトタイプ・OPC-UA 接続例あり）、acados（高速組み込み C コード生成）。"@ja ;
+    :hasSource [ dct:title "CasADi"@ja ; :url <https://web.casadi.org/> ] ,
+               [ dct:title "do-mpc batch reactor example"@ja ; :url <https://www.do-mpc.com/en/latest/example_gallery/batch_reactor.html> ] ,
+               [ dct:title "acados documentation"@ja ; :url <https://docs.acados.org/> ] ;
+    .
+
+n_dynamic_perfusion_ipsc a :Concept ;
+    rdfs:label "iPSC 動的灌流戦略"@ja ;
+    :inDomain :n_d1 ;
+    :content "pH トリガー等で perfusion rate を動的に増加させる iPSC 浮遊培養戦略。Huang et al. 2020 で pH 6.8 トリガー + 30%/日増加により固定灌流比 25% 向上。MPC で多変数化・最適化可能。"@ja ;
+    :hasSource [ dct:title "Process development and scale-up of pluripotent stem cell manufacturing (Huang et al. 2020)"@ja ; :url <https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/> ] ;
+    .
+
+n_cpsr_control a :Concept ;
+    rdfs:label "Cell-Specific Perfusion Rate 制御"@ja ;
+    :inDomain :n_d4 ;
+    :content "生存細胞数あたりの灌流率（CSPR）を一定に保つ制御戦略。培地利用効率と安定的基質濃度を両立。high cell density perfusion の標準的アプローチ。"@ja ;
+    :hasSource [ dct:title "Konstantinov et al. 2006, CSPR concept"@ja ; :url <https://pure.mpg.de/rest/items/item_3395904_4/component/file_3432420/content> ] ;
+    .
+
+n_mpc_vs_rule_engine a :Concept ;
+    rdfs:label "MPC vs ルールエンジン比較"@ja ;
+    :inDomain :n_d4 ;
+    :content "v1 の L1 決定的ルールと将来 MPC との比較軸：実装コスト、検証性、最適性、柔軟性、Annex 22 対応、Human-on-the-loop。v1 はルール、Phase 2 以降は MPC 拡張。"@ja ;
+    :hasSource [ dct:title "additional_mpc_for_ipsc.md"@ja ; :url <docs/design/ground_knowledge/additional_mpc_for_ipsc.md> ] ;
+    .
+
+n_mpc_roadmap_l1 a :Concept ;
+    rdfs:label "L1 MPC 導入ロードマップ"@ja ;
+    :inDomain :n_d4 ;
+    :content "Phase 1: ルールベース L1。Phase 2: plant_model ベース MPC シミュレーション・単一操作変数（perfusion rate）。Phase 3: 多変数・適応・経済 MPC の実機適用。"@ja ;
+    :hasSource [ dct:title "additional_mpc_for_ipsc.md"@ja ; :url <docs/design/ground_knowledge/additional_mpc_for_ipsc.md> ] ;
+    .
+
+n_src_rashedi2022 a :Source ;
+    rdfs:label "Rashedi et al. 2022 (DYCOPS-2022)"@ja ;
+    :inDomain :n_d4 ;
+    :content "Amgen の fed-batch CHO プロセスへの線形 MPC 実機適用。VCD 最大化、30 日予測ホライズン、8 日制御ホライズン、タイトル 2% 向上。"@ja ;
+    :hasSource [ dct:title "Model Predictive Controller Design for Bioprocesses"@ja ; :url <https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf> ] ;
+    .
+
+n_src_van_beylen2020 a :Source ;
+    rdfs:label "Van Beylen et al. 2020 (Bioengineering)"@ja ;
+    :inDomain :n_d4 ;
+    :content "Lactate-Based Model Predictive Control Strategy of Cell Growth for Cell Therapy Applications. hBM-MSC 培養で累積乳酸を soft sensor とする適応 DARX-MPC。"@ja ;
+    :hasSource [ dct:title "Lactate-Based Model Predictive Control Strategy"@ja ; :url <https://doi.org/10.3390/bioengineering7030078> ] ;
+    .
+
+n_src_huang2020 a :Source ;
+    rdfs:label "Huang et al. 2020 (Cell Gene Therapy Insights)"@ja ;
+    :inDomain :n_d1 ;
+    :content "PSC 10 L スケールアップ。動的灌流で pH 6.8 トリガー + 30%/日増加、固定灌流比 25% 向上、乳酸 15 mM 未満抑制。"@ja ;
+    :hasSource [ dct:title "Process development and scale-up of pluripotent stem cell manufacturing"@ja ; :url <https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/> ] ;
+    .
+
+n_src_do_mpc a :Source ;
+    rdfs:label "do-mpc"@ja ;
+    :inDomain :n_d5 ;
+    :content "CasADi ベースの Python MPC ライブラリ。非線形 MPC、ロバスト MPC、OPC-UA 接続例あり。"@ja ;
+    :hasSource [ dct:title "do-mpc batch reactor example"@ja ; :url <https://www.do-mpc.com/en/latest/example_gallery/batch_reactor.html> ] ;
+    .
+
+n_src_acados a :Source ;
+    rdfs:label "acados"@ja ;
+    :inDomain :n_d5 ;
+    :content "高速組み込み非線形 MPC ソルバー。C コード生成、HPIPM QP ソルバー、CasADi 記号モデル入力。"@ja ;
+    :hasSource [ dct:title "acados documentation"@ja ; :url <https://docs.acados.org/> ] ;
+    .
+
+n_src_casadi a :Source ;
+    rdfs:label "CasADi"@ja ;
+    :inDomain :n_d5 ;
+    :content "非線形最適化と自動微分のためのオープンソース記号計算フレームワーク。MPC モデリングの基盤。"@ja ;
+    :hasSource [ dct:title "CasADi"@ja ; :url <https://web.casadi.org/> ] ;
+    .
+
+n_pinn a :Concept ;
+    rdfs:label "Physics-Informed Neural Network (PINN)"@ja ;
+    :inDomain :n_d4 ;
+    :content "Neural network trained with both data loss and physics loss (ODE/PDE residuals). For iPSC suspension/aggregate bioreactors, PINNs are a future-phase technology; most published examples are CHO/microbial, not directly transferable to iPSC."@ja ;
+    .
+
+n_digital_twin a :Concept ;
+    rdfs:label "Digital Twin (DT)"@ja ;
+    :inDomain :n_d4 ;
+    :content "Virtual replica of the bioreactor process that predicts concentration/state profiles and supports what-if analysis. Industrial examples (Yokogawa Insilico) are CHO/mAb-centric; iPSC aggregate-specific DTs are not yet established."@ja ;
+    .
+
+n_hybrid_ode_nn a :Concept ;
+    rdfs:label "Hybrid ODE + Neural Network model"@ja ;
+    :inDomain :n_d4 ;
+    :content "Mechanistic ODE structure (mass balances) with kinetic terms represented or corrected by neural networks. More data-efficient than pure NN and a realistic Phase 2/3 extension of the Manstein ODE plant_model."@ja ;
+    .
+
+n_pinn_mpc a :Concept ;
+    rdfs:label "PINN-based Model Predictive Control"@ja ;
+    :inDomain :n_d4 ;
+    :content "MPC that uses a PINN as the prediction model instead of a numerical ODE. Demonstrated in microbial/CHO contexts; iPSC applicability is unverified and should remain advisory/Human-on-the-loop."@ja ;
+    .
+
+n_uncertainty_quantification a :Concept ;
+    rdfs:label "Uncertainty Quantification (UQ) for learned models"@ja ;
+    :inDomain :n_d4 ;
+    :content "Quantification of epistemic and aleatoric uncertainty in PINN/NN/DT predictions, typically expressed as 95% confidence intervals. Required for Human-on-the-loop escalation when model confidence is low."@ja ;
+    .
+
+n_deep_ensemble a :Concept ;
+    rdfs:label "Deep Ensemble UQ"@ja ;
+    :inDomain :n_d4 ;
+    :content "Multiple independently trained networks whose prediction distribution defines mean and variance. Simplest practical UQ method for hybrid ODE+NN models."@ja ;
+    .
+
+n_bayesian_pinn a :Concept ;
+    rdfs:label "Bayesian PINN (B-PINN)"@ja ;
+    :inDomain :n_d4 ;
+    :content "Variational inference over PINN weights to produce posterior predictive distributions. Theoretically grounded but computationally expensive and prior-dependent."@ja ;
+    .
+
+n_efi_pinn a :Concept ;
+    rdfs:label "EFI-based UQ for PINN"@ja ;
+    :inDomain :n_d4 ;
+    :content "Extended Fiducial Inference for PINNs. Avoids subjective priors/dropout rates by solving data-generating equations; shown to achieve ~95% coverage on synthetic PDEs, but unverified on bioreactor time series."@ja ;
+    .
+
+n_mc_dropout a :Concept ;
+    rdfs:label "MC Dropout UQ"@ja ;
+    :inDomain :n_d4 ;
+    :content "Dropout retained at inference time to approximate Bayesian predictive distributions. Sensitive to dropout-rate choice; intervals can be poorly calibrated."@ja ;
+    .
+
+n_gp_bias_correction a :Concept ;
+    rdfs:label "GP bias correction for plant_model"@ja ;
+    :inDomain :n_d4 ;
+    :content "Gaussian Process that learns the residual between Manstein ODE predictions and observed run data. Natural Phase 2 extension that integrates with existing BO infrastructure."@ja ;
+    .
+
+n_multifidelity_pinn a :Concept ;
+    rdfs:label "Multi-fidelity PINN/DT integration"@ja ;
+    :inDomain :n_d4 ;
+    :content "Use of Manstein ODE and Hybrid ODE+NN as low/medium-fidelity surrogates and real bioreactor runs as high-fidelity evaluations within multi-fidelity Bayesian optimization."@ja ;
+    .
+
+n_digital_twin_calibration a :Concept ;
+    rdfs:label "Digital Twin calibration"@ja ;
+    :inDomain :n_d4 ;
+    :content "Online/offline parameter estimation and model-mismatch correction using real batch data. Required to keep the DT aligned with the physical process."@ja ;
+    .
+
+n_universal_differential_equation a :Concept ;
+    rdfs:label "Universal Differential Equation (UDE)"@ja ;
+    :inDomain :n_d4 ;
+    :content "Hybrid model where known mechanistic terms remain explicit and unknown terms are learned by a neural network. Bridges Manstein ODE and full PINN approaches."@ja ;
+    .
+
+n_neural_ode a :Concept ;
+    rdfs:label "Neural ODE"@ja ;
+    :inDomain :n_d4 ;
+    :content "Learned ordinary differential equation dx/dt = f_theta(x). Can be combined with known physics (UDE) for bioreactor dynamics."@ja ;
+    .
+
+n_kinetic_cell_model a :Concept ;
+    rdfs:label "Kinetic Cell Model"@ja ;
+    :inDomain :n_d1 ;
+    :content "Sub-model describing cell metabolism and growth kinetics. In advanced DTs it combines genome-scale metabolic networks with neural networks."@ja ;
+    .
+
+n_reactor_model a :Concept ;
+    rdfs:label "Reactor Model"@ja ;
+    :inDomain :n_d4 ;
+    :content "Mass-balance model of batch/fed-batch/perfusion reactor volumes and concentrations due to inlet/outlet streams."@ja ;
+    .
+
+n_extracellular_reaction_model a :Concept ;
+    rdfs:label "Extracellular Reaction Model"@ja ;
+    :inDomain :n_d4 ;
+    :content "Model of abiotic reactions in culture media, e.g. glutamine degradation."@ja ;
+    .
+
+n_model_mismatch_correction a :Concept ;
+    rdfs:label "Model mismatch correction"@ja ;
+    :inDomain :n_d4 ;
+    :content "Learned correction that refines low-fidelity digital twin or simulation predictions using real data. Essential for trustworthy multi-fidelity BO."@ja ;
+    .
+
+n_prediction_confidence_score a :Concept ;
+    rdfs:label "Prediction confidence score"@ja ;
+    :inDomain :n_d6 ;
+    :content "Normalized score derived from model predictive uncertainty (e.g. 95% CI width). Drives Human-on-the-loop escalation for DT/BO/MPC proposals."@ja ;
+    .
+
+n_data_requirement_pinn a :Concept ;
+    rdfs:label "Data requirement for PINN/hybrid models"@ja ;
+    :inDomain :n_d4 ;
+    :content "Industry rule-of-thumb: hybrid ODE+NN needs ~50-100 batches, pure NN needs 200-500 batches, PINN ~30-80 batches. CHO/microbial-derived figures; iPSC-native requirements are unverified and likely higher."@ja ;
+    .
+
+n_src_thirugnanasambandam_2025 a :Source ;
+    rdfs:label "Thirugnanasambandam et al. 2025 (Comput Chem Eng)"@ja ;
+    :inDomain :n_d4 ;
+    :content "Dual-ANN PINN framework for generic bioreactor modelling; shows extrapolation limits under time-varying controls."@ja ;
+    .
+
+n_src_yang_2024_pinn a :Source ;
+    rdfs:label "Yang et al. 2024 (Ind Eng Chem Res)"@ja ;
+    :inDomain :n_d4 ;
+    :content "Hybrid PINN model for large-scale pilot CHO fed-batch culture. CHO example, not directly transferable to iPSC."@ja ;
+    .
+
+n_src_catalao_2025 a :Source ;
+    rdfs:label "Catalão et al. 2025 (J Process Control)"@ja ;
+    :inDomain :n_d4 ;
+    :content "Bioprocess MPC with physics-informed neural networks, microbial community PHA production."@ja ;
+    .
+
+n_src_patel_2024 a :Source ;
+    rdfs:label "Patel et al. 2024 (ADCHEM)"@ja ;
+    :inDomain :n_d4 ;
+    :content "MPC using physics-informed neural networks for DAE systems with ResNet + NTK training."@ja ;
+    .
+
+n_src_shih_2025 a :Source ;
+    rdfs:label "Shih, Jiang & Liang 2025 (NeurIPS / arXiv)"@ja ;
+    :inDomain :n_d4 ;
+    :content "Extended Fiducial Inference for rigorous uncertainty quantification in PINNs without subjective priors/dropout rates."@ja ;
+    .
+
+n_src_nobar_2025 a :Source ;
+    rdfs:label "Nobar et al. 2025 (arXiv)"@ja ;
+    :inDomain :n_d4 ;
+    :content "Guided multi-fidelity Bayesian optimization with learned correction model for digital twin controller tuning."@ja ;
+    .
+
+n_src_bioprocesstools_2026 a :Source ;
+    rdfs:label "Bioprocesstools 2026: AI and ML for Bioprocess Optimization"@ja ;
+    :inDomain :n_d4 ;
+    :content "Industry survey of ML method data requirements for bioprocess optimization."@ja ;
+    .
+
+n_src_bioprocessintl_2026 a :Source ;
+    rdfs:label "Bioprocess International 2026: Multifidelity Optimization in Biopharma"@ja ;
+    :inDomain :n_d4 ;
+    :content "Case study of multi-fidelity BO in mAb process with mechanistic simulator bias up to 15%."@ja ;
+    .
+
+n_src_yokogawa_pharma40 a :Source ;
+    rdfs:label "Yokogawa: Building Intelligent processes for Pharma 4.0"@ja ;
+    :inDomain :n_d8 ;
+    :content "Yokogawa Insilico digital twin architecture: Reactor + Extracellular Reaction + Kinetic Cell models."@ja ;
+    .
+
+n_src_pharma_manufacturing_2022 a :Source ;
+    rdfs:label "Pharma Manufacturing 2022: Pharma Innovation Awards"@ja ;
+    :inDomain :n_d8 ;
+    :content "Yokogawa Insilico Digital Twin Factory award and up to 50% experimental effort reduction claim."@ja ;
+    .
+
+n_raman_calibration_ipsc a :Concept ;
+    rdfs:label "iPSC 浮遊凝集体 Raman 校正戦略"@ja ;
+    :inDomain :n_d7 ;
+    :content "iPSC 浮遊/凝集体バイオリアクターにおける in-line Raman の再校正アプローチ。Nova FLEX2 を正解ラベル、capacitance を VCD anchor、凝集体画像を光散乱補正の共変量として用いる。CHO 由来モデルは転用不可。v1 では Nova 校正後のオプション、v2 以降の閉ループ入力昇格を目指す。〔推定：設計提案〕"@ja ;
+    .
+
+n_raman_pls_model a :Concept ;
+    rdfs:label "Raman PLS chemometric モデル"@ja ;
+    :inDomain :n_d4 ;
+    :content "Raman スペクトルから glucose/lactate/glutamine 等を推定する部分最小二乗回帰モデル。前処理（ベースライン補正、Savitzky-Golay 微分、SNV/MSC）、変数選択、leave-one-batch-out 交差検証、外部検証を含む。iPSC では凝集体・高密度細胞による光散乱補正が必要。〔推定：CHO 事例を参考に iPSC 再解釈〕"@ja ;
+    .
+
+n_raman_reference_nova a :Concept ;
+    rdfs:label "Nova FLEX2 Raman 正解ラベル"@ja ;
+    :inDomain :n_d7 ;
+    :content "Raman PLS モデルの校正に使用する at-line リファレンス計測。Nova BioProfile FLEX2 による glucose/lactate/glutamine/osmolality/viability/細胞径等の多パラメータ正解。ALCOA-lite でサンプル時刻・スペクトル ID・モデル version と紐付ける。〔事実：Nova FLEX2 は 16 項 at-line analyzer; 推定：Raman 校正用途〕"@ja ;
+    .
+
+n_raman_cell_scattering a :Concept ;
+    rdfs:label "Raman 細胞光散乱"@ja ;
+    :inDomain :n_d7 ;
+    :content "懸濁細胞・凝集体による Mie 散乱により Raman 強度が減衰する現象。Beer-Lambert 則では記述できず、細胞密度との非線形関係が知られる。iPSC 凝集体（150–350 µm）は 785 nm レーザーに対して大きな散乱体となり、スペクトルベースラインと強度に影響を与える。〔事実：Yang 2024 J Biotechnol 396:41-52 DOI:10.1016/j.jbiotec.2024.10.007; 推定：iPSC 凝集体への適用〕"@ja ;
+    .
+
+n_raman_aggregate_interference a :Concept ;
+    rdfs:label "Raman 凝集体干渉"@ja ;
+    :inDomain :n_d7 ;
+    :content "凝集体径・密度の増大が Raman プローブの光路長と散乱断面積を変化させ、代謝物推定精度を低下させる要因。凝集体径は培養日数とともに増大し（95 µm → 530 µm）、多能性維持のため 400 µm 以下が推奨される。〔事実：Eppendorf AN485; StemCell mTeSR 3D manual; 推定：Raman 干渉〕"@ja ;
+    .
+
+n_raman_cho_to_ipsc_transfer a :Concept ;
+    rdfs:label "CHO→iPSC Raman モデル転移制限"@ja ;
+    :inDomain :n_d4 ;
+    :content "CHO/mAb 由来の chemometric モデルを iPSC 浮遊凝集体に直接転用できない制約。培地マトリックス、代謝プロファイル、細胞サイズ/凝集体構造、品質指標が異なる。クローン間・スケール間転移すら補正を要する事例が報告されている。〔推定：Pétillot 2020 DOI:10.1002/eng2.12230; Machleidt 2024 DOI:10.1002/biot.202300289; Rowland-Jones 2021 DOI:10.1002/btpr.3074〕"@ja ;
+    .
+
+n_raman_model_lifecycle a :Concept ;
+    rdfs:label "Raman モデルライフサイクル管理"@ja ;
+    :inDomain :n_d6 ;
+    :content "Raman PLS モデルの version 管理、再校正トリガ（培地ロット変更、細胞株変更、プローブ交換、スケール変更）、性能モニタリング、監査証跡を含む技術的統制。ALCOA-lite・GAMP5 AI/ML Appendix D11 に準じた扱い。〔推定：GAMP5 2nd Ed D11; FDA data integrity guidance〕"@ja ;
+    .
+
+n_raman_confidence_score a :Concept ;
+    rdfs:label "Raman 推定信頼度スコア"@ja ;
+    :inDomain :n_d4 ;
+    :content "Raman PLS モデルの予測不確実性を定量化するスコア（Q 残差、Hotelling T²、予測分散、校正範囲外判定）。低信頼度時は Human-on-the-loop 承認へエスカレーションし、Nova FLEX2 値を優先する。〔推定：設計提案〕"@ja ;
+    .
+
+n_src_abu_absi_2011 a :Source ;
+    rdfs:label "Abu-Absi et al. 2011 in-line Raman CHO"@ja ;
+    :inDomain :n_d7 ;
+    :content "Real time monitoring of multiple parameters in mammalian cell culture bioreactors using an in-line Raman spectroscopy probe. Biotechnol Bioeng 108(5):1215-1221. CHO fed-batch で glucose/lactate/glutamine/glutamate/ammonium/VCD/TCD の同時 in-line 予測を実証。DOI:10.1002/bit.23023"@ja ;
+    .
+
+n_src_matthews_2016 a :Source ;
+    rdfs:label "Matthews et al. 2016 Raman 乳酸閉ループ制御"@ja ;
+    :inDomain :n_d7 ;
+    :content "Closed loop control of lactate concentration in mammalian cell culture by Raman spectroscopy leads to improved cell density, viability, and biopharmaceutical protein production. Biotechnol Bioeng 113(11):2416-2424. Raman PLS ベースの乳酸閉ループ制御で培養期間延長・収量向上。DOI:10.1002/bit.26018"@ja ;
+    .
+
+n_src_berry_2015 a :Source ;
+    rdfs:label "Berry et al. 2015 cross-scale Raman CHO"@ja ;
+    :inDomain :n_d7 ;
+    :content "Cross-scale predictive modeling of CHO cell culture growth and metabolites using Raman spectroscopy and multivariate analysis. Biotechnol Prog 31(2):566-577. Raman モデルのスケール横断予測。DOI:10.1002/btpr.2035"@ja ;
+    .
+
+n_src_yan_2024 a :Source ;
+    rdfs:label "Yan et al. 2024 Raman バッチ数影響"@ja ;
+    :inDomain :n_d7 ;
+    :content "Development of an in-line Raman analytical method for commercial-scale CHO cell culture process monitoring: influence of measurement channels and batch number on model performance. Biotechnol J 19(1):2300395. 商業規模 CHO での in-line Raman 法開発。チャネル数とバッチ数がモデル性能に与える影響を評価。DOI:10.1002/biot.202300395"@ja ;
+    .
+
+n_src_costa_2024 a :Source ;
+    rdfs:label "Costa et al. 2024 Raman cell therapy review"@ja ;
+    :inDomain :n_d7 ;
+    :content "Harnessing Raman spectroscopy for cell therapy bioprocessing. Biotechnol Adv 2024. Cell therapy 製造における Raman の包括レビュー。細胞密度、生存率、代謝物、細胞同一性バイオマーカーの同時計測可能性を議論。DOI:10.1016/j.biotechadv.2024.108166"@ja ;
+    .
+
+n_src_yang_2024_raman a :Source ;
+    rdfs:label "Yang et al. 2024 Raman 細胞散乱補正"@ja ;
+    :inDomain :n_d7 ;
+    :content "In-line monitoring of bioreactor by Raman spectroscopy: direct use of a standard-based model through cell-scattering correction. J Biotechnol 396:41-52 (2024). 酵母培養において細胞散乱による Raman 強度減衰を非線形式で補正し、標準液ベース PLS モデルを直接使用。DOI:10.1016/j.jbiotec.2024.10.007"@ja ;
+    .
+
+n_src_petillot_2020 a :Source ;
+    rdfs:label "Pétillot et al. 2020 Raman calibration transfer"@ja ;
+    :inDomain :n_d7 ;
+    :content "Calibration transfer for bioprocess Raman monitoring using Kennard-Stone piecewise direct standardization and multivariate algorithms. Eng Rep 2(11):e12230. バイオプロセス Raman モデルのキャリブレーション転移の困難性と補正手法。DOI:10.1002/eng2.12230"@ja ;
+    .
+
+n_src_machleidt_2024 a :Source ;
+    rdfs:label "Machleidt et al. 2024 cross-clone Raman CHO"@ja ;
+    :inDomain :n_d7 ;
+    :content "Feasibility and performance of cross-clone Raman calibration models in CHO cultivation. Biotechnol J 19(1):2300289. CHO クローン間でも Raman 校正モデルの性能が制限されることを示唆。DOI:10.1002/biot.202300289"@ja ;
+    .
+
+n_src_rowland_jones_2021 a :Source ;
+    rdfs:label "Rowland-Jones et al. 2021 Raman scale transfer"@ja ;
+    :inDomain :n_d7 ;
+    :content "Spectroscopy integration to miniature bioreactors and large scale production bioreactors—increasing current capabilities and model transfer. Biotechnol Prog 37(1):e3074. ミニバイオリアクタから大規模槽への Raman モデル転移の課題。DOI:10.1002/btpr.3074"@ja ;
+    .
+
+n_src_bioprocesstools_raman a :Source ;
+    rdfs:label "Bioprocess Tools Raman monitoring guide"@ja ;
+    :inDomain :n_d7 ;
+    :content "How to Use Raman Spectroscopy for Real-Time Bioprocess Monitoring. PLS モデル構築ワークフロー、前処理、5–15 バッチ校正、性能指標（RMSEP/R²/bias）の実務ガイド。URL:https://bioprocesstools.com/blog/raman-spectroscopy-bioprocess-monitoring/"@ja ;
+    .
+
+n_src_metrohm_an_pan_1065 a :Source ;
+    rdfs:label "Metrohm 2060 Raman cell culture AN-PAN-1065"@ja ;
+    :inDomain :n_d7 ;
+    :content "Inline monitoring of cell cultures with Raman spectroscopy. Metrohm 2060 Raman Analyzer による細胞培養 glucose/lactate in-line 計測アプリケーションノート。SEP glucose 0.20 g/L、lactate 0.12 g/L。URL:https://www.metrohm.com/en/applications/application-notes/prozess-applikationen-anpan/an-pan-1065.html"@ja ;
+    .
+
+n_src_repligen_maverick a :Source ;
+    rdfs:label "Repligen MAVERICK Raman PAT"@ja ;
+    :inDomain :n_d8 ;
+    :content "Instant Implementation of Raman-Based PAT With MAVERICK System for Monitoring Glucose and Lactate. de novo モデルによる glucose/lactate/biomass 計測。複数哺乳類培地で線形性・選択性を検証。URL:https://www.repligen.com/Products/analytics/maverick/Resources/DOC043_1.PDF"@ja ;
+    .
+
+n_src_yokogawa_2023 a :Source ;
+    rdfs:label "Yokogawa Raman calibration model without culture data"@ja ;
+    :inDomain :n_d8 ;
+    :content "Yokogawa Electric / Kwansei Gakuin University. Development of Raman calibration model without culture data for in-line cell culture monitoring. glucose RMSEP 0.23 g/L、lactate 0.29 g/L、antibody 0.20 g/L を報告。原論文確認中。URL:https://www.spectroscopyonline.com/view/using-a-new-raman-method-for-real-time-inline-cell-culture-monitoring"@ja ;
+    .
+
+n_add_cho_ipsc_cho_metabolism a :Concept ;
+    rdfs:label "CHO 代謝プロファイル"@ja ;
+    :inDomain :n_d1 ;
+    :content "ハムスター卵巢由来 CHO 細胞の代謝特性。高グルコース消費、活発な乳酸産生、グルタミン分解によるアンモニア蓄積、mAb タイトル最大化が最適化目標。iPSC にはそのまま転用不可。"@ja ;
+    .
+
+n_add_cho_ipsc_ipsc_metabolism a :Concept ;
+    rdfs:label "iPSC 代謝プロファイル"@ja ;
+    :inDomain :n_d1 ;
+    :content "ヒト多能性幹細胞 iPSC の代謝特性。highly glycolytic で高密度化に伴いグルコース消費と乳酸分泌が急増。乳酸蓄積・浸透圧ピーク・凝集体サイズが成長制限因子。多能性維持が品質目標。"@ja ;
+    .
+
+n_add_cho_ipsc_glycolytic_shift a :Concept ;
+    rdfs:label "iPSC の高解糖性シフト"@ja ;
+    :inDomain :n_d1 ;
+    :content "iPSC が未分化状態で解糖系を優位に使う代謝特性。高密度培養ではグルコース供給と乳酸洗浄のトレードオフが顕在化し、灌流制御の中核となる。"@ja ;
+    .
+
+n_add_cho_ipsc_lactate_threshold a :Concept ;
+    rdfs:label "乳酸閾値の細胞種差"@ja ;
+    :inDomain :n_d7 ;
+    :content "CHO では株により 15–50 mM の阻害閾値が報告される。iPSC では Manstein 2021 のモデル値 K_Lac=50 mM が用いられるが、実際の iPSC 株・培地で再校正が必要。CHO 値をそのまま転用しない。"@ja ;
+    .
+
+n_add_cho_ipsc_ammonia_threshold a :Concept ;
+    rdfs:label "アンモニア閾値の未確定性"@ja ;
+    :inDomain :n_d7 ;
+    :content "CHO では 5 mM で成長阻害が報告されるが、iPSC のネイティブ閾値は未確定。auto_cell A 層では監視値として扱い、実データまたは文献調査で再校正。"@ja ;
+    .
+
+n_add_cho_ipsc_osmolality_threshold a :Concept ;
+    rdfs:label "浸透圧閾値の細胞種差"@ja ;
+    :inDomain :n_d7 ;
+    :content "CHO/哺乳類培養では 380–450 mOsm/kg 超で成長低下が報告される。iPSC では Manstein 2021 が K_Osm=500 mOsm/kg を採用。培地・密度依存で再校正要。"@ja ;
+    .
+
+n_add_cho_ipsc_glucose_threshold a :Concept ;
+    rdfs:label "グルコース閾値の細胞種差"@ja ;
+    :inDomain :n_d7 ;
+    :content "CHO では 2–3 g/L（11–17 mM）維持が推奨される。iPSC では Manstein 2021 が K_Glc=1.5 mM を採用。iPSC は低グルコースで飢餓制限を受けやすい。"@ja ;
+    .
+
+n_add_cho_ipsc_aggregate_oxygen_diffusion a :Concept ;
+    rdfs:label "凝集体内酸素拡散限界"@ja ;
+    :inDomain :n_d1 ;
+    :content "iPSC 凝集体では径が大きくなると中心部への酸素/栄養拡散が制限され壊死コアが形成。100–200 µm の拡散距離、300 µm 以下の径制御が目安。"@ja ;
+    .
+
+n_add_cho_ipsc_aggregate_size_cpp a :Concept ;
+    rdfs:label "凝集体サイズを CPP として扱う"@ja ;
+    :inDomain :n_d4 ;
+    :content "iPSC 浮遊培養では凝集体径が酸素拡散、シアストレス、未分化性維持を同時に規定する独立した CPP。平均径だけでなく大径凝集体割合も考慮。"@ja ;
+    .
+
+n_add_cho_ipsc_shear_sensitivity a :Concept ;
+    rdfs:label "iPSC のシア感受性"@ja ;
+    :inDomain :n_d4 ;
+    :content "iPSC は攪拌によるシアストレスに敏感。Vertical-Wheel では 40–60 rpm が最適、DASbox では 80 rpm（150mL）が報告。反応器形状とスケールで再設定必要。"@ja ;
+    .
+
+n_add_cho_ipsc_mab_titer_objective a :Concept ;
+    rdfs:label "CHO の mAb タイトル目的関数"@ja ;
+    :inDomain :n_d4 ;
+    :content "CHO fed-batch/perfusion の最適化目標。抗体タイトル（g/L）、viable cell density × specific productivity、糖鎖パターン（CQA）。iPSC 目的関数とは本質的に異なる。"@ja ;
+    .
+
+n_add_cho_ipsc_pluripotency_objective a :Concept ;
+    rdfs:label "iPSC の多能性品質目的関数"@ja ;
+    :inDomain :n_d4 ;
+    :content "iPSC 浮遊拡大の最適化目標。細胞収量 × 生存率 × 多能性マーカー陽性率（OCT4/SOX2/NANOG/SSEA/TRA）× 凝集体適正サイズ。重みは細胞株・用途で変動。"@ja ;
+    .
+
+n_add_cho_ipsc_qc_marker_panel a :Concept ;
+    rdfs:label "iPSC 多能性 QC マーカーパネル"@ja ;
+    :inDomain :n_d1 ;
+    :content "iPSC の未分化性を評価するマーカー群。核内転写因子 OCT4/SOX2/NANOG、細胞表面マーカー SSEA-3/SSEA-4/TRA-1-60/TRA-1-81、核型/同一性。offline/run 単位で測定。"@ja ;
+    .
+
+n_add_cho_ipsc_transfer_caution a :Concept ;
+    rdfs:label "CHO→iPSC 知見転用注意"@ja ;
+    :inDomain :n_d4 ;
+    :content "CHO 由来の CPP 数値・制御戦略・目的関数を iPSC にそのまま転用しないこと。細胞種・培地・反応器形状・製品特性（mAb vs 細胞製品）の違いを再解釈。"@ja ;
+    .
+
+n_add_cho_ipsc_cpp_reinterpretation a :Concept ;
+    rdfs:label "CPP の iPSC 再解釈"@ja ;
+    :inDomain :n_d4 ;
+    :content "CHO/mAb 中心の調査レポートから得られた知見を、iPSC 浮遊/凝集体灌流の文脈に再解釈する設計活動。L1 レシピ、L2 BO、L3 HMI に反映。"@ja ;
+    .
+
+n_src_add_cho_ipsc_manstein2021 a :Source ;
+    rdfs:label "Manstein & Zweigerdt 2021 hiPSC perfusion"@ja ;
+    :inDomain :n_d1 ;
+    :content "hPSC 灌流撹拌槽高密度培養。7 日で 35×10⁶ cells/mL、乳酸/浸透圧/グルコース制御、6 項 Monod モデル。"@ja ;
+    .
+
+n_src_add_cho_ipsc_borys2021 a :Source ;
+    rdfs:label "Borys et al. 2021 Vertical-Wheel hiPSC"@ja ;
+    :inDomain :n_d4 ;
+    :content "Vertical-Wheel 撹拌槽での hiPSC 凝集体拡大。40 rpm 最適、>400 µm で壊死リスク。"@ja ;
+    .
+
+n_src_add_cho_ipsc_huang2020 a :Source ;
+    rdfs:label "Huang et al. 2020 PSC 10L stirred tank manufacturing"@ja ;
+    :inDomain :n_d1 ;
+    :content "10 L 撹拌槽での PSC 製造プロセス開発。凝集体サイズ 300 µm 制限、酸素拡散限界 100–200 µm。"@ja ;
+    .
+
+n_src_add_cho_ipsc_xing2008 a :Source ;
+    rdfs:label "Xing et al. 2008 CHO metabolite inhibition thresholds"@ja ;
+    :inDomain :n_d7 ;
+    :content "CHO 培養における乳酸・アンモニア・浸透圧・pCO₂ の阻害閾値多変量解析。iPSC への直接転用不可。"@ja ;
+    .
+
+n_src_add_cho_ipsc_toussaint2016 a :Source ;
+    rdfs:label "Toussaint et al. 2016 CHO lactate metabolism engineering"@ja ;
+    :inDomain :n_d1 ;
+    :content "CHO の乳酸代謝改変（PYC2）による抗体タイトル向上。CHO 特異的戦略。"@ja ;
+    .
+
+n_src_add_cho_ipsc_mabion2025 a :Source ;
+    rdfs:label "Mabion 2025 CHO metabolite analysis guide"@ja ;
+    :inDomain :n_d7 ;
+    :content "CHO 培養の代謝物/栄養解析に関する業界ガイダンス。乳酸・アンモニア・浸透圧の影響。"@ja ;
+    .
+
+n_src_add_cho_ipsc_gfi2025 a :Source ;
+    rdfs:label "GFI 2025 Cultivated meat techno-economics report"@ja ;
+    :inDomain :n_d7 ;
+    :content "哺乳類細胞培養における乳酸・浸透圧の阻害メカニズムと閾値範囲。CHO 培養知見を含む。"@ja ;
+    .
+
+n_src_add_cho_ipsc_seo2021 a :Source ;
+    rdfs:label "Seo et al. 2021 Vertical-Wheel iPSC aggregate DoE"@ja ;
+    :inDomain :n_d4 ;
+    :content "Vertical-Wheel での iPSC 凝集体安定性 DoE。OCT4/SOX2/NANOG の個別最適化と多能性維持。"@ja ;
+    .
+
+n_src_add_cho_ipsc_stemcellpis a :Source ;
+    rdfs:label "STEMCELL hPSC aggregate culture PIS"@ja ;
+    :inDomain :n_d1 ;
+    :content "hPSC 凝集体培養プロトコル。理想平均凝集体径 50–200 µm。"@ja ;
+    .
+
+n_src_add_cho_ipsc_amsbio a :Source ;
+    rdfs:label "Amsbio stem cell QC guide"@ja ;
+    :inDomain :n_d1 ;
+    :content "幹細胞品質管理ガイド。OCT4/SOX2/NANOG/SSEA/TRA 等の多能性マーカー。"@ja ;
+    .
+
+n_src_add_cho_ipsc_chen2014 a :Source ;
+    rdfs:label "Chen et al. 2014 hPSC culture considerations"@ja ;
+    :inDomain :n_d1 ;
+    :content "hPSC 培養の維持・拡大・治療応用における考慮事項。酸素拡散限界 100–200 µm。"@ja ;
+    .
+
+n_annex22 a :Concept ;
+    rdfs:label "PIC/S GMP Annex 22（AI）"@ja ;
+    :inDomain :n_d6 ;
+    :content "PIC/S・EU GMP の AI/ML 専用アネックス（2025-07-07 草案公開）。クリティカル用途では静的・決定論的 AI/ML モデルのみ許容し、動的学習・確率的出力・生成 AI/LLM を禁止。非クリティカル用途の生成 AI は HITL 下で使用可能。Annex 11 上に位置づけられる。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ,
+               [ dct:title "PIC/S news — Joint stakeholders consultation on Chapter 4 / Annex 11 / Annex 22"@ja ; :url <https://picscheme.org/en/news/joint-stakeholders-consultation-on-the-revision-of-chapter-4> ] ;
+    .
+
+n_critical_ai a :Concept ;
+    rdfs:label "クリティカル AI"@ja ;
+    :inDomain :n_d6 ;
+    :content "患者安全・製品品質・データインテグリティに直接影響する GMP 判断を支援・自動化する AI/ML モデル。Annex 22 では静的・決定論的モデルのみ許可され、厳格な検証・監視・説明性が求められる。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ;
+    .
+
+n_noncritical_ai a :Concept ;
+    rdfs:label "非クリティカル AI"@ja ;
+    :inDomain :n_d6 ;
+    :content "文書作成、トレーニング、スケジューリング、非 GMP 傾向分析など、患者安全・品質・データ完全性に直接影響しない AI。生成 AI/LLM も HITL 下で使用可能。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ;
+    .
+
+n_static_model a :Concept ;
+    rdfs:label "静的 AI モデル"@ja ;
+    :inDomain :n_d6 ;
+    :content "デプロイ後に新データを取り込んで性能を適応させない凍結モデル。Annex 22 クリティカル用途で要求される。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ;
+    .
+
+n_deterministic_output a :Concept ;
+    rdfs:label "決定論的出力"@ja ;
+    :inDomain :n_d6 ;
+    :content "同一入力に対し同一出力を返すモデル特性。Annex 22 クリティカル用途で必須。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ;
+    .
+
+n_dynamic_model a :Concept ;
+    rdfs:label "動的 AI モデル"@ja ;
+    :inDomain :n_d6 ;
+    :content "使用中又は新データを継続的・自動的に学習し性能を適応させるモデル。Annex 22 ではクリティカル GMP 用途で禁止。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ;
+    .
+
+n_probabilistic_model a :Concept ;
+    rdfs:label "確率的 AI モデル"@ja ;
+    :inDomain :n_d6 ;
+    :content "同一入力でも異なる出力を生じうるモデル。Annex 22 ではクリティカル GMP 用途で禁止。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ;
+    .
+
+n_generative_ai a :Concept ;
+    rdfs:label "生成 AI"@ja ;
+    :inDomain :n_d6 ;
+    :content "テキスト・画像等を生成する確率的モデル群。クリティカル GMP 用途では禁止され、非クリティカル用途で HITL 下でのみ使用可能。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ;
+    .
+
+n_hitl a :Concept ;
+    rdfs:label "Human-in-the-Loop（HITL）"@ja ;
+    :inDomain :n_d6 ;
+    :content "AI 出力を適格な人間がレビュー・承認する仕組み。Annex 22 では非クリティカル AI やテスト負荷が軽減されたクリティカル AI で要求される。auto_cell では Human-on-the-loop として実装。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ;
+    .
+
+n_xai a :Concept ;
+    rdfs:label "説明可能 AI（XAI）"@ja ;
+    :inDomain :n_d6 ;
+    :content "AI 判断の根拠を人間が理解・監査できる技術。Annex 22 では特徴量帰属（feature attribution）の記録を要求。SHAP・LIME・ヒートマップ等が例。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ;
+    .
+
+n_confidence_score a :Concept ;
+    rdfs:label "信頼度スコア"@ja ;
+    :inDomain :n_d6 ;
+    :content "AI モデルの予測・分類ごとの信頼度を数値化したもの。Annex 22 では低信頼度出力を undecided として人間レビューへルーティングすることを求める。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ;
+    .
+
+n_feature_attribution a :Concept ;
+    rdfs:label "特徴量帰属"@ja ;
+    :inDomain :n_d6 ;
+    :content "モデル出力に寄与した入力特徴量を特定・記録する技術。XAI の中核。Annex 22 8.Explainability で要求。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ;
+    .
+
+n_drift_monitoring a :Concept ;
+    rdfs:label "ドリフト監視"@ja ;
+    :inDomain :n_d6 ;
+    :content "AI モデルの性能劣化や入力データ分布の変化を継続的に監視する仕組み。Annex 22 10.Operation で要求。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ;
+    .
+
+n_test_data_independence a :Concept ;
+    rdfs:label "テストデータ独立性"@ja ;
+    :inDomain :n_d6 ;
+    :content "テスト用データが訓練・検証に使用されないよう技術的・手続き的に保証すること。Annex 22 6.Test Data Independency で要求。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ;
+    .
+
+n_staff_independence a :Concept ;
+    rdfs:label "職員独立性"@ja ;
+    :inDomain :n_d6 ;
+    :content "テストデータにアクセスした職員が同じモデルの訓練・検証に関与しないこと。不可能な場合は dual control/4-eyes で緩和。Annex 22 6.5 で要求。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ;
+    .
+
+n_data_segregation a :Concept ;
+    rdfs:label "データ分離"@ja ;
+    :inDomain :n_d6 ;
+    :content "訓練・検証・テスト・運用データを分離し、混同・漏洩を防ぐ技術的管理。Annex 22 の test data independency と運用監視の前提。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ;
+    .
+
+n_static_deterministic_proof a :Concept ;
+    rdfs:label "静的決定論的証明"@ja ;
+    :inDomain :n_d6 ;
+    :content "AI モデルが静的（凍結パラメータ）かつ決定論的（同一入力→同一出力）であることを、チェックサム・固定シード・再現性テスト・モデルカードで証明する手法。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ;
+    .
+
+n_esignature a :Concept ;
+    rdfs:label "電子署名"@ja ;
+    :inDomain :n_d6 ;
+    :content "電子的な承認・検証を行う仕組み。R&D 一次では PIN/パスフレーズ+監査ログで済ませ、GMP 移行時に 21 CFR Part 11 / Annex 11 準拠の完全電子署名へ移行。"@ja ;
+    :hasSource [ dct:title "21 CFR Part 11 — Electronic Records; Electronic Signatures"@ja ; :url <https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11> ] ;
+    .
+
+n_gamp_ai_lifecycle a :Concept ;
+    rdfs:label "GAMP5 AI ライフサイクル"@ja ;
+    :inDomain :n_d6 ;
+    :content "ISPE GAMP 5 Appendix D11 及び GAMP AI Guide が定める concept / project / operation / retirement の AI 有効化システムライフサイクル。Annex 22 実装の業界標準フレームワーク。"@ja ;
+    :hasSource [ dct:title "ISPE GAMP Guide: Artificial Intelligence (2025)"@ja ; :url <https://ispe.org/publications/guidance-documents/gamp-guide-artificial-intelligence> ] ;
+    .
+
+n_src_pics_annex22_draft a :Source ;
+    rdfs:label "PIC/S GMP Annex 22 草案"@ja ;
+    :inDomain :n_d6 ;
+    :content "EudraLex Volume 4, Draft Annex 22: Artificial Intelligence, published 2025-07-07 for PIC/S and EU consultation. 患者安全・品質・データインテグリティに影響するクリティカル AI には静的決定論的モデルのみを許容。"@ja ;
+    :hasSource [ dct:title "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)"@ja ; :url <https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf> ] ;
+    .
+
+n_src_eu_ai_act a :Source ;
+    rdfs:label "EU AI Act (Regulation 2024/1689)"@ja ;
+    :inDomain :n_d6 ;
+    :content "欧州 AI 規則。製造プロセス制御等の high-risk AI に透明性・文書化・人間監視を要求。Annex 22 と併用される。"@ja ;
+    :hasSource [ dct:title "Regulation (EU) 2024/1689 — Artificial Intelligence Act"@ja ; :url <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689> ] ;
+    .
+
+n_add_aggimg_aggregate_imaging_survey a :Concept ;
+    rdfs:label "浮遊凝集体画像解析調査"@ja ;
+    :inDomain :n_d2 ;
+    :content "iPSC 浮遊/凝集体の径・形態を at-line/in-line で計測し、label-free DL で品質代理指標を推定する技術群。v1 では at-line 明視野/位相差画像を主軸とし、DHM/FBRM/FlowCam はオプション〜後段。"@ja ;
+    :hasSource [ dct:title "Borys et al. 2021, Stem Cell Res Ther 12:55"@ja ; :url <https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/> ] ,
+               [ dct:title "Eppendorf App Note 485: hiPSC Aggregate Expansion in Stirred-tank Bioreactors"@ja ; :url <https://www.eppendorf.com/product-media/doc/en/11804882/Fermentors-Bioreactors_Application-Note_485_SciVario_Human-Induced-Pluripotent-Stem-Cell-hiPSC-Aggregate-Expansion-Stirred-tank-Bioreactors-SciVario-twin-Bioprocess-Controller.pdf> ] ;
+    .
+
+n_add_aggimg_dhm_ovizio a :System ;
+    rdfs:label "DHM / Ovizio iLINE-F PRO"@ja ;
+    :inDomain :n_d7 ;
+    :content "差分デジタルホログラフィー（D3HM）による in-line ラベルフリー細胞/凝集体モニタリング。VCD・viability・形態パラメータを連続計測。OPC UA 対応・cGMP 対応。iPSC 凝集体の個別径絶対精度には校正が必要。"@ja ;
+    :hasSource [ dct:title "Ovizio iLINE-F PRO commercial partnership (BioProcess Online)"@ja ; :url <https://www.bioprocessonline.com/doc/ovizio-imaging-systems-is-entering-into-a-commercial-partnership-with-merck-to-promote-its-iline-f-pro-solution-for-the-cell-gene-therapy-market-0001> ] ;
+    .
+
+n_add_aggimg_fbrm_cld_detail a :Concept ;
+    rdfs:label "FBRM 弦長分布（CLD）解析"@ja ;
+    :inDomain :n_d7 ;
+    :content "Focused Beam Reflectance Measurement による in-line chord length distribution。0.5–1000 µm のトレンド監視が可能。CLD は真の粒径分布ではなく、凝集体の非球形・透光性により径換算に誤差。画像法で補正が必要。"@ja ;
+    :hasSource [ dct:title "Mettler Toledo ParticleTrack with FBRM technology"@ja ; :url <https://www.mt.com/my/en/home/products/L1_AutochemProducts/particle-size-analyzers/particletrack-fbrm.html> ] ;
+    .
+
+n_add_aggimg_flowcam_atline a :System ;
+    rdfs:label "FlowCam at-line 凝集体画像"@ja ;
+    :inDomain :n_d7 ;
+    :content "フローイメージング顕微鏡による at-line 粒子/凝集体解析。2 µm–1 mm の径・面積・円形度・アスペクト比を画像ベースで出力。高濃度・重なり凝集体では計数漏れあり。日次運用が現実的。"@ja ;
+    :hasSource [ dct:title "FlowCam — What is FlowCam?"@ja ; :url <https://www.fluidimaging.com/blog/what-is-the-flowcam> ] ;
+    .
+
+n_add_aggimg_brightfield_atline a :Concept ;
+    rdfs:label "明視野/位相差 at-line 凝集体画像"@ja ;
+    :inDomain :n_d7 ;
+    :content "iPSC 浮遊凝集体で最も普及している at-line 画像計測。サンプリング＋光学顕微鏡＋ImageJ 等で径・形態を手動/半自動計測。Kropp 型バイパス顕微鏡または自動サンプリング＋顕微鏡で自動化可能。"@ja ;
+    :hasSource [ dct:title "Kropp/Lipsitz et al. 2019, Sci Rep — at-line bypass imaging of hiPSC aggregates"@ja ; :url <https://www.nature.com/articles/s41598-019-48814-w> ] ,
+               [ dct:title "Eppendorf App Note 485: hiPSC Aggregate Expansion in Stirred-tank Bioreactors"@ja ; :url <https://www.eppendorf.com/product-media/doc/en/11804882/Fermentors-Bioreactors_Application-Note_485_SciVario_Human-Induced-Pluripotent-Stem-Cell-hiPSC-Aggregate-Expansion-Stirred-tank-Bioreactors-SciVario-twin-Bioprocess-Controller.pdf> ] ;
+    .
+
+n_add_aggimg_aggregate_quality_proxy a :Concept ;
+    rdfs:label "凝集体品質代理指標"@ja ;
+    :inDomain :n_d2 ;
+    :content "凝集体画像特徴量（径分布、円形度、内部輝度勾配、輪郭粗さ等）から OCT4/SOX2/NANOG/SSEA4/TRA-1-60 等の offline 品質マーカーを推定する代理指標。v1 では未導入、v2 以降の DL 化候補。"@ja ;
+    :hasSource [ dct:title "Park et al. 2022, Deep learning predicts kidney organoid differentiation"@ja ; :url <https://www.krcp-ksn.org/upload/pdf/j-krcp-22-017.pdf> ] ,
+               [ dct:title "Piotrowski et al. 2021, Comput Biol Med 129:104172"@ja ; :url <https://doi.org/10.1016/j.compbiomed.2020.104172> ] ;
+    .
+
+n_add_aggimg_dl_morphology_pluripotency a :Concept ;
+    rdfs:label "DL 形態から多能性予測"@ja ;
+    :inDomain :n_d2 ;
+    :content "明視野/位相差画像から CNN/U-Net/DenseNet 等で未分化/自発分化を予測する技術。2D コロニー・organoid で実証多数。iPSC 浮遊凝集体への転移は有望だが、教師データ・細胞株汎化が未解決。"@ja ;
+    :hasSource [ dct:title "Chu et al. 2023, Comput Methods Programs Biomed 229:107264"@ja ; :url <https://doi.org/10.1016/j.cmpb.2022.107264> ] ,
+               [ dct:title "Waisman et al. 2019, Stem Cell Rep 12:845–859"@ja ; :url <https://doi.org/10.1016/j.stemcr.2019.02.004> ] ;
+    .
+
+n_add_aggimg_aggregate_size_pluripotency a :Concept ;
+    rdfs:label "凝集体径と多能性維持"@ja ;
+    :inDomain :n_d1 ;
+    :content "凝集体径が大きくなると拡散制限により内部の酸素/栄養濃度が低下し、未分化性マーカー（OCT4 等）が低下・壊死が増大する。Borys 2021 では >400 µm で壊死リスク。細胞株・培地による変動あり。"@ja ;
+    :hasSource [ dct:title "Borys et al. 2021, Stem Cell Res Ther 12:55"@ja ; :url <https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/> ] ,
+               [ dct:title "StemCell Technologies, Expansion of hPSCs as Aggregates in Suspension Culture Using mTeSR 3D"@ja ; :url <https://cdn.stemcell.com/media/files/manual/10000005520-Expansion_of_Human_Pluripotent_Stem_Cells_as_Aggregates_in_Suspension_Culture_Using_mTeSR_3D.pdf> ] ;
+    .
+
+n_add_aggimg_2d_to_aggregate_transfer a :Concept ;
+    rdfs:label "2D 画像解析→凝集体解析転移"@ja ;
+    :inDomain :n_d2 ;
+    :content "2D confluency は浮遊凝集体に不適用。コロニー形態分類・分化領域検出・増殖曲線予測の技術スタックは転移可能だが、教師ラベルと特徴量を凝集体の径・形態・内部構造に読み替える必要がある。"@ja ;
+    :hasSource [ dct:title "Gursky 2023, How Morphology of hPSCs Determines Clone Selection (IntechOpen)"@ja ; :url <https://www.intechopen.com/online-first/87934> ] ;
+    .
+
+n_add_aggimg_human_approval_imaging a :Concept ;
+    rdfs:label "画像品質代理指標の Human-on-the-loop"@ja ;
+    :inDomain :n_d6 ;
+    :content "DL 品質代理指標を BO 目的関数や passage トリガに使う場合、予測不確実性・OOD 検出により低信頼度の場合は研究者承認を必須とする。GAMP5 AI/ML Appendix D11 に準拠したモデル管理が前提。"@ja ;
+    :hasSource [ dct:title "auto_cell A 層要求仕様（Human-on-the-loop）"@ja ; :url <docs/design/requirements.md> ] ,
+               [ dct:title "ADR-0001: thin LLM orchestrator over deterministic tools + Bayesian optimization"@ja ; :url <docs/design/adr/0001-control-architecture.md> ] ;
+    .
+
+n_add_aggimg_src_borys_2021 a :Source ;
+    rdfs:label "Borys et al. 2021 (hiPSC Vertical-Wheel)"@ja ;
+    :inDomain :n_d4 ;
+    :content "Vertical-Wheel 撹拌槽での hiPSC 凝集体培養。40–80 rpm で day 5 径 169–275 µm、>400 µm で壊死リスク。PMC7805206。"@ja ;
+    :hasSource [ dct:title "Borys et al. 2021, Stem Cell Res Ther 12:55"@ja ; :url <https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/> ] ;
+    .
+
+n_add_aggimg_src_eppendorf_485 a :Source ;
+    rdfs:label "Eppendorf App Note 485 (hiPSC stirred-tank)"@ja ;
+    :inDomain :n_d7 ;
+    :content "1 L DASGIP Spinner Vessel での hiPSC 凝集体拡大。day 0–5 で 0.5×10⁶ → 8×10⁶ cells/mL。凝集体径は at-line 明視野画像＋ImageJ で手動測定。"@ja ;
+    :hasSource [ dct:title "Eppendorf App Note 485"@ja ; :url <https://www.eppendorf.com/product-media/doc/en/11804882/Fermentors-Bioreactors_Application-Note_485_SciVario_Human-Induced-Pluripotent-Stem-Cell-hiPSC-Aggregate-Expansion-Stirred-tank-Bioreactors-SciVario-twin-Bioprocess-Controller.pdf> ] ;
+    .
+
+n_add_aggimg_src_stemcell_mtesr3d a :Source ;
+    rdfs:label "StemCell mTeSR 3D suspension manual"@ja ;
+    :inDomain :n_d1 ;
+    :content "hPSC 浮遊凝集体培養マニュアル。>400 µm で core が栄養欠乏・分化/細胞死。3–4 日ごとの継代を推奨。"@ja ;
+    :hasSource [ dct:title "StemCell Technologies, Expansion of hPSCs as Aggregates in Suspension Culture Using mTeSR 3D"@ja ; :url <https://cdn.stemcell.com/media/files/manual/10000005520-Expansion_of_Human_Pluripotent_Stem_Cells_as_Aggregates_in_Suspension_Culture_Using_mTeSR_3D.pdf> ] ;
+    .
+
+n_add_aggimg_src_kropp_2019 a :Source ;
+    rdfs:label "Kropp/Lipsitz et al. 2019 (hiPSC bypass imaging)"@ja ;
+    :inDomain :n_d7 ;
+    :content "hiPSC 撹拌懸濁培養の at-line バイパス顕微鏡画像。凝集体径・形態の自動計測への先行例。DOI 10.1038/s41598-019-48814-w。"@ja ;
+    :hasSource [ dct:title "Kropp/Lipsitz et al. 2019, Sci Rep"@ja ; :url <https://www.nature.com/articles/s41598-019-48814-w> ] ;
+    .
+
+n_add_aggimg_src_ovizio_ilinef a :Source ;
+    rdfs:label "Ovizio iLINE-F PRO ベンダ資料"@ja ;
+    :inDomain :n_d7 ;
+    :content "D3HM ベースの in-line ラベルフリー細胞/凝集体モニタリング。VCD・viability・形態パラメータ・OPC UA 対応。"@ja ;
+    :hasSource [ dct:title "Ovizio iLINE-F PRO commercial partnership"@ja ; :url <https://www.bioprocessonline.com/doc/ovizio-imaging-systems-is-entering-into-a-commercial-partnership-with-merck-to-promote-its-iline-f-pro-solution-for-the-cell-gene-therapy-market-0001> ] ;
+    .
+
+n_add_aggimg_src_fbrm_g400 a :Source ;
+    rdfs:label "Mettler Toledo FBRM 技術資料"@ja ;
+    :inDomain :n_d7 ;
+    :content "FBRM 原理：回転レーザー後方散乱による chord length distribution。iPSC 凝集体では CLD→径換算に注意。"@ja ;
+    :hasSource [ dct:title "ParticleTrack with FBRM technology"@ja ; :url <https://www.mt.com/my/en/home/products/L1_AutochemProducts/particle-size-analyzers/particletrack-fbrm.html> ] ;
+    .
+
+n_add_aggimg_src_flowcam a :Source ;
+    rdfs:label "FlowCam 技術資料"@ja ;
+    :inDomain :n_d7 ;
+    :content "フローイメージング顕微鏡。2 µm–1 mm の粒子/凝集体画像解析。高濃度・重なり時は計数漏れ。"@ja ;
+    :hasSource [ dct:title "FlowCam — What is FlowCam?"@ja ; :url <https://www.fluidimaging.com/blog/what-is-the-flowcam> ] ;
+    .
+
+n_add_aggimg_src_chu_2023 a :Source ;
+    rdfs:label "Chu et al. 2023 (iPSC reprogramming DL)"@ja ;
+    :inDomain :n_d2 ;
+    :content "明視野時系列画像から hiPSC 形成・コロニー形態を予測。CNN+U-Net+RNN。accuracy 0.8。DOI 10.1016/j.cmpb.2022.107264。"@ja ;
+    :hasSource [ dct:title "Chu et al. 2023, Comput Methods Programs Biomed 229:107264"@ja ; :url <https://doi.org/10.1016/j.cmpb.2022.107264> ] ;
+    .
+
+n_add_aggimg_src_park_2022 a :Source ;
+    rdfs:label "Park et al. 2022 (kidney organoid DL differentiation)"@ja ;
+    :inDomain :n_d2 ;
+    :content "明視野画像から DenseNet121 で kidney organoid 分化を予測。qPCR 発現予測 PCC 0.783。"@ja ;
+    :hasSource [ dct:title "Park et al. 2022, Korean J Intern Med supplement"@ja ; :url <https://www.krcp-ksn.org/upload/pdf/j-krcp-22-017.pdf> ] ;
+    .
+
+n_add_aggimg_src_piotrowski_2021 a :Source ;
+    rdfs:label "Piotrowski et al. 2021 (hPSC DL segmentation)"@ja ;
+    :inDomain :n_d2 ;
+    :content "hPSC 2D 培養のマルチクラス DL セグメンテーションによる培養状態自動評価。DOI 10.1016/j.compbiomed.2020.104172。"@ja ;
+    :hasSource [ dct:title "Piotrowski et al. 2021, Comput Biol Med 129:104172"@ja ; :url <https://doi.org/10.1016/j.compbiomed.2020.104172> ] ;
+    .
+
+n_add_aggimg_src_waisman_2019 a :Source ;
+    rdfs:label "Waisman et al. 2019 (early differentiation DL)"@ja ;
+    :inDomain :n_d2 ;
+    :content "mESC の非常早期分化を DL で高精度予測。Stem Cell Rep 12:845–859。"@ja ;
+    :hasSource [ dct:title "Waisman et al. 2019, Stem Cell Rep 12:845–859"@ja ; :url <https://doi.org/10.1016/j.stemcr.2019.02.004> ] ;
+    .
+
+n_add_aggimg_src_maddah_2014 a :Source ;
+    rdfs:label "Maddah et al. 2014 (morphology-based iPSC evaluation)"@ja ;
+    :inDomain :n_d2 ;
+    :content "time-lapse + 形態特徴量による iPSC コロニー品質自動評価。6 特徴量で accuracy 0.80–0.89。"@ja ;
+    :hasSource [ dct:title "Maddah et al. 2014, J Lab Autom 19:454–460"@ja ; :url <https://doi.org/10.1177/2211068214529287> ] ;
+    .
+
+n_add_aggimg_src_kato_2016 a :Source ;
+    rdfs:label "Kato et al. 2016 (colony morphology & gene expression)"@ja ;
+    :inDomain :n_d2 ;
+    :content "hPSC コロニー形態のパラメトリック解析。形態カテゴリと遺伝子発現プロファイルが対応。Sci Rep 6:34009。"@ja ;
+    :hasSource [ dct:title "Kato et al. 2016, Sci Rep 6:34009"@ja ; :url <https://doi.org/10.1038/srep34009> ] ;
+    .
+
+n_add_aggimg_src_gursky_2023 a :Source ;
+    rdfs:label "Gursky 2023 (hPSC morphology review)"@ja ;
+    :inDomain :n_d2 ;
+    :content "hPSC 形態と自動評価のレビュー。培地・マトリックス・細胞株による形態変動を指摘。"@ja ;
+    :hasSource [ dct:title "Gursky 2023, How Morphology of hPSCs Determines Clone Selection (IntechOpen)"@ja ; :url <https://www.intechopen.com/online-first/87934> ] ;
+    .
+
+:n_root :contains :n_d1 .
+:n_root :contains :n_d2 .
+:n_root :contains :n_d3 .
+:n_root :contains :n_d4 .
+:n_root :contains :n_d5 .
+:n_root :contains :n_d6 .
+:n_root :contains :n_d7 .
+:n_root :contains :n_d8 .
+:n_d1 :has :n_maint .
+:n_d1 :has :n_passage .
+:n_d1 :has :n_feeder .
+:n_d1 :has :n_diff .
+:n_d1 :has :n_signal .
+:n_d1 :has :n_suspension .
+:n_d1 :has :n_reprog .
+:n_d1 :has :n_qccrit .
+:n_d2 :has :n_bf .
+:n_d2 :has :n_conf .
+:n_d2 :has :n_morphcls .
+:n_d2 :has :n_diffdet .
+:n_d2 :has :n_growth .
+:n_d2 :has :n_dlmodel .
+:n_d3 :has :n_dualarm .
+:n_d3 :has :n_closeddev .
+:n_d3 :has :n_dispense .
+:n_d3 :has :n_transport .
+:n_d3 :has :n_motioncap .
+:n_d4 :has :n_sched .
+:n_d4 :has :n_loop .
+:n_d4 :has :n_bbo .
+:n_d4 :has :n_doe .
+:n_d4 :has :n_sdl .
+:n_d4 :has :n_rl .
+:n_d5 :has :n_sila .
+:n_d5 :has :n_opcua .
+:n_d5 :has :n_mtp .
+:n_d5 :has :n_orch .
+:n_d5 :has :n_gateway .
+:n_d5 :has :n_lims .
+:n_d5 :has :n_datamodel .
+:n_d6 :has :n_gctp .
+:n_d6 :has :n_ramlaw .
+:n_d6 :has :n_alcoa .
+:n_d6 :has :n_csv .
+:n_d6 :has :n_part11 .
+:n_d6 :has :n_ebr .
+:n_d6 :has :n_audit .
+:n_d6 :has :n_capa .
+:n_d7 :has :n_envmon .
+:n_d7 :has :n_sterility .
+:n_d7 :has :n_cpv .
+:n_d7 :has :n_edge .
+:n_d8 :has :n_cira .
+:n_d8 :has :n_terumo .
+:n_d8 :has :n_pana .
+:n_d8 :has :n_kaneka .
+:n_d8 :has :n_rbi .
+:n_d8 :has :n_epistra .
+:n_d8 :has :n_moldev .
+:n_d8 :has :n_astellas .
+:n_growth :rel_triggers :n_passage .
+:n_conf :rel_feeds :n_sched .
+:n_conf :rel_feeds :n_loop .
+:n_diffdet :rel_evaluates :n_qccrit .
+:n_morphcls :rel_evaluates :n_qccrit .
+:n_dlmodel :rel_powers :n_conf .
+:n_dlmodel :rel_powers :n_morphcls .
+:n_dlmodel :rel_powers :n_diffdet .
+:n_bf :rel_input_to :n_dlmodel .
+:n_loop :rel_commands :n_dispense .
+:n_loop :rel_commands :n_transport .
+:n_sched :rel_drives :n_loop .
+:n_bbo :rel_optimizes :n_signal .
+:n_bbo :rel_optimizes :n_diff .
+:n_doe :rel_formulates :n_bbo .
+:n_sdl :rel_uses :n_bbo .
+:n_sdl :rel_extends :n_loop .
+:n_rl :rel_advances :n_sdl .
+:n_passage :rel_part_of :n_maint .
+:n_signal :rel_controls :n_diff .
+:n_feeder :rel_enables :n_maint .
+:n_suspension :rel_scales :n_reprog .
+:n_reprog :rel_precedes :n_maint .
+:n_motioncap :rel_reproduces :n_passage .
+:n_dualarm :rel_executes :n_diff .
+:n_closeddev :rel_executes :n_maint .
+:n_dispense :rel_executes :n_maint .
+:n_sila :rel_integrates :n_closeddev .
+:n_sila :rel_integrates :n_dualarm .
+:n_sila :rel_integrates :n_edge .
+:n_opcua :rel_integrates :n_closeddev .
+:n_gateway :rel_bridges_to :n_sila .
+:n_orch :rel_hosts :n_sched .
+:n_orch :rel_consumes :n_sila .
+:n_datamodel :rel_feeds :n_lims .
+:n_lims :rel_produces :n_ebr .
+:n_edge :rel_carries :n_envmon .
+:n_envmon :rel_monitors :n_maint .
+:n_envmon :rel_state_for :n_loop .
+:n_sterility :rel_guards :n_closeddev .
+:n_cpv :rel_verifies :n_qccrit .
+:n_gctp :rel_governs :n_cira .
+:n_ramlaw :rel_governs :n_closeddev .
+:n_alcoa :rel_constrains :n_ebr .
+:n_alcoa :rel_constrains :n_audit .
+:n_alcoa :rel_constrains :n_datamodel .
+:n_csv :rel_validates :n_lims .
+:n_csv :rel_validates :n_loop .
+:n_part11 :rel_requires :n_ebr .
+:n_part11 :rel_requires :n_audit .
+:n_capa :rel_responds_to :n_sterility .
+:n_gctp :rel_defines :n_qccrit .
+:n_cira :rel_uses :n_closeddev .
+:n_cira :rel_partners :n_terumo .
+:n_cira :rel_pursues :n_reprog .
+:n_cira :rel_pursues :n_maint .
+:n_terumo :rel_provides :n_closeddev .
+:n_pana :rel_builds :n_closeddev .
+:n_pana :rel_automates :n_reprog .
+:n_kaneka :rel_demonstrates :n_suspension .
+:n_rbi :rel_provides :n_dualarm .
+:n_epistra :rel_provides :n_bbo .
+:n_moldev :rel_implements :n_conf .
+:n_moldev :rel_implements :n_diffdet .
+:n_moldev :rel_implements :n_loop .
+:n_astellas :rel_uses :n_dualarm .
+:n_src_kanda :rel_defines :n_bbo .
+:n_src_kanda :rel_defines :n_sdl .
+:n_src_kanda :rel_demonstrates :n_diff .
+:n_src_riken2020 :rel_demonstrates :n_growth .
+:n_src_riken2020 :rel_demonstrates :n_loop .
+:n_src_sila :rel_specifies :n_sila .
+:n_src_sila :rel_informs :n_orch .
+:n_src_gctp :rel_specifies :n_gctp .
+:n_src_cgt :rel_explains :n_alcoa .
+:n_src_cgt :rel_explains :n_csv .
+:n_src_cxa :rel_illustrates :n_conf .
+:n_src_cxa :rel_illustrates :n_diffdet .
+:n_src_susp :rel_reports :n_suspension .
+:n_d1 :has :n_kinetics .
+:n_kinetics :rel_reproduces :n_suspension .
+:n_kinetics :rel_validates :n_loop .
+:n_src_borys :rel_demonstrates :n_suspension .
+:n_src_kropp :rel_demonstrates :n_suspension .
+:n_src_traj :rel_reports :n_suspension .
+:n_src_manstein :rel_defines :n_kinetics .
+:n_src_manstein :rel_demonstrates :n_suspension .
+:n_src_galv :rel_informs :n_kinetics .
+:n_src_lads :rel_specifies :n_opcua .
+:n_gateway :rel_bridges_to :n_opcua .
+:n_d4 :has :n_ctrl_split .
+:n_ctrl_split :rel_constrains :n_loop .
+:n_csv :rel_validates :n_ctrl_split .
+:n_d5 :has :n_devprofile .
+:n_devprofile :rel_uses :n_opcua .
+:n_gateway :rel_implements :n_devprofile .
+:n_cpv :rel_feeds :n_loop .
+:n_src_manstein :rel_demonstrates :n_cpv .
+:n_recipe_executor :rel_implements :n_loop .
+:n_recipe_dsl :rel_defines :n_recipe_executor .
+:n_rule_engine :rel_evaluates :n_recipe_executor .
+:n_state_machine_l1 :rel_governs :n_recipe_executor .
+:n_l0_local_pid :rel_controls :n_closeddev .
+:n_l0_fail_safe :rel_protects :n_l0_local_pid .
+:n_ctrl_split :rel_separates :n_l0_local_pid .
+:n_ctrl_split :rel_separates :n_recipe_executor .
+:n_ax_bayesian :rel_optimizes :n_bbo .
+:n_botorch :rel_powers :n_ax_bayesian .
+:n_multi_fidelity :rel_uses :n_kinetics .
+:n_multi_fidelity :rel_extends :n_bbo .
+:n_safe_bo :rel_constrains :n_bbo .
+:n_batch_bo :rel_extends :n_bbo .
+:n_llm_orchestrator :rel_extends :n_loop .
+:n_llm_orchestrator :rel_mediates :n_human_approval .
+:n_approval_workflow :rel_requires :n_human_approval .
+:n_approval_workflow :rel_constrains :n_loop .
+:n_idempotency :rel_ensures :n_loop .
+:n_validate_tool_call :rel_constrains :n_recipe_executor .
+:n_set_perfusion_rate :rel_part_of :n_recipe_executor .
+:n_set_agitation_rpm :rel_part_of :n_recipe_executor .
+:n_trigger_passage_l1 :rel_triggers :n_passage .
+:n_take_sample_l1 :rel_feeds :n_cpv .
+:n_recipe_executor :rel_commands :n_dispense .
+:n_recipe_executor :rel_commands :n_closeddev .
+:n_bbo :rel_optimizes :n_suspension .
+:n_kinetics :rel_validates :n_recipe_executor .
+:n_kinetics :rel_defines :n_cpp_glucose .
+:n_kinetics :rel_defines :n_cpp_lactate .
+:n_kinetics :rel_defines :n_cpp_glutamine .
+:n_kinetics :rel_defines :n_cpp_osmolality .
+:n_kinetics :rel_defines :n_cpp_aggregate_diameter .
+:n_src_manstein :rel_defines :n_cpp_perfusion_rate .
+:n_src_borys :rel_defines :n_cpp_agitation .
+:n_src_borys :rel_constrains :n_cpp_aggregate_diameter .
+:n_cpp_perfusion_rate :rel_controls :n_cpp_glucose .
+:n_cpp_perfusion_rate :rel_controls :n_cpp_lactate .
+:n_cpp_perfusion_rate :rel_controls :n_cpp_osmolality .
+:n_cpp_glucose :rel_triggers :n_perfusion_trigger .
+:n_cpp_lactate :rel_triggers :n_perfusion_trigger .
+:n_cpp_osmolality :rel_triggers :n_perfusion_trigger .
+:n_perfusion_trigger :rel_commands :n_tool_set_perfusion_rate .
+:n_ramp_limit :rel_constrains :n_tool_set_perfusion_rate .
+:n_ramp_limit :rel_constrains :n_tool_set_agitation_rpm .
+:n_cpp_aggregate_diameter :rel_triggers :n_tool_trigger_passage .
+:n_cpp_vcd :rel_triggers :n_tool_trigger_passage .
+:n_y_27632 :rel_part_of :n_passage .
+:n_tool_trigger_passage :rel_requires :n_y_27632 .
+:n_cpv :rel_measures :n_cpp_vcd .
+:n_cpv :rel_measures :n_cpp_glucose .
+:n_cpv :rel_measures :n_cpp_lactate .
+:n_cpv :rel_measures :n_cpp_glutamine .
+:n_cpv :rel_measures :n_cpp_osmolality .
+:n_cpv :rel_measures :n_cpp_ammonia .
+:n_cpv :rel_measures :n_cpp_viability .
+:n_envmon :rel_measures :n_cpp_ph .
+:n_envmon :rel_measures :n_cpp_do .
+:n_envmon :rel_measures :n_cpp_temp .
+:n_bbo :rel_optimizes :n_cpp_agitation .
+:n_bbo :rel_optimizes :n_cpp_perfusion_rate .
+:n_bbo :rel_optimizes :n_cpp_aggregate_diameter .
+:n_ctrl_split :rel_constrains :n_cpp_ph .
+:n_ctrl_split :rel_constrains :n_cpp_do .
+:n_ctrl_split :rel_constrains :n_cpp_temp .
+:n_ctrl_split :rel_constrains :n_cpp_agitation .
+:n_devprofile :contains :n_cpp_ph .
+:n_devprofile :contains :n_cpp_do .
+:n_devprofile :contains :n_cpp_temp .
+:n_devprofile :contains :n_cpp_agitation .
+:n_devprofile :contains :n_cpp_perfusion_rate .
+:n_qccrit :rel_verifies :n_cpp_viability .
+:n_qccrit :rel_verifies :n_cpp_aggregate_diameter .
+:n_src_yehya2024 :rel_supports :n_cpp_agitation .
+:n_src_xing2008 :rel_informs :n_cpp_osmolality .
+:n_src_nova_flex2 :rel_enables :n_cpv .
+:n_loop :rel_commands :n_tool_set_perfusion_rate .
+:n_loop :rel_commands :n_tool_set_agitation_rpm .
+:n_loop :rel_commands :n_tool_trigger_passage .
+:n_csv :rel_validates :n_ramp_limit .
+:n_opcua :contains :n_lads_functional_unit .
+:n_lads_functional_unit :has :n_lads_sensor_function .
+:n_lads_functional_unit :has :n_lads_controller_function .
+:n_lads_functional_unit :has :n_lads_actuator_function .
+:n_lads_functional_unit :has :n_lads_program_result .
+:n_lads_sensor_function :rel_provides :n_envmon .
+:n_lads_sensor_function :rel_provides :n_cpv .
+:n_lads_controller_function :rel_commands :n_closeddev .
+:n_lads_actuator_function :rel_commands :n_dispense .
+:n_lads_program_result :rel_records :n_ebr .
+:n_sila :contains :n_sila_feature .
+:n_sila_feature :rel_integrates :n_peripheral_sampler .
+:n_sila_feature :rel_integrates :n_peripheral_dispenser .
+:n_sila_feature :rel_integrates :n_peripheral_atline_analyzer .
+:n_peripheral_atline_analyzer :rel_verifies :n_cpv .
+:n_devprofile :rel_defines :n_lads_functional_unit .
+:n_devprofile :rel_defines :n_sila_feature .
+:n_devprofile :rel_defines :n_mqtt_topic_contract .
+:n_gateway :rel_translates :n_lads_functional_unit .
+:n_gateway :rel_translates :n_sila_feature .
+:n_gateway :rel_bridges_to :n_mqtt_topic_contract .
+:n_gateway_cmd_ack :rel_implements :n_mqtt_topic_contract .
+:n_icd_setpoint_envelope :rel_constrains :n_lads_controller_function .
+:n_icd_setpoint_envelope :rel_constrains :n_lads_actuator_function .
+:n_icd_setpoint_envelope :rel_validates :n_ctrl_split .
+:n_src_lads :rel_specifies :n_lads_functional_unit .
+:n_src_sila :rel_specifies :n_sila_feature .
+:n_src_mqtt5 :rel_specifies :n_mqtt_topic_contract .
+:n_cpv :rel_uses :n_measurement_vcd_capacitance .
+:n_cpv :rel_uses :n_measurement_raman_inline .
+:n_cpv :rel_uses :n_measurement_atline_nova .
+:n_cpv :rel_uses :n_measurement_aggregate_imaging .
+:n_cpv :rel_uses :n_measurement_fbrm_cld .
+:n_cpv :rel_uses :n_measurement_ovizio_dhm .
+:n_measurement_vcd_capacitance :rel_state_for :n_loop .
+:n_measurement_raman_inline :rel_state_for :n_loop .
+:n_measurement_atline_nova :rel_state_for :n_loop .
+:n_measurement_aggregate_imaging :rel_state_for :n_loop .
+:n_measurement_fbrm_cld :rel_state_for :n_loop .
+:n_measurement_ovizio_dhm :rel_state_for :n_loop .
+:n_measurement_vcd_capacitance :rel_feeds :n_growth .
+:n_measurement_atline_nova :rel_feeds :n_growth .
+:n_measurement_aggregate_imaging :rel_evaluates :n_qccrit .
+:n_measurement_aggregate_imaging :rel_triggers :n_passage .
+:n_dlmodel :rel_powers :n_measurement_aggregate_imaging .
+:n_bf :rel_input_to :n_measurement_aggregate_imaging .
+:n_monitoring_ammonia_atline :rel_state_for :n_loop .
+:n_monitoring_quality_offline :rel_verifies :n_qccrit .
+:n_monitoring_quality_offline :rel_optimizes :n_bbo .
+:n_monitoring_sterility_offline :rel_guards :n_closeddev .
+:n_monitoring_sterility_offline :rel_triggers :n_capa .
+:n_instr_aber_futura :rel_implements :n_measurement_vcd_capacitance .
+:n_instr_hamilton_incytes :rel_implements :n_measurement_vcd_capacitance .
+:n_instr_sartorius_viamass :rel_implements :n_measurement_vcd_capacitance .
+:n_instr_nova_flex2 :rel_implements :n_measurement_atline_nova .
+:n_instr_nova_flex2 :rel_implements :n_monitoring_ammonia_atline .
+:n_instr_ovizio_ilinef :rel_implements :n_measurement_ovizio_dhm .
+:n_instr_fbrm_g400 :rel_implements :n_measurement_fbrm_cld .
+:n_instr_flowcam :rel_implements :n_measurement_aggregate_imaging .
+:n_src_manstein :rel_demonstrates :n_measurement_vcd_capacitance .
+:n_src_borys :rel_demonstrates :n_measurement_aggregate_imaging .
+:n_src_kropp :rel_demonstrates :n_measurement_aggregate_imaging .
+:n_src_raman_graf2022 :rel_demonstrates :n_measurement_raman_inline .
+:n_src_krause2023 :rel_explains :n_measurement_vcd_capacitance .
+:n_src_aber_futura :rel_specifies :n_instr_aber_futura .
+:n_src_hamilton_incytes :rel_specifies :n_instr_hamilton_incytes .
+:n_src_sartorius_viamass :rel_specifies :n_instr_sartorius_viamass .
+:n_src_nova_flex2 :rel_specifies :n_instr_nova_flex2 .
+:n_src_ovizio_ilinef :rel_specifies :n_instr_ovizio_ilinef .
+:n_src_fbrm_g400 :rel_specifies :n_instr_fbrm_g400 .
+:n_src_flowcam :rel_specifies :n_instr_flowcam .
+:n_d6 :has :n_tech_control .
+:n_d6 :has :n_audit_schema .
+:n_d6 :has :n_approval_log .
+:n_d6 :has :n_data_lifecycle .
+:n_d6 :has :n_llm_validation .
+:n_d6 :has :n_ebr_derivation .
+:n_d5 :has :n_event_store .
+:n_tech_control :rel_enforces :n_alcoa .
+:n_tech_control :rel_enforces :n_part11 .
+:n_alcoa :rel_constrains :n_audit_schema .
+:n_alcoa :rel_constrains :n_ebr_derivation .
+:n_part11 :rel_requires :n_approval_log .
+:n_part11 :rel_requires :n_audit_schema .
+:n_audit :rel_implements :n_audit_schema .
+:n_csv :rel_validates :n_tech_control .
+:n_capa :rel_uses :n_audit_schema .
+:n_gctp :rel_governs :n_tech_control .
+:n_loop :rel_generates :n_audit_schema .
+:n_loop :rel_uses :n_approval_log .
+:n_ctrl_split :rel_constrains :n_approval_log .
+:n_data_lifecycle :rel_governs :n_datamodel .
+:n_data_lifecycle :rel_governs :n_audit .
+:n_ebr_derivation :rel_derives :n_ebr .
+:n_ebr_derivation :rel_derived_from :n_event_store .
+:n_llm_validation :rel_validates :n_loop .
+:n_event_store :rel_feeds :n_ebr_derivation .
+:n_event_store :rel_feeds :n_audit .
+:n_src_fda_data_integrity :rel_explains :n_alcoa .
+:n_src_fda_data_integrity :rel_explains :n_tech_control .
+:n_src_part11 :rel_specifies :n_part11 .
+:n_src_part11 :rel_specifies :n_audit_schema .
+:n_src_fda_csa :rel_informs :n_csv .
+:n_src_fda_csa :rel_informs :n_tech_control .
+:n_src_gamp5 :rel_informs :n_csv .
+:n_src_gamp5 :rel_informs :n_tech_control .
+:n_src_gamp5_ai :rel_informs :n_llm_validation .
+:n_src_annex11 :rel_specifies :n_part11 .
+:n_src_annex11 :rel_specifies :n_ebr_derivation .
+:n_src_pics041 :rel_explains :n_alcoa .
+:n_src_pics041 :rel_explains :n_audit_schema .
+:n_src_who_gdrp :rel_explains :n_alcoa .
+:n_src_who_gdrp :rel_explains :n_data_lifecycle .
+:n_d4 :has :n_tier2_plant_model .
+:n_tier2_plant_model :rel_implements :n_kinetics .
+:n_tier2_plant_model :rel_simulates :n_suspension .
+:n_tier2_plant_model :rel_validates :n_loop .
+:n_tier2_plant_model :rel_feeds :n_bbo .
+:n_plant_model_interface :rel_defines :n_tier2_plant_model .
+:n_plant_model_calibration :rel_calibrates :n_tier2_plant_model .
+:n_multifidelity_sim :rel_uses :n_tier2_plant_model .
+:n_plant_model_regression :rel_tests :n_tier2_plant_model .
+:n_cobrapy_gem :rel_extends :n_tier2_plant_model .
+:n_aggregate_formation_model :rel_extends :n_tier2_plant_model .
+:n_shear_stress_model :rel_extends :n_tier2_plant_model .
+:n_src_scipy :rel_implements :n_tier2_plant_model .
+:n_src_botorch :rel_informs :n_bbo .
+:n_src_ax :rel_informs :n_bbo .
+:n_src_cobrapy :rel_informs :n_cobrapy_gem .
+:n_loop :rel_requires_approval :n_approval_workflow .
+:n_sched :rel_triggers :n_approval_workflow .
+:n_bbo :rel_proposes_to :n_approval_workflow .
+:n_human_on_the_loop :rel_approves :n_approval_workflow .
+:n_approval_workflow :rel_logs_to :n_audit .
+:n_approval_workflow :rel_produces :n_ebr .
+:n_approval_workflow :rel_escalates_via :n_escalation_policy .
+:n_approval_workflow :rel_emits :n_approval_request_event .
+:n_approval_request_event :rel_stored_in :n_datamodel .
+:n_escalation_policy :rel_governs :n_approval_workflow .
+:n_hmi_dashboard :rel_displays :n_loop .
+:n_hmi_dashboard :rel_displays :n_envmon .
+:n_hmi_dashboard :rel_displays :n_cpv .
+:n_hmi_dashboard :rel_displays :n_bbo .
+:n_hmi_dashboard :rel_displays :n_approval_workflow .
+:n_qccrit :rel_informs :n_hmi_dashboard .
+:n_growth :rel_informs :n_hmi_dashboard .
+:n_alert_matrix :rel_manages :n_loop .
+:n_alert_matrix :rel_suppresses :n_notification_suppression .
+:n_notification_suppression :rel_applies_to :n_loop .
+:n_sterility :rel_triggers :n_contamination_response .
+:n_contamination_response :rel_activates :n_capa .
+:n_contamination_response :rel_requests_hold :n_ctrl_split .
+:n_ctrl_split :rel_preserves :n_degraded_mode .
+:n_degraded_mode :rel_preserves :n_loop .
+:n_degraded_mode :rel_preserves :n_sched .
+:n_audit_ui :rel_reads :n_audit .
+:n_audit_ui :rel_reads :n_ebr .
+:n_audit_ui :rel_reads :n_datamodel .
+:n_src_nist_ai_rmf :rel_informs :n_approval_workflow .
+:n_src_nist_ai_rmf :rel_informs :n_human_on_the_loop .
+:n_src_iec62366 :rel_informs :n_hmi_dashboard .
+:n_src_isa101 :rel_informs :n_hmi_dashboard .
+:n_src_isa101 :rel_informs :n_alert_matrix .
+:n_d4 :has :n_mpc .
+:n_mpc :rel_specializes :n_mpc_ipsc_perfusion .
+:n_mpc :rel_implements :n_loop .
+:n_mpc_ipsc_perfusion :rel_controls :n_set_perfusion_rate .
+:n_mpc_ipsc_perfusion :rel_controls :n_cpp_perfusion_rate .
+:n_mpc_ipsc_perfusion :rel_constrains :n_cpp_glucose .
+:n_mpc_ipsc_perfusion :rel_constrains :n_cpp_lactate .
+:n_mpc_ipsc_perfusion :rel_constrains :n_cpp_glutamine .
+:n_mpc_ipsc_perfusion :rel_constrains :n_cpp_osmolality .
+:n_mpc_ipsc_perfusion :rel_constrains :n_cpp_aggregate_diameter .
+:n_mpc :rel_uses :n_tier2_plant_model .
+:n_mpc_ipsc_perfusion :rel_uses :n_measurement_vcd_capacitance .
+:n_mpc_ipsc_perfusion :rel_uses :n_measurement_raman_inline .
+:n_mpc_ipsc_perfusion :rel_uses :n_measurement_atline_nova .
+:n_mpc_ipsc_perfusion :rel_uses :n_measurement_aggregate_imaging .
+:n_mpc_lactate_feedback :rel_uses :n_cpp_lactate .
+:n_mpc_lactate_feedback :rel_demonstrated_by :n_src_van_beylen2020 .
+:n_mpc :rel_uses :n_mpc_model_types .
+:n_mpc :rel_uses :n_mpc_constraints .
+:n_mpc :rel_uses :n_mpc_prediction_horizon .
+:n_mpc :rel_uses :n_mpc_control_horizon .
+:n_mpc :rel_uses :n_mpc_adaptive_update .
+:n_mpc :rel_requires :n_mpc_fail_safe .
+:n_mpc :rel_requires :n_mpc_human_on_the_loop .
+:n_mpc :rel_implemented_by :n_mpc_implementation_libraries .
+:n_mpc_implementation_libraries :rel_includes :n_src_casadi .
+:n_mpc_implementation_libraries :rel_includes :n_src_do_mpc .
+:n_mpc_implementation_libraries :rel_includes :n_src_acados .
+:n_dynamic_perfusion_ipsc :rel_demonstrated_by :n_src_huang2020 .
+:n_dynamic_perfusion_ipsc :rel_optimizable_by :n_mpc_ipsc_perfusion .
+:n_cpsr_control :rel_related_to :n_mpc_ipsc_perfusion .
+:n_mpc :rel_compared_to :n_mpc_vs_rule_engine .
+:n_mpc_vs_rule_engine :rel_contrasts :n_rule_engine .
+:n_mpc_roadmap_l1 :rel_plans :n_mpc .
+:n_mpc_roadmap_l1 :rel_extends :n_recipe_executor .
+:n_mpc :rel_demonstrated_by :n_src_rashedi2022 .
+:n_mpc_human_on_the_loop :rel_oversees :n_mpc .
+:n_mpc_fail_safe :rel_preserves :n_loop .
+:n_d4 :has :n_pinn .
+:n_d4 :has :n_digital_twin .
+:n_d4 :has :n_hybrid_ode_nn .
+:n_d4 :has :n_uncertainty_quantification .
+:n_d4 :has :n_multifidelity_pinn .
+:n_pinn :rel_implements :n_digital_twin .
+:n_hybrid_ode_nn :rel_implements :n_digital_twin .
+:n_universal_differential_equation :rel_implements :n_hybrid_ode_nn .
+:n_neural_ode :rel_implements :n_hybrid_ode_nn .
+:n_digital_twin :rel_extends :n_tier2_plant_model .
+:n_hybrid_ode_nn :rel_extends :n_tier2_plant_model .
+:n_pinn :rel_researches :n_loop .
+:n_pinn_mpc :rel_researches :n_loop .
+:n_uncertainty_quantification :rel_quantifies :n_pinn .
+:n_uncertainty_quantification :rel_quantifies :n_hybrid_ode_nn .
+:n_uncertainty_quantification :rel_quantifies :n_digital_twin .
+:n_deep_ensemble :rel_implements :n_uncertainty_quantification .
+:n_bayesian_pinn :rel_implements :n_uncertainty_quantification .
+:n_efi_pinn :rel_implements :n_uncertainty_quantification .
+:n_mc_dropout :rel_implements :n_uncertainty_quantification .
+:n_gp_bias_correction :rel_implements :n_uncertainty_quantification .
+:n_gp_bias_correction :rel_corrects :n_tier2_plant_model .
+:n_multifidelity_pinn :rel_uses :n_digital_twin .
+:n_multifidelity_pinn :rel_uses :n_hybrid_ode_nn .
+:n_multifidelity_pinn :rel_enhances :n_bbo .
+:n_multifidelity_pinn :rel_enhances :n_multi_fidelity .
+:n_digital_twin_calibration :rel_calibrates :n_digital_twin .
+:n_digital_twin_calibration :rel_calibrates :n_hybrid_ode_nn .
+:n_model_mismatch_correction :rel_corrects :n_multifidelity_pinn .
+:n_model_mismatch_correction :rel_corrects :n_digital_twin .
+:n_prediction_confidence_score :rel_explains :n_loop .
+:n_prediction_confidence_score :rel_drives :n_human_approval .
+:n_prediction_confidence_score :rel_drives :n_approval_workflow .
+:n_data_requirement_pinn :rel_constrains :n_bbo .
+:n_data_requirement_pinn :rel_constrains :n_sdl .
+:n_data_requirement_pinn :rel_constrains :n_digital_twin .
+:n_kinetic_cell_model :rel_part_of :n_digital_twin .
+:n_reactor_model :rel_part_of :n_digital_twin .
+:n_extracellular_reaction_model :rel_part_of :n_digital_twin .
+:n_kinetic_cell_model :rel_models :n_suspension .
+:n_reactor_model :rel_models :n_suspension .
+:n_kinetics :rel_informs :n_pinn .
+:n_kinetics :rel_informs :n_hybrid_ode_nn .
+:n_cpv :rel_feeds :n_digital_twin .
+:n_cpv :rel_feeds :n_hybrid_ode_nn .
+:n_qccrit :rel_verifies :n_digital_twin .
+:n_csv :rel_validates :n_digital_twin .
+:n_csv :rel_validates :n_hybrid_ode_nn .
+:n_audit :rel_logs :n_digital_twin .
+:n_audit :rel_logs :n_hybrid_ode_nn .
+:n_part11 :rel_constrains :n_digital_twin .
+:n_alcoa :rel_constrains :n_digital_twin .
+:n_recipe_executor :rel_succeeds :n_pinn_mpc .
+:n_rule_engine :rel_succeeds :n_pinn_mpc .
+:n_state_machine_l1 :rel_succeeds :n_pinn_mpc .
+:n_llm_orchestrator :rel_explains :n_prediction_confidence_score .
+:n_safe_bo :rel_uses :n_prediction_confidence_score .
+:n_batch_bo :rel_uses :n_multifidelity_pinn .
+:n_multi_fidelity :rel_includes :n_multifidelity_pinn .
+:n_src_thirugnanasambandam_2025 :rel_informs :n_pinn .
+:n_src_yang_2024_pinn :rel_informs :n_pinn .
+:n_src_yang_2024_pinn :rel_informs :n_hybrid_ode_nn .
+:n_src_catalao_2025 :rel_informs :n_pinn_mpc .
+:n_src_patel_2024 :rel_informs :n_pinn_mpc .
+:n_src_shih_2025 :rel_informs :n_efi_pinn .
+:n_src_shih_2025 :rel_informs :n_uncertainty_quantification .
+:n_src_nobar_2025 :rel_informs :n_multifidelity_pinn .
+:n_src_nobar_2025 :rel_informs :n_model_mismatch_correction .
+:n_src_bioprocesstools_2026 :rel_defines :n_data_requirement_pinn .
+:n_src_bioprocessintl_2026 :rel_supports :n_multifidelity_pinn .
+:n_src_yokogawa_pharma40 :rel_defines :n_digital_twin .
+:n_src_yokogawa_pharma40 :rel_defines :n_reactor_model .
+:n_src_yokogawa_pharma40 :rel_defines :n_extracellular_reaction_model .
+:n_src_yokogawa_pharma40 :rel_defines :n_kinetic_cell_model .
+:n_src_pharma_manufacturing_2022 :rel_supports :n_digital_twin .
+:n_src_manstein :rel_informs :n_hybrid_ode_nn .
+:n_src_manstein :rel_informs :n_pinn .
+:n_src_ax :rel_informs :n_multifidelity_pinn .
+:n_src_botorch :rel_informs :n_multifidelity_pinn .
+:n_raman_calibration_ipsc :rel_instance_of :n_cpv .
+:n_raman_calibration_ipsc :rel_uses :n_measurement_raman_inline .
+:n_raman_calibration_ipsc :rel_uses :n_measurement_vcd_capacitance .
+:n_raman_calibration_ipsc :rel_uses :n_measurement_atline_nova .
+:n_raman_calibration_ipsc :rel_calibrates :n_measurement_raman_inline .
+:n_raman_calibration_ipsc :rel_informs :n_loop .
+:n_raman_calibration_ipsc :rel_informs :n_bbo .
+:n_raman_pls_model :rel_implements :n_raman_calibration_ipsc .
+:n_raman_pls_model :rel_requires :n_raman_reference_nova .
+:n_raman_reference_nova :rel_instance_of :n_measurement_atline_nova .
+:n_raman_reference_nova :rel_calibrates :n_raman_pls_model .
+:n_raman_cell_scattering :rel_causes :n_raman_aggregate_interference .
+:n_raman_cell_scattering :rel_constrains :n_raman_pls_model .
+:n_raman_aggregate_interference :rel_constrains :n_raman_pls_model .
+:n_raman_cell_scattering :rel_constrains :n_measurement_raman_inline .
+:n_raman_aggregate_interference :rel_constrains :n_measurement_raman_inline .
+:n_raman_cho_to_ipsc_transfer :rel_constrains :n_raman_calibration_ipsc .
+:n_raman_cho_to_ipsc_transfer :rel_constrains :n_raman_pls_model .
+:n_raman_model_lifecycle :rel_manages :n_raman_pls_model .
+:n_raman_model_lifecycle :rel_requires :n_audit .
+:n_raman_model_lifecycle :rel_requires :n_alcoa .
+:n_raman_confidence_score :rel_evaluates :n_raman_pls_model .
+:n_raman_confidence_score :rel_triggers :n_human_approval .
+:n_raman_confidence_score :rel_triggers :n_approval_workflow .
+:n_src_abu_absi_2011 :rel_supports :n_measurement_raman_inline .
+:n_src_matthews_2016 :rel_supports :n_measurement_raman_inline .
+:n_src_berry_2015 :rel_supports :n_raman_pls_model .
+:n_src_yan_2024 :rel_supports :n_raman_pls_model .
+:n_src_costa_2024 :rel_supports :n_raman_calibration_ipsc .
+:n_src_yang_2024_raman :rel_supports :n_raman_cell_scattering .
+:n_src_petillot_2020 :rel_supports :n_raman_cho_to_ipsc_transfer .
+:n_src_machleidt_2024 :rel_supports :n_raman_cho_to_ipsc_transfer .
+:n_src_rowland_jones_2021 :rel_supports :n_raman_cho_to_ipsc_transfer .
+:n_src_bioprocesstools_raman :rel_supports :n_raman_pls_model .
+:n_src_metrohm_an_pan_1065 :rel_supports :n_measurement_raman_inline .
+:n_src_repligen_maverick :rel_supports :n_measurement_raman_inline .
+:n_src_yokogawa_2023 :rel_supports :n_measurement_raman_inline .
+:n_d1 :has :n_add_cho_ipsc_cho_metabolism .
+:n_d1 :has :n_add_cho_ipsc_ipsc_metabolism .
+:n_d4 :has :n_add_cho_ipsc_aggregate_size_cpp .
+:n_d4 :has :n_add_cho_ipsc_mab_titer_objective .
+:n_d4 :has :n_add_cho_ipsc_pluripotency_objective .
+:n_d4 :has :n_add_cho_ipsc_transfer_caution .
+:n_d7 :has :n_add_cho_ipsc_lactate_threshold .
+:n_d7 :has :n_add_cho_ipsc_ammonia_threshold .
+:n_d7 :has :n_add_cho_ipsc_osmolality_threshold .
+:n_d7 :has :n_add_cho_ipsc_glucose_threshold .
+:n_add_cho_ipsc_cho_metabolism :rel_differs_from :n_add_cho_ipsc_ipsc_metabolism .
+:n_add_cho_ipsc_ipsc_metabolism :rel_exhibits :n_add_cho_ipsc_glycolytic_shift .
+:n_add_cho_ipsc_glycolytic_shift :rel_increases :n_cpp_glucose .
+:n_add_cho_ipsc_glycolytic_shift :rel_increases :n_cpp_lactate .
+:n_add_cho_ipsc_lactate_threshold :rel_constrains :n_cpp_lactate .
+:n_add_cho_ipsc_ammonia_threshold :rel_monitors :n_cpp_ammonia .
+:n_add_cho_ipsc_osmolality_threshold :rel_constrains :n_cpp_osmolality .
+:n_add_cho_ipsc_glucose_threshold :rel_constrains :n_cpp_glucose .
+:n_add_cho_ipsc_aggregate_size_cpp :rel_influences :n_add_cho_ipsc_aggregate_oxygen_diffusion .
+:n_add_cho_ipsc_aggregate_oxygen_diffusion :rel_limits :n_cpp_viability .
+:n_add_cho_ipsc_aggregate_size_cpp :rel_triggers :n_tool_trigger_passage .
+:n_add_cho_ipsc_shear_sensitivity :rel_constrains :n_cpp_agitation .
+:n_add_cho_ipsc_mab_titer_objective :rel_contrasts_with :n_add_cho_ipsc_pluripotency_objective .
+:n_add_cho_ipsc_pluripotency_objective :rel_measured_by :n_add_cho_ipsc_qc_marker_panel .
+:n_add_cho_ipsc_qc_marker_panel :rel_implemented_by :n_monitoring_quality_offline .
+:n_add_cho_ipsc_pluripotency_objective :rel_optimizes :n_bbo .
+:n_add_cho_ipsc_transfer_caution :rel_governs :n_add_cho_ipsc_cpp_reinterpretation .
+:n_add_cho_ipsc_cpp_reinterpretation :rel_modifies :n_bbo .
+:n_add_cho_ipsc_cpp_reinterpretation :rel_modifies :n_recipe_executor .
+:n_src_add_cho_ipsc_manstein2021 :rel_defines :n_add_cho_ipsc_ipsc_metabolism .
+:n_src_add_cho_ipsc_manstein2021 :rel_defines :n_add_cho_ipsc_glucose_threshold .
+:n_src_add_cho_ipsc_manstein2021 :rel_defines :n_add_cho_ipsc_lactate_threshold .
+:n_src_add_cho_ipsc_manstein2021 :rel_defines :n_add_cho_ipsc_osmolality_threshold .
+:n_src_add_cho_ipsc_borys2021 :rel_defines :n_add_cho_ipsc_aggregate_size_cpp .
+:n_src_add_cho_ipsc_borys2021 :rel_defines :n_add_cho_ipsc_shear_sensitivity .
+:n_src_add_cho_ipsc_huang2020 :rel_informs :n_add_cho_ipsc_aggregate_oxygen_diffusion .
+:n_src_add_cho_ipsc_xing2008 :rel_informs :n_add_cho_ipsc_cho_metabolism .
+:n_src_add_cho_ipsc_toussaint2016 :rel_illustrates :n_add_cho_ipsc_cho_metabolism .
+:n_src_add_cho_ipsc_mabion2025 :rel_informs :n_add_cho_ipsc_cho_metabolism .
+:n_src_add_cho_ipsc_gfi2025 :rel_informs :n_add_cho_ipsc_cho_metabolism .
+:n_src_add_cho_ipsc_seo2021 :rel_informs :n_add_cho_ipsc_pluripotency_objective .
+:n_src_add_cho_ipsc_stemcellpis :rel_defines :n_add_cho_ipsc_aggregate_size_cpp .
+:n_src_add_cho_ipsc_amsbio :rel_defines :n_add_cho_ipsc_qc_marker_panel .
+:n_src_add_cho_ipsc_chen2014 :rel_informs :n_add_cho_ipsc_aggregate_oxygen_diffusion .
+:n_d6 :has :n_annex22 .
+:n_d6 :has :n_critical_ai .
+:n_d6 :has :n_noncritical_ai .
+:n_d6 :has :n_static_model .
+:n_d6 :has :n_deterministic_output .
+:n_d6 :has :n_dynamic_model .
+:n_d6 :has :n_probabilistic_model .
+:n_d6 :has :n_generative_ai .
+:n_d6 :has :n_hitl .
+:n_d6 :has :n_xai .
+:n_d6 :has :n_confidence_score .
+:n_d6 :has :n_feature_attribution .
+:n_d6 :has :n_drift_monitoring .
+:n_d6 :has :n_test_data_independence .
+:n_d6 :has :n_staff_independence .
+:n_d6 :has :n_data_segregation .
+:n_d6 :has :n_static_deterministic_proof .
+:n_d6 :has :n_esignature .
+:n_d6 :has :n_gamp_ai_lifecycle .
+:n_annex22 :rel_complements :n_part11 .
+:n_annex22 :rel_constrains :n_loop .
+:n_annex22 :rel_constrains :n_llm_orchestrator .
+:n_annex22 :rel_defines :n_critical_ai .
+:n_annex22 :rel_defines :n_noncritical_ai .
+:n_critical_ai :rel_requires :n_static_model .
+:n_critical_ai :rel_requires :n_deterministic_output .
+:n_static_model :rel_produces :n_deterministic_output .
+:n_critical_ai :rel_prohibits :n_dynamic_model .
+:n_critical_ai :rel_prohibits :n_probabilistic_model .
+:n_critical_ai :rel_prohibits :n_generative_ai .
+:n_noncritical_ai :rel_permits :n_generative_ai .
+:n_noncritical_ai :rel_requires :n_hitl .
+:n_generative_ai :rel_isa :n_probabilistic_model .
+:n_llm_orchestrator :rel_isa :n_generative_ai .
+:n_critical_ai :rel_requires :n_xai .
+:n_xai :rel_uses :n_feature_attribution .
+:n_critical_ai :rel_requires :n_confidence_score .
+:n_confidence_score :rel_triggers :n_hitl .
+:n_critical_ai :rel_requires :n_drift_monitoring .
+:n_critical_ai :rel_requires :n_test_data_independence .
+:n_test_data_independence :rel_requires :n_data_segregation .
+:n_test_data_independence :rel_requires :n_staff_independence .
+:n_static_deterministic_proof :rel_proves :n_static_model .
+:n_static_deterministic_proof :rel_proves :n_deterministic_output .
+:n_part11 :rel_requires :n_esignature .
+:n_esignature :rel_implements :n_approval_log .
+:n_gamp_ai_lifecycle :rel_governs :n_critical_ai .
+:n_gamp_ai_lifecycle :rel_governs :n_noncritical_ai .
+:n_human_approval :rel_implements :n_hitl .
+:n_approval_workflow :rel_implements :n_hitl .
+:n_loop :rel_uses :n_confidence_score .
+:n_drift_monitoring :rel_monitors :n_loop .
+:n_alcoa :rel_constrains :n_data_segregation .
+:n_csv :rel_validates :n_static_deterministic_proof .
+:n_tech_control :rel_enforces :n_annex22 .
+:n_src_pics_annex22_draft :rel_specifies :n_annex22 .
+:n_src_eu_ai_act :rel_informs :n_annex22 .
+:n_src_gamp5_ai :rel_informs :n_gamp_ai_lifecycle .
+:n_d2 :has :n_add_aggimg_aggregate_imaging_survey .
+:n_d7 :has :n_add_aggimg_dhm_ovizio .
+:n_d7 :has :n_add_aggimg_fbrm_cld_detail .
+:n_d7 :has :n_add_aggimg_flowcam_atline .
+:n_d7 :has :n_add_aggimg_brightfield_atline .
+:n_add_aggimg_aggregate_imaging_survey :rel_uses :n_add_aggimg_dhm_ovizio .
+:n_add_aggimg_aggregate_imaging_survey :rel_uses :n_add_aggimg_fbrm_cld_detail .
+:n_add_aggimg_aggregate_imaging_survey :rel_uses :n_add_aggimg_flowcam_atline .
+:n_add_aggimg_aggregate_imaging_survey :rel_uses :n_add_aggimg_brightfield_atline .
+:n_add_aggimg_aggregate_imaging_survey :rel_evaluates :n_qccrit .
+:n_add_aggimg_aggregate_imaging_survey :rel_triggers :n_passage .
+:n_add_aggimg_aggregate_imaging_survey :rel_informs :n_cpp_aggregate_diameter .
+:n_add_aggimg_aggregate_quality_proxy :rel_predicts :n_qccrit .
+:n_add_aggimg_dl_morphology_pluripotency :rel_implements :n_add_aggimg_aggregate_quality_proxy .
+:n_add_aggimg_aggregate_size_pluripotency :rel_informs :n_add_aggimg_aggregate_quality_proxy .
+:n_add_aggimg_aggregate_size_pluripotency :rel_constrains :n_cpp_aggregate_diameter .
+:n_add_aggimg_2d_to_aggregate_transfer :rel_transfers :n_dlmodel .
+:n_add_aggimg_2d_to_aggregate_transfer :rel_adapts :n_add_aggimg_aggregate_quality_proxy .
+:n_add_aggimg_2d_to_aggregate_transfer :rel_differs_from :n_conf .
+:n_add_aggimg_human_approval_imaging :rel_oversees :n_add_aggimg_aggregate_quality_proxy .
+:n_add_aggimg_human_approval_imaging :rel_requires_approval :n_approval_workflow .
+:n_add_aggimg_src_borys_2021 :rel_demonstrates :n_add_aggimg_aggregate_size_pluripotency .
+:n_add_aggimg_src_eppendorf_485 :rel_illustrates :n_add_aggimg_brightfield_atline .
+:n_add_aggimg_src_stemcell_mtesr3d :rel_guides :n_add_aggimg_aggregate_size_pluripotency .
+:n_add_aggimg_src_kropp_2019 :rel_demonstrates :n_add_aggimg_brightfield_atline .
+:n_add_aggimg_src_ovizio_ilinef :rel_specifies :n_add_aggimg_dhm_ovizio .
+:n_add_aggimg_src_fbrm_g400 :rel_specifies :n_add_aggimg_fbrm_cld_detail .
+:n_add_aggimg_src_flowcam :rel_specifies :n_add_aggimg_flowcam_atline .
+:n_add_aggimg_src_chu_2023 :rel_demonstrates :n_add_aggimg_dl_morphology_pluripotency .
+:n_add_aggimg_src_park_2022 :rel_demonstrates :n_add_aggimg_dl_morphology_pluripotency .
+:n_add_aggimg_src_piotrowski_2021 :rel_demonstrates :n_add_aggimg_dl_morphology_pluripotency .
+:n_add_aggimg_src_waisman_2019 :rel_demonstrates :n_add_aggimg_dl_morphology_pluripotency .
+:n_add_aggimg_src_maddah_2014 :rel_demonstrates :n_add_aggimg_dl_morphology_pluripotency .
+:n_add_aggimg_src_kato_2016 :rel_demonstrates :n_add_aggimg_dl_morphology_pluripotency .
+:n_add_aggimg_src_gursky_2023 :rel_informs :n_add_aggimg_2d_to_aggregate_transfer .

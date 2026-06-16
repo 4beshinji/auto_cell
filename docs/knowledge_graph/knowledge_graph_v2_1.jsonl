@@ -1,0 +1,1032 @@
+{"id": "root", "label": "iPS自動培養ソフトウェア", "type": "root", "domain": null, "content": "患者血液→iPS樹立→維持/拡大→分化誘導→品質評価までを、画像判断・ロボット操作・規制対応を統合して自動制御するソフトウェアスタック。本マップはその実装に必要なドメイン知識の地図。", "sources": [{"title": "iPS財団 My iPSプロジェクト（自家細胞を自動作製）", "url": "https://www.nikkan.co.jp/articles/view/00745986"}, {"title": "my iPSプロジェクト（iPS財団 公式）", "url": "https://www.cira-foundation.or.jp/j/about/project/myips/"}], "_kind": "node"}
+{"id": "d1", "label": "細胞生物学・培養プロトコル", "type": "domain", "domain": "d1", "content": "自動化の対象そのもの。iPS細胞の樹立・維持・継代・分化誘導・量産の生物学的手順群で、各操作のパラメータが下流の制御変数になる。", "sources": [{"title": "CiRA ヒトiPS細胞 培養プロトコール集", "url": "https://www.cira.kyoto-u.ac.jp/j/research/protocol.html"}], "_kind": "node"}
+{"id": "d2", "label": "画像取得・コンピュータビジョン", "type": "domain", "domain": "d2", "content": "ラベルフリー画像から細胞状態を定量し、意思決定の入力を生成する層。コンフルエンシー・形態・分化の判定が中核。", "sources": [{"title": "Deep learning for label-free monitoring of iPSC & organoids", "url": "https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"}], "_kind": "node"}
+{"id": "d3", "label": "ロボティクス・液体ハンドリング", "type": "domain", "domain": "d3", "content": "培養操作を物理的に実行する装置・ロボット層。汎用双腕と閉鎖型専用機の二系統がある。", "sources": [{"title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）", "url": "https://elifesciences.org/articles/77007"}, {"title": "Long-term iPSC maintenance by automated culture system（Konagaya 2015）", "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"}], "_kind": "node"}
+{"id": "d4", "label": "プロセス制御・自律最適化", "type": "domain", "domain": "d4", "content": "観察→判断→操作の閉ループと、プロトコル最適化（ベイズ最適化等）を担う制御知能の層。", "sources": [{"title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）", "url": "https://elifesciences.org/articles/77007"}, {"title": "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）", "url": "https://www.riken.jp/press/2020/20201204_1/index.html"}], "_kind": "node"}
+{"id": "d5", "label": "ソフトウェア基盤・相互運用", "type": "domain", "domain": "d5", "content": "デバイス統合標準・ワークフローオーケストレーション・データ基盤。異種機器を跨ぐ統合の土台。", "sources": [{"title": "SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）", "url": "https://sila-standard.com/faq/"}, {"title": "The SiLA 2 Manager（device discovery / data integrity）", "url": "https://www.sciencedirect.com/science/article/pii/S2352711022000103"}], "_kind": "node"}
+{"id": "d6", "label": "GMP・規制・データインテグリティ", "type": "domain", "domain": "d6", "content": "製造ソフトが満たすべき規制・品質・電子記録の要件群。設計の制約条件を規定する。", "sources": [{"title": "GCTP適合性調査（PMDA）", "url": "https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html"}, {"title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）", "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}], "_kind": "node"}
+{"id": "d7", "label": "センサ・環境モニタリング", "type": "domain", "domain": "d7", "content": "培養環境・無菌性の連続計測と、閉ループ制御への状態量供給。エッジ実装で分散計測。", "sources": [{"title": "Long-term iPSC maintenance by automated culture system（Konagaya 2015）", "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"}], "_kind": "node"}
+{"id": "d8", "label": "エコシステム・プレイヤー", "type": "domain", "domain": "d8", "content": "財団・企業・装置など実在の担い手と製品。技術選定とパートナリングの地図。", "sources": [{"title": "iPS財団 My iPSプロジェクト（自家細胞を自動作製）", "url": "https://www.nikkan.co.jp/articles/view/00745986"}, {"title": "Terumo BCT × CiRA Foundation 自動化提携（Quantum Flex）", "url": "https://www.terumo.com/newsrelease/detail/20240319/6146"}], "_kind": "node"}
+{"id": "maint", "label": "iPSC維持培養", "type": "concept", "domain": "d1", "content": "未分化状態を保つ日々の培地交換と環境維持。ヒトiPSは毎日の培地交換と約3日ごとの継代が必要で、熟練手技に依存する点が自動化の主対象。", "sources": [{"title": "CiRA ヒトiPS細胞 培養プロトコール集", "url": "https://www.cira.kyoto-u.ac.jp/j/research/protocol.html"}, {"title": "Long-term iPSC maintenance by automated culture system（Konagaya 2015）", "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"}], "_kind": "node"}
+{"id": "passage", "label": "継代（剥離・分散）", "type": "concept", "domain": "d1", "content": "コロニーを剥離し新プレートへ植え継ぐ工程。単一細胞分散かクランプ維持か、ROCK阻害剤(Y-27632)添加、シェアストレス管理が品質を左右する。", "sources": [{"title": "CiRA ヒトiPS細胞 培養プロトコール集", "url": "https://www.cira.kyoto-u.ac.jp/j/research/protocol.html"}, {"title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）", "url": "https://elifesciences.org/articles/77007"}], "_kind": "node"}
+{"id": "feeder", "label": "フィーダーフリー培養", "type": "concept", "domain": "d1", "content": "フィーダー細胞を用いず基質コート上で培養する方式。臨床・自動化に適し、画像解析でも背景が単純化しやすい。", "sources": [{"title": "CiRA ヒトiPS細胞 培養プロトコール集", "url": "https://www.cira.kyoto-u.ac.jp/j/research/protocol.html"}], "_kind": "node"}
+{"id": "diff", "label": "分化誘導プロトコル", "type": "concept", "domain": "d1", "content": "目的細胞へ誘導する多段階手順。iPSC→RPEは seeding / preconditioning / passage / induction / maintenance の5段階として定式化され、自動探索のテンプレになった。", "sources": [{"title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）", "url": "https://elifesciences.org/articles/77007"}], "_kind": "node"}
+{"id": "signal", "label": "シグナル制御（添加因子）", "type": "concept", "domain": "d1", "content": "分化方向を決める阻害剤の濃度・タイミング。RPE誘導では FGFR阻害剤・SB431542(TGFβ)・CKI-7(Wnt)・Y-27632 等が制御変数。これらが最適化の探索空間になる。", "sources": [{"title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）", "url": "https://elifesciences.org/articles/77007"}], "_kind": "node"}
+{"id": "suspension", "label": "浮遊・懸濁培養（量産）", "type": "concept", "domain": "d1", "content": "3次元浮遊撹拌で容積当たり密度を上げ量産する方式。突発的分化を化合物で抑制し、樹立→大量培養→直接凍結まで一貫化。自動化・スケールアップの基盤形態。", "sources": [{"title": "iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）", "url": "https://www.riken.jp/press/2024/20241120_1/index.html"}, {"title": "iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）", "url": "https://stemcells.or.jp/ips-9/"}], "_kind": "node"}
+{"id": "reprog", "label": "iPSC樹立（初期化）", "type": "concept", "domain": "d1", "content": "体細胞をRNA等で初期化しコロニーを得る最難関工程。形態が動的で良質コロニー選抜が職人技。財団・パナソニックが2026年に樹立工程の自動化実証に着手。", "sources": [{"title": "パナソニックHD iPS樹立工程の自動化 実証実験（2026/4）", "url": "https://prtimes.jp/main/html/rd/p/000006702.000003442.html"}, {"title": "ML label-free iPSC colony formation detection（Sci Rep）", "url": "https://www.nature.com/articles/s41598-017-13680-x"}], "_kind": "node"}
+{"id": "qccrit", "label": "細胞品質基準", "type": "concept", "domain": "d1", "content": "未分化マーカー発現・三胚葉分化能・核型など、製造物が満たすべき生物学的基準。自動判定の「正解ラベル」を定義し、画像代理指標と紐づける必要がある。", "sources": [{"title": "Parametric analysis of hPSC colony morphology for QC（Sci Rep）", "url": "https://www.nature.com/articles/srep34009"}, {"title": "Long-term iPSC maintenance by automated culture system（Konagaya 2015）", "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"}], "_kind": "node"}
+{"id": "bf", "label": "明視野/位相差イメージング", "type": "concept", "domain": "d2", "content": "低光毒性で非侵襲なラベルフリー観察。一方で低コントラスト・不均一背景・ハロー/エッジ効果があり、頑健なセグメンテーションが難所。", "sources": [{"title": "Deep learning for label-free monitoring of iPSC & organoids", "url": "https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"}], "_kind": "node"}
+{"id": "conf", "label": "コンフルエンシー算出", "type": "concept", "domain": "d2", "content": "セグメンテーションで占有面積/コロニー面積を定量。継代や次工程移行の判断指標（例: 70-80%）として閾値化される中核メトリクス。", "sources": [{"title": "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）", "url": "https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"}, {"title": "Deep learning for label-free monitoring of iPSC & organoids", "url": "https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"}], "_kind": "node"}
+{"id": "morphcls", "label": "コロニー形態分類", "type": "concept", "domain": "d2", "content": "良/不良フェノタイプをCNN等で識別。形態パラメータが未分化性・クローン性維持能と相関し、選抜・除外の自動判断に使う。", "sources": [{"title": "QC of hPSC colonies by CNN image analysis", "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9820636/"}, {"title": "Parametric analysis of hPSC colony morphology for QC（Sci Rep）", "url": "https://www.nature.com/articles/srep34009"}], "_kind": "node"}
+{"id": "diffdet", "label": "分化領域検出", "type": "concept", "domain": "d2", "content": "未分化コロニー内の自発分化領域を検出・定量。分化率の閾値超過ウェルを除外したり、誘導の進行度評価に用いる専用DLモデル。", "sources": [{"title": "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）", "url": "https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"}, {"title": "Deep learning for label-free monitoring of iPSC & organoids", "url": "https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"}], "_kind": "node"}
+{"id": "growth", "label": "増殖曲線予測→継代トリガ", "type": "concept", "domain": "d2", "content": "定期観察から面積値の増殖曲線を推定し、目標密度到達の至適時刻を予測。これがスケジューラと継代操作のトリガになる閉ループの起点。", "sources": [{"title": "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）", "url": "https://www.riken.jp/press/2020/20201204_1/index.html"}, {"title": "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）", "url": "https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"}], "_kind": "node"}
+{"id": "dlmodel", "label": "DLモデル（分割/分類）", "type": "concept", "domain": "d2", "content": "セグメンテーション(面積/コンフルエンシー)と分類(形態・分化)の学習モデル群。ラベルフリー前提・低コントラスト対応・施設間汎化が実装課題。", "sources": [{"title": "Deep learning for label-free monitoring of iPSC & organoids", "url": "https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"}, {"title": "QC of hPSC colonies by CNN image analysis", "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9820636/"}], "_kind": "node"}
+{"id": "dualarm", "label": "双腕ヒューマノイド", "type": "concept", "domain": "d3", "content": "汎用器具をそのまま扱える人型双腕（例: LabDroid Maholo）。プロトコル変更に柔軟で、パラメータ探索や手作業の写像に向く。", "sources": [{"title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）", "url": "https://elifesciences.org/articles/77007"}, {"title": "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）", "url": "https://www.riken.jp/press/2020/20201204_1/index.html"}], "_kind": "node"}
+{"id": "closeddev", "label": "閉鎖型専用培養装置", "type": "concept", "domain": "d3", "content": "装置内で取り出さず培養するクローズド機。無菌性・更衣簡略化・人為ミス低減に優れ、財団のmy iPS製造の中核アーキテクチャ。", "sources": [{"title": "iPS財団 My iPSプロジェクト（自家細胞を自動作製）", "url": "https://www.nikkan.co.jp/articles/view/00745986"}, {"title": "Long-term iPSC maintenance by automated culture system（Konagaya 2015）", "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"}], "_kind": "node"}
+{"id": "dispense", "label": "自動分注・ピペッティング", "type": "concept", "domain": "d3", "content": "培地・試薬の精密分注と吸引。液面追従・体積制御・無菌チップ運用が再現性を決める。リキッドハンドラ統合の基本ユニット。", "sources": [{"title": "Long-term iPSC maintenance by automated culture system（Konagaya 2015）", "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"}], "_kind": "node"}
+{"id": "transport", "label": "プレート搬送・把持", "type": "concept", "domain": "d3", "content": "インキュベータ⇄顕微鏡⇄作業台間のプレート/容器搬送とグリッパ制御。スケジュールに沿う物流が自律運転の連続性を支える。", "sources": [{"title": "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）", "url": "https://www.riken.jp/press/2020/20201204_1/index.html"}, {"title": "SiLA2: cell culture autopilot / vendor-agnostic", "url": "https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard"}], "_kind": "node"}
+{"id": "motioncap", "label": "熟練手技のモーション再現", "type": "concept", "domain": "d3", "content": "熟練者の作業を動作解析し数値化してロボットで再現する思想。「誰でもできるよう数値化して自動化」が財団の自動化方針の核。", "sources": [{"title": "免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）", "url": "https://scienceportal.jst.go.jp/newsflash/20250403_n01/"}, {"title": "がん治療に役立つ細胞の分化・培養を自動化（Panasonic）", "url": "https://news.panasonic.com/jp/stories/17100"}], "_kind": "node"}
+{"id": "sched", "label": "スケジューリング", "type": "concept", "domain": "d4", "content": "12時間ごとの観察など定期タスクと、至適継代時刻のような条件起動タスクを編成。多細胞株・多バッチの並行運転を破綻なく回す制御層。", "sources": [{"title": "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）", "url": "https://www.riken.jp/press/2020/20201204_1/index.html"}], "_kind": "node"}
+{"id": "loop", "label": "クローズドループ判断", "type": "concept", "domain": "d4", "content": "観察→判断→操作のサイクルを人手介入なしで回す。画像メトリクスを意思決定点に変換し、通知か次工程実行かを分岐する制御ロジック。", "sources": [{"title": "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）", "url": "https://www.riken.jp/press/2020/20201204_1/index.html"}, {"title": "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）", "url": "https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"}], "_kind": "node"}
+{"id": "bbo", "label": "バッチベイズ最適化", "type": "concept", "domain": "d4", "content": "数百万通りの培養条件を、ガウス過程＋バッチ取得関数で効率探索。RPE分化率を反復改善した自律実験の中核解法（GPyOptベース）。", "sources": [{"title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）", "url": "https://elifesciences.org/articles/77007"}, {"title": "LabDroid_optimizer（GitHub / GPyOpt）", "url": "https://github.com/labauto/LabDroid_optimizer"}], "_kind": "node"}
+{"id": "doe", "label": "実験計画の定式化", "type": "concept", "domain": "d4", "content": "プロトコルをパラメータ空間に写像し、最適化問題として定義する工程。各操作を変数化（濃度・日数・剥離強度等）し探索可能にする前処理。", "sources": [{"title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）", "url": "https://elifesciences.org/articles/77007"}], "_kind": "node"}
+{"id": "sdl", "label": "自律実験 / Self-driving Lab", "type": "concept", "domain": "d4", "content": "ロボットが自ら結果を評価し次実験を計画する枠組み。再現性ある細胞製造に向け、探索空間の系統的・無バイアス探索を加速する。", "sources": [{"title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）", "url": "https://elifesciences.org/articles/77007"}, {"title": "Implementing robotics and AI（eLife digest）", "url": "https://elifesciences.org/articles/80609"}], "_kind": "node"}
+{"id": "rl", "label": "強化学習（発展領域）", "type": "concept", "domain": "d4", "content": "方策学習による操作・条件最適化。製造GMP文脈では検証可能性が壁で、現状は画像判断・BOが主流、RLは研究段階。", "sources": [{"title": "Implementing robotics and AI（eLife digest）", "url": "https://elifesciences.org/articles/80609"}], "_kind": "node"}
+{"id": "sila", "label": "SiLA 2（デバイス標準）", "type": "concept", "domain": "d5", "content": "HTTP/2＋Protocol BuffersとFeature Definition Languageで意味的に同一なデバイスIFを標準化。ベンダロックイン回避と統合工数削減の中核。", "sources": [{"title": "SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）", "url": "https://sila-standard.com/faq/"}, {"title": "Tecan SiLA2 SDK（royalty-free, open-source）", "url": "https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext"}], "_kind": "node"}
+{"id": "opcua", "label": "OPC-UA / LADS", "type": "concept", "domain": "d5", "content": "産業で普及するM2M標準OPC-UAと、その研究室向けコンパニオン規格LADS。SiLA2と並ぶデバイス通信の選択肢で、製造ライン連携に強い。【P3】LADS v1.0.0(2024年1月, OPC Foundation+Spectaris+VDMA)はバイオリアクタを明示的にモデル化—Functional Unit×Function(analogセンサ/controller/program)構成で、auto_cellのchannel_config/tool_schemas/EBRに直接対応。Eppendorf DASware等プロセス制御機はOPC公開。A層バイオリアクタ制御のデバイスIF第一候補。", "sources": [{"title": "Tecan SiLA2 SDK（royalty-free, open-source）", "url": "https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext"}], "_kind": "node"}
+{"id": "mtp", "label": "MTP（モジュール型パッケージ）", "type": "concept", "domain": "d5", "content": "モジュール式・柔軟自動化を可能にする記述。SiLA2と組み合わせ、R&Dから製造へのスケールを支える構成管理の枠組み。", "sources": [{"title": "SiLA 2 FAQ（HTTP/2 + Protocol Buffers, OPC-UA比較）", "url": "https://sila-standard.com/faq/"}], "_kind": "node"}
+{"id": "orch", "label": "ワークフロー・オーケストレーション", "type": "concept", "domain": "d5", "content": "タスクとデータと物理ハードを途切れなく統合する制御フレーム（AlabOS, Helao 等）。各機器をサービス化し横断ワークフローを管理。", "sources": [{"title": "SiLA2: cell culture autopilot / vendor-agnostic", "url": "https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard"}], "_kind": "node"}
+{"id": "gateway", "label": "レガシーデバイス・ゲートウェイ", "type": "concept", "domain": "d5", "content": "独自IFしか持たない既存機器を標準IFへ橋渡しするゲートウェイ層。GPIO/USB/シリアル接続と遠隔監視で「スマート化」する。", "sources": [{"title": "The SiLA 2 Manager（device discovery / data integrity）", "url": "https://www.sciencedirect.com/science/article/pii/S2352711022000103"}], "_kind": "node"}
+{"id": "lims", "label": "LIMS / LES（情報・実行系）", "type": "concept", "domain": "d5", "content": "検体・試薬・手順・結果を記録/指図する上位システム。デバイス層からのデータを集約し、バッチ記録・トレーサビリティに接続する。", "sources": [{"title": "The SiLA 2 Manager（device discovery / data integrity）", "url": "https://www.sciencedirect.com/science/article/pii/S2352711022000103"}, {"title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）", "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}], "_kind": "node"}
+{"id": "datamodel", "label": "データモデル / インジェスト", "type": "concept", "domain": "d5", "content": "画像・センサ・操作ログの標準化された取り込み。新旧機器の異種IFを跨いだ「データ取り込みギャップ」の解消が自律運転の前提。", "sources": [{"title": "SiLA2: cell culture autopilot / vendor-agnostic", "url": "https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard"}, {"title": "The SiLA 2 Manager（device discovery / data integrity）", "url": "https://www.sciencedirect.com/science/article/pii/S2352711022000103"}], "_kind": "node"}
+{"id": "gctp", "label": "GCTP（再生医療等製品製造管理）", "type": "concept", "domain": "d6", "content": "再生医療等製品の製造・品質管理基準。製造設備に加え管理手法の適合性をPMDAが調査。製造ソフトの設計境界を規定する。", "sources": [{"title": "GCTP適合性調査（PMDA）", "url": "https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html"}], "_kind": "node"}
+{"id": "ramlaw", "label": "再生医療等安全性確保法 / 施設基準", "type": "concept", "domain": "d6", "content": "細胞培養加工施設の構造設備基準と適合性調査の根拠法。my iPS製造施設はこの枠組みでPMDA適合性調査を受け稼働を目指す。", "sources": [{"title": "再生医療等安全性確保法 関連（Science Portal）", "url": "https://scienceportal.jst.go.jp/newsflash/20250403_n01/"}, {"title": "免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）", "url": "https://scienceportal.jst.go.jp/newsflash/20250403_n01/"}], "_kind": "node"}
+{"id": "alcoa", "label": "ALCOA+ データインテグリティ", "type": "concept", "domain": "d6", "content": "帰属性・判読性・同時性・原本性・正確性＋αを全ライフサイクルで満たす原則。製造/解析で生成する全データが従うべき設計要件。", "sources": [{"title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）", "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}], "_kind": "node"}
+{"id": "csv", "label": "CSV / CSA（システムバリデーション）", "type": "concept", "domain": "d6", "content": "計算機システムが目的適合かつALCOA+準拠であることを文書化した証拠。技術的統制で担保するのは複雑で時間を要するが必須工程。", "sources": [{"title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）", "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}], "_kind": "node"}
+{"id": "part11", "label": "21 CFR Part 11 / Annex 11", "type": "concept", "domain": "d6", "content": "電子記録・電子署名の監査性と安全な取扱いを求めるFDA/EU規制。電子系の設計（権限・署名・改ざん防止）の直接要件。", "sources": [{"title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）", "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}], "_kind": "node"}
+{"id": "ebr", "label": "電子バッチ記録（EBR）", "type": "concept", "domain": "d6", "content": "製造工程で生成される改ざん不能な電子記録。前工程データの検証で次工程の整合を担保し、逸脱時の是正を可能にする。", "sources": [{"title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）", "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}], "_kind": "node"}
+{"id": "audit", "label": "監査証跡（Audit Trail）", "type": "concept", "domain": "d6", "content": "誰が・いつ・何を変更したかを追える記録。データインテグリティとPart11準拠の中核で、全操作のロギング設計が必要。", "sources": [{"title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）", "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}], "_kind": "node"}
+{"id": "capa", "label": "CAPA / リスク管理（FMEA）", "type": "concept", "domain": "d6", "content": "逸脱・品質事象の根本原因分析と是正/予防措置。FMEA等のリスク評価が製品・工程設計の判断を導く。ソフトの逸脱検知設計に直結。", "sources": [{"title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）", "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}], "_kind": "node"}
+{"id": "envmon", "label": "環境モニタリング（DO/pH/CO₂/温度）", "type": "concept", "domain": "d7", "content": "培養環境の連続計測。維持培養や量産の安定性を支え、閉ループ制御の状態量を供給する。エッジ実装（ESP32等）で分散計測が可能。", "sources": [{"title": "Long-term iPSC maintenance by automated culture system（Konagaya 2015）", "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"}], "_kind": "node"}
+{"id": "sterility", "label": "無菌性・コンタミ監視", "type": "concept", "domain": "d7", "content": "菌混入や逸脱の検知。閉鎖系では更衣簡略化と引換えに監視設計が重要で、9日連続運転でも重大エラー/汚染ゼロが品質目標水準。", "sources": [{"title": "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）", "url": "https://www.riken.jp/press/2020/20201204_1/index.html"}, {"title": "免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）", "url": "https://scienceportal.jst.go.jp/newsflash/20250403_n01/"}], "_kind": "node"}
+{"id": "cpv", "label": "インライン/アットライン分析（CPV）", "type": "concept", "domain": "d7", "content": "工程内・近接でのリアルタイム計測で工程性能を継続検証(CPV)。AI/自動化が高スループットQCと工程安定性監視を可能にする。【P5】具体スタック(2026-06-15調査): VCD=in-line capacitance(Aber FUTURA/Hamilton Incyte, Manstein iPSCで定性検証), 代謝物=in-line Raman(CHOで閉ループglucose制御実証)＋at-line Nova BioProfile FLEX2(16項＋osmolality/viability), 凝集体径=in-line DHM(Ovizio)/FBRM(CLD≠径) or at-line画像(Kropp2019/FlowCam, 日次)。品質(未分化/同一性)・無菌はoffline=BO目的関数専用。", "sources": [{"title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）", "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}, {"title": "Krause et al. 2023, Curr Opin Biotechnol — biocapacitance online biomass", "url": "https://www.sciencedirect.com/science/article/pii/S0958166923000897"}, {"title": "Graf/Wei et al. 2022, Front Bioeng — in-line Raman closed-loop glucose (PID)", "url": "https://www.frontiersin.org/journals/bioengineering-and-biotechnology/articles/10.3389/fbioe.2022.719614/full"}, {"title": "Nova Biomedical BioProfile FLEX2 (16-parameter at-line analyzer)", "url": "https://www.novabiomedical.com/cell-culture-analyzers/bioprofile-flex2-basic/"}, {"title": "Kropp et al. 2019, Sci Rep — at-line bypass imaging of hiPSC aggregates", "url": "https://www.nature.com/articles/s41598-019-48814-w"}], "_kind": "node"}
+{"id": "edge", "label": "エッジセンサ統合", "type": "concept", "domain": "d7", "content": "マイコン/IoTによる多点センサ取得とデバイス層への配信。標準IF（SiLA2/OPC-UA）やゲートウェイ経由で上位へ集約する接点。", "sources": [{"title": "The SiLA 2 Manager（device discovery / data integrity）", "url": "https://www.sciencedirect.com/science/article/pii/S2352711022000103"}], "_kind": "node"}
+{"id": "cira", "label": "CiRA財団 / my iPS", "type": "player", "domain": "d8", "content": "自家iPSの閉鎖系フル自動製造を推進。約3週間・原材料費約100万円/人を掲げ、PMDA適合性調査・非臨床を経て2028年度の治験開始を目標。", "sources": [{"title": "iPS財団 My iPSプロジェクト（自家細胞を自動作製）", "url": "https://www.nikkan.co.jp/articles/view/00745986"}, {"title": "免疫拒絶のない「my iPS細胞」を全自動で作製へ（Science Portal）", "url": "https://scienceportal.jst.go.jp/newsflash/20250403_n01/"}, {"title": "my iPSプロジェクト（iPS財団 公式）", "url": "https://www.cira-foundation.or.jp/j/about/project/myips/"}], "_kind": "node"}
+{"id": "terumo", "label": "Terumo BCT / Quantum Flex", "type": "system", "domain": "d8", "content": "2024年に財団と提携。Quantum Flex Cell Expansion System上で閉鎖・自動・統合プロセスを構築し、デジタル技術で効率と制御を高める。【P3】Quantum FlexはCPAソフト(プロトコルビルダ/最大100台フリート/cGMP)の閉鎖ターンキーで、公開デバイスAPIは確認できず＝自前ブレインの閉ループ制御対象ではなく商用/臨床エンドポイント(連携するなら監視のみ)。", "sources": [{"title": "Terumo BCT × CiRA Foundation 自動化提携（Quantum Flex）", "url": "https://www.terumo.com/newsrelease/detail/20240319/6146"}], "_kind": "node"}
+{"id": "pana", "label": "パナソニックHD", "type": "player", "domain": "d8", "content": "岩田研由来の閉鎖型自動培養の系譜。2026年4月、中之島クロスでiPS樹立工程の自動化実証を開始し、最難関の樹立に踏み込む。", "sources": [{"title": "パナソニックHD iPS樹立工程の自動化 実証実験（2026/4）", "url": "https://prtimes.jp/main/html/rd/p/000006702.000003442.html"}, {"title": "がん治療に役立つ細胞の分化・培養を自動化（Panasonic）", "url": "https://news.panasonic.com/jp/stories/17100"}], "_kind": "node"}
+{"id": "kaneka", "label": "カネカ × 理研（林洋平ら）", "type": "player", "domain": "d8", "content": "財団研究開発センターと共同で、樹立から大量培養までを一貫させた浮遊培養をeLifeに報告。量産・自動化の基盤形態を提供。", "sources": [{"title": "iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）", "url": "https://www.riken.jp/press/2024/20241120_1/index.html"}, {"title": "iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）", "url": "https://stemcells.or.jp/ips-9/"}], "_kind": "node"}
+{"id": "rbi", "label": "Robotic Biology Institute / Maholo", "type": "system", "domain": "d8", "content": "双腕ヒューマノイドLabDroid Maholoの提供元。汎用器具操作と高再現性で、自律探索プラットフォームの物理基盤を担う。", "sources": [{"title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）", "url": "https://elifesciences.org/articles/77007"}], "_kind": "node"}
+{"id": "epistra", "label": "Epistra（自律最適化）", "type": "player", "domain": "d8", "content": "Maholo×AIの自律実験を支えた企業の一つ。実験計画・ベイズ最適化など最適化エンジン側で関与。", "sources": [{"title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）", "url": "https://elifesciences.org/articles/77007"}], "_kind": "node"}
+{"id": "moldev", "label": "Molecular Devices / CellXpress.ai", "type": "system", "domain": "d8", "content": "イメージングベースのAI判断で給餌・継代を自動化する商用システム。DLで形態/分化を識別し、24/365運転で複数株を拡大。", "sources": [{"title": "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）", "url": "https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"}, {"title": "Deep learning for label-free monitoring of iPSC & organoids", "url": "https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"}], "_kind": "node"}
+{"id": "astellas", "label": "アステラス製薬（双腕ロボ）", "type": "player", "domain": "d8", "content": "双腕ロボットでiPS培養を自動化し、治験用供給を企図。製薬側からの製造自動化プレイヤー。", "sources": [{"title": "iPS細胞をロボが培養（アステラス, 日経）", "url": "https://www.nikkei.com/article/DGKKZO75692350Z21C23A0TB0000/"}], "_kind": "node"}
+{"id": "src_kanda", "label": "Kanda et al. 2022 (eLife)", "type": "source", "domain": "d4", "content": "自律ロボット×バッチベイズ最適化でiPSC-RPE分化を最適化した記念碑的論文。プロトコルの5段階定式化とパラメータ探索、コード公開を含む。", "sources": [{"title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）", "url": "https://elifesciences.org/articles/77007"}, {"title": "LabDroid_optimizer（GitHub / GPyOpt）", "url": "https://github.com/labauto/LabDroid_optimizer"}], "title": "Kanda et al. 2022, Robotic search for optimal cell culture (eLife)", "url": "https://elifesciences.org/articles/77007", "_kind": "node"}
+{"id": "src_riken2020", "label": "理研 自律培養 2020", "type": "source", "domain": "d2", "content": "人型ロボット×AIで12h観察→増殖予測→至適継代を9日間自律実行。閉ループ自律培養の国内先行実証。", "sources": [{"title": "ヒューマノイドロボットとAIによる自律細胞培養（理研 2020）", "url": "https://www.riken.jp/press/2020/20201204_1/index.html"}], "_kind": "node"}
+{"id": "src_sila", "label": "SiLA 2 標準群", "type": "source", "domain": "d5", "content": "デバイス相互運用の標準。Tecan SDK・SiLA2 Manager・cell culture autopilot事例まで、実装に直接使える資源群。", "sources": [{"title": "Tecan SiLA2 SDK（royalty-free, open-source）", "url": "https://slas-technology.org/article/S2472-6303(23)00044-4/fulltext"}, {"title": "The SiLA 2 Manager（device discovery / data integrity）", "url": "https://www.sciencedirect.com/science/article/pii/S2352711022000103"}, {"title": "SiLA2: cell culture autopilot / vendor-agnostic", "url": "https://www.researchgate.net/publication/360985834_SiLA_2_The_Next_Generation_Lab_Automation_Standard"}, {"title": "SiLA 2 FAQ（HTTP/2 + Protocol Buffers）", "url": "https://sila-standard.com/faq/"}], "url": "https://sila-standard.com/faq/", "title": "SiLA 2 FAQ（HTTP/2 + Protocol Buffers）", "_kind": "node"}
+{"id": "src_gctp", "label": "PMDA GCTP / 適合性調査", "type": "source", "domain": "d6", "content": "再生医療等製品の製造・品質管理の適合性を定める一次情報。製造ソフトの規制要件の出発点。", "sources": [{"title": "GCTP適合性調査（PMDA）", "url": "https://www.pmda.go.jp/review-services/gmp-qms-gctp/gctp/0002.html"}], "_kind": "node"}
+{"id": "src_cgt", "label": "CGT QC/QA（ALCOA・Part11）", "type": "source", "domain": "d6", "content": "データインテグリティ・CSV・CAPA・CPVを横断する実務解説。電子系設計の要件マップとして有用。", "sources": [{"title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）", "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}], "_kind": "node"}
+{"id": "src_cxa", "label": "CellXpress.ai 適用ノート", "type": "source", "domain": "d2", "content": "コンフルエンシー/分化のDL2モデルと閾値起動の自動継代を具体記述。画像→意思決定の設計参照。", "sources": [{"title": "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）", "url": "https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system"}, {"title": "Deep learning for label-free monitoring of iPSC & organoids", "url": "https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures"}], "_kind": "node"}
+{"id": "src_susp", "label": "浮遊培養 一貫化（eLife）", "type": "source", "domain": "d1", "content": "樹立→大量培養→直接凍結まで浮遊系で一貫。量産・自動化の生物学的基盤。財団・理研・カネカ共同。", "sources": [{"title": "iPS細胞を浮遊培養で樹立・大量培養（理研, eLife）", "url": "https://www.riken.jp/press/2024/20241120_1/index.html"}, {"title": "iPS樹立から大量培養まで一貫（CiRA財団共著, eLife）", "url": "https://stemcells.or.jp/ips-9/"}], "_kind": "node"}
+{"id": "kinetics", "label": "浮遊培養速度論モデル（Tier2 plant 原典）", "type": "concept", "domain": "d1", "content": "iPSC浮遊培養の比増殖速度をMonod型で表すin silicoモデル。auto_cell Tier2 plant_modelの原典はManstein & Zweigerdt 2021（SCTM/STAR Protocols, src_manstein）で、グルコース・乳酸・グルタミン・浸透圧・凝集体径の阻害項を持ち、灌流で7日35×10⁶ cells/mLを達成した過程制御モデル。Table1定数(µ=1.35/d, KGlc=1.5mM, KLac=50mM, KGln=0.01mM, KOsm=500mOsm/kg, KAgg=350/2=175µm径)はplant_modelと完全一致。Galvanauskas 2019(src_galv)は3項のみの近縁別モデル。", "sources": [{"title": "Kinetic modeling of hiPSC expansion in suspension culture（Galvanauskas et al., Regen Therapy 2019;12:88-93）", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6933447/"}], "_kind": "node"}
+{"id": "src_galv", "label": "Galvanauskas et al. 2019 (近縁の3項モデル)", "type": "source", "domain": "d1", "content": "iPSC浮遊培養速度論の近縁モデル(Galvanauskas/Kino-Oka 2019, Regen Therapy 12:88-93)。グルコースMonod＋乳酸阻害＋凝集体体積阻害の3項のみで、グルタミン制限/浸透圧項は持たない(明示的に省略)。定数もplant_modelと異なる(µmax≈2.35/d, KG≈7mM, KAgg=5.6e6µm³体積)。deep-researchが一旦原典と誤推定したが、真の原典はManstein 2021(src_manstein)。", "sources": [{"title": "Kinetic modeling of hiPSC expansion in suspension culture（PMC6933447）", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6933447/"}, {"title": "PubMed 31890771", "url": "https://pubmed.ncbi.nlm.nih.gov/31890771/"}], "_kind": "node"}
+{"id": "src_borys", "label": "Borys et al. 2021 (Stem Cell Res Ther)", "type": "source", "domain": "d4", "content": "iPSC Vertical-Wheel(PBS Biotech)撹拌最適化。40rpmが最大増殖(day6で32.3±3.2倍)、day5凝集体径169-275µm、>400µmで壊死予想。撹拌CPPの文献アンカー(最適40-60rpm、auto_cellの50-120rpm上限は高め)。", "sources": [{"title": "Borys et al. 2021, Stem Cell Res Ther 12:55（PMC7805206）", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/"}], "_kind": "node"}
+{"id": "src_kropp", "label": "Kropp/Lipsitz et al. 2015 (BMC Proceedings)", "type": "source", "domain": "d4", "content": "hPSC撹拌懸濁のBox-Behnken DoE。pH7.3/37℃、毎日給餌で高密度、播種2×10⁵が最適、DOは本研究で非有意。注: HES2(ESC)・Micro-24振盪式(400rpm=振盪周波数)でiPSC/インペラ槽への転用に注意。", "sources": [{"title": "Kropp et al. 2015, BMC Proceedings（PMC4685349）", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4685349/"}], "_kind": "node"}
+{"id": "src_traj", "label": "Nogueira 2019 / Olmer 2012（到達密度 実測）", "type": "source", "domain": "d1", "content": "バッチ vs 灌流の到達密度差。標準バッチはNogueira(Vertical-Wheel)=peak 2.3×10⁶、Olmer(撹拌槽)=2.4×10⁶ cells/mL止まり。plant_modelの検証目標35×10⁶はManstein 2021の灌流プロセス(src_manstein)で達成される値で、バッチでは到達しない。", "sources": [{"title": "Nogueira et al. 2019, J Biol Eng（PMC6744632）", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6744632/"}, {"title": "Olmer et al. 2012, Tissue Eng Part C（PMC3460618）", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3460618/"}], "_kind": "node"}
+{"id": "src_manstein", "label": "Manstein & Zweigerdt 2021（plant_model 原典）", "type": "source", "domain": "d4", "content": "auto_cell Tier2 plant_modelの真の原典。hPSC灌流撹拌槽培養をpH7.1/DO40%/浸透圧ピーク抑制/灌流で制御し、7日で70倍・35×10⁶ cells/mL(150mLで52.5億細胞)を達成。Monod型in silicoモデル(Table1: µ=1.35/d, KGlc=1.5mM, KLac=50mM, KGln=0.01mM, KOsm=500mOsm/kg, KAgg=350/2=175µm)はplant_modelの6定数と完全一致。撹拌80rpm(150mLスケール)。", "sources": [{"title": "Manstein et al. 2021, Stem Cells Transl Med 10(7):1063-1080（DOI 10.1002/sctm.20-0453, PMID 33660952）", "url": "https://pubmed.ncbi.nlm.nih.gov/33660952/"}, {"title": "Manstein et al. 2021, STAR Protocols 2(4):100988 — in silico model Table 1（PMC8666714）", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/"}], "title": "Manstein et al. 2021, Stem Cells Transl Med 10(7):1063-1080", "url": "https://pubmed.ncbi.nlm.nih.gov/33660952/", "_kind": "node"}
+{"id": "src_lads", "label": "OPC UA LADS v1.0.0 (OPC Foundation)", "type": "source", "domain": "d5", "content": "Laboratory and Analytical Device Standard。OPC-UAコンパニオン規格(2024-01, OPC Foundation+Spectaris+VDMA, OPC 30500-1)。Functional Unit/Function(sensor analog/discrete/multi-state, controller, actuator)＋Program/Result管理＋Asset/保守。バイオリアクタを明示例として槽=Functional Unit(温度センサ+モータ+program)でモデル化。auto_cellのDomainVertical面に直対応。", "sources": [{"title": "OPC UA for LADS Part 1 Basics (OPC 30500-1) — reference.opcfoundation.org", "url": "https://reference.opcfoundation.org/LADS/v100/docs/"}, {"title": "OPC UA LADS (SLAS standards)", "url": "https://www.slas.org/resources/standards/opc-ua-lads/"}, {"title": "OPC UA for Laboratory & Analytical Device Standard (LADS) Part 1: Basics (OPC 30500-1)", "url": "https://reference.opcfoundation.org/specs/OPC-30500-1/4.1"}], "url": "https://reference.opcfoundation.org/specs/OPC-30500-1/4.1", "title": "OPC UA for Laboratory & Analytical Device Standard (LADS) Part 1: Basics (OPC 30500-1)", "_kind": "node"}
+{"id": "ctrl_split", "label": "制御権限の二層分界", "type": "concept", "domain": "d4", "content": "協業前提でデバイスを設計指定するとき、安全クリティカルな高速ループはデバイス局所コントローラ(検証済PID: 温度37℃/pH7.1/DO40%/撹拌rpm, 秒オーダ・決定的)に置き、ReActブレインは監督制御(設定点変更・灌流/給餌率・サンプリング/継代トリガ・アラーム応答, 30秒+オーダ)に限定する。LLMは高速ループを閉じない(安全/CSV)。緊急停止・無菌バリア・ハード保安連動は安全系のみが強制し、ブレインは読み取りのみ。", "sources": [{"title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）", "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}], "_kind": "node"}
+{"id": "devprofile", "label": "デバイスプロファイル / ICD（協業の成果物）", "type": "concept", "domain": "d5", "content": "協業でデバイス側に実装を指定する単一の情報モデル(Interface Control Document)。LADS/OPC-UAのFunctional Unit/Function/Programで表現し、これがdevice実装とauto_cellのDomainVertical(channel↔sensor Function, tool↔controller Function/method, EBR↔Program/Result, event↔alarm)を束ねる。setpoint範囲・単位・検証済包絡線を含み、second-source(別ベンダ実装)を可能にする。bespoke REST/gRPCを一次契約にしない。", "sources": [{"title": "OPC UA for LADS Part 1 Basics (OPC 30500-1) — reference.opcfoundation.org", "url": "https://reference.opcfoundation.org/LADS/v100/docs/"}], "_kind": "node"}
+{"id": "recipe_executor", "label": "L1 決定的レシピ実行器", "type": "concept", "domain": "d4", "content": "ADR-0001 で採用された L1 層。レシピ DSL とルールエンジンに基づき、灌流/給餌/撹拌/サンプリング/継代要否を状態とレシピから決定的に実行する。LLM は per-cycle には入らない。", "_kind": "node"}
+{"id": "recipe_dsl", "label": "レシピ DSL", "type": "concept", "domain": "d4", "content": "培養フェーズ・条件起動ロジック・setpoint 包絡線を宣言的に記述する軽量ドメイン特化言語（YAML/JSON 想定）。Manstein 型灌流 0→7 vvd の条件起動を記述可能。", "_kind": "node"}
+{"id": "rule_engine", "label": "ルールエンジン", "type": "concept", "domain": "d4", "content": "イベント（glucose_low/lactate_high/osmolality_high/vcd_target_reached/contamination_suspected 等）からアクションへの決定的マッピングを実行するエンジン。", "_kind": "node"}
+{"id": "state_machine_l1", "label": "L1 状態機械", "type": "concept", "domain": "d4", "content": "L1 レシピ実行器内のフェーズ遷移（seed → perfusion_ramp → passage_ready → hold 等）を明確に管理する状態機械。", "_kind": "node"}
+{"id": "l0_local_pid", "label": "L0 局所 PID", "type": "concept", "domain": "d4", "content": "バイオリアクター本体の局所コントローラ。温度/pH/DO/撹拌の高速安全ループを秒オーダで決定的に制御する。", "_kind": "node"}
+{"id": "l0_fail_safe", "label": "L0 フェイルセーフ", "type": "concept", "domain": "d4", "content": "ブレイン/通信断時に局所 PID が最終検証済 setpoint を保持し続ける設計。ブレイン停止時も培養を継続させる。", "_kind": "node"}
+{"id": "ax_bayesian", "label": "Ax Bayesian optimization", "type": "system", "domain": "d4", "content": "Meta が開発する高レベルベイズ最適化プラットフォーム。制約付き BO、バッチ BO、多忠実度をサポートし、auto_cell L2 の実装候補。", "_kind": "node"}
+{"id": "botorch", "label": "BoTorch", "type": "system", "domain": "d4", "content": "PyTorch ベースの低レベルベイズ最適化ライブラリ。qEI/qNEHVI、MultiFidelityGP、KnowledgeGradient 等を提供。", "_kind": "node"}
+{"id": "multi_fidelity", "label": "多忠実度 BO", "type": "concept", "domain": "d4", "content": "Tier2 plant_model（低忠実度・低コスト）と実バイオリアクタ run（高忠実度・高コスト）を統合したベイズ最適化。", "_kind": "node"}
+{"id": "safe_bo", "label": "Safe BO", "type": "concept", "domain": "d4", "content": "CPP 包絡線（pH/DO/乳酸/浸透圧/凝集体径等）を侵害しないよう制約を課したベイズ最適化。", "_kind": "node"}
+{"id": "batch_bo", "label": "バッチ BO", "type": "concept", "domain": "d4", "content": "複数バイオリアクタを並行運転するためのバッチ取得関数（qEI/qNEHVI）に基づく実験計画。", "_kind": "node"}
+{"id": "llm_orchestrator", "label": "L3 薄い LLM オーケストレータ", "type": "concept", "domain": "d4", "content": "ADR-0001 で採用された L3 層。ワークフロー dispatch、曖昧知覚解釈、新規例外処理、研究者対話・承認仲介をイベント駆動で実行。定常制御には関与しない。", "_kind": "node"}
+{"id": "human_approval", "label": "Human-on-the-loop 承認", "type": "concept", "domain": "d6", "content": "包絡線を外れる setpoint 変更、継代実行、BO 提案採用、緊急停止/ホールド等に対する研究者/オペレータの承認。", "_kind": "node"}
+{"id": "approval_workflow", "label": "Human-on-the-loop 承認ワークフロー", "type": "concept", "domain": "d4", "content": "requested → pending → approved/rejected/timeout → executed/cancelled の状態遷移。タイムアウト時は安全側に倒す。\n\n[merged from multiple agents]\nL1/L2/L3 が自律実行しようとする包絡線外・重大アクションに対し、研究者の明示承認を得てから実行する状態遷移機構。requested → approved/rejected/pending_timeout → executed/cancelled。承認結果は監査証跡に不変ログ化される。", "sources": [{"title": "auto_cell A 層要求仕様（Human-on-the-loop）", "url": "docs/design/requirements.md"}, {"title": "NIST AI Risk Management Framework（human-in-the-loop 概念）", "url": "https://www.nist.gov/itl/ai-risk-management-framework"}], "_kind": "node"}
+{"id": "idempotency", "label": "冪等性", "type": "concept", "domain": "d5", "content": "L1→L0 の setpoint 変更を idempotency key 付き request-response とし、ブレイン再起動後も同一コマンドを再発行可能にする性質。", "_kind": "node"}
+{"id": "validate_tool_call", "label": "ツール呼び出し検証", "type": "concept", "domain": "d6", "content": "副作用ツール呼び出し前に CPP 包絡線・変化率制限・競合を決定的に検証する仕組み。", "_kind": "node"}
+{"id": "set_perfusion_rate", "label": "set_perfusion_rate", "type": "concept", "domain": "d4", "content": "灌流率（0→7 vvd）を設定する L1 副作用ツール。glucose/lactate/osmolality トリガで条件起動する。", "_kind": "node"}
+{"id": "set_agitation_rpm", "label": "set_agitation_rpm", "type": "concept", "domain": "d4", "content": "撹拌回転数（50–120 rpm）を設定する L1 副作用ツール。凝集体径制御とシアストレス管理に用いる。", "_kind": "node"}
+{"id": "trigger_passage_l1", "label": "trigger_passage (L1)", "type": "concept", "domain": "d4", "content": "VCD 目標到達または凝集体径逸脱時に継代を要求する L1 アクション。実行には原則として Human-on-the-loop 承認が必要。", "_kind": "node"}
+{"id": "take_sample_l1", "label": "take_sample (L1)", "type": "concept", "domain": "d4", "content": "定期または条件起動で at-line サンプリングを行う L1 アクション。cpv へデータを供給する。", "_kind": "node"}
+{"id": "src_ax", "title": "Ax Adaptive Experimentation Platform", "url": "https://ax.dev/", "type": "source", "domain": "d4", "label": "Ax Adaptive Experimentation Platform", "content": "Facebook/Meta の実験最適化プラットフォーム。BoTorch 上に構築され、探索空間・制約・多忠実度の管理に向く。", "_kind": "node"}
+{"id": "src_botorch", "title": "BoTorch: Bayesian Optimization in PyTorch", "url": "https://botorch.org/", "type": "source", "domain": "d4", "label": "BoTorch（ベイズ最適化）", "content": "PyTorch ベースのベイズ最適化ライブラリ。多忠実度・制約付き BO に強く、L2 層の実装候補。", "_kind": "node"}
+{"id": "cpp_ph", "label": "CPP: pH", "type": "concept", "domain": "d7", "content": "A-layer pH setpoint 7.1; L0 local PID maintains, L1 may shift within envelope.", "_kind": "node"}
+{"id": "cpp_do", "label": "CPP: dissolved oxygen", "type": "concept", "domain": "d7", "content": "A-layer DO setpoint 40% -> 10% at high density; L0 local PID with agitation cascade.", "_kind": "node"}
+{"id": "cpp_temp", "label": "CPP: temperature", "type": "concept", "domain": "d7", "content": "A-layer temperature setpoint 37 C; L0 local PID.", "_kind": "node"}
+{"id": "cpp_agitation", "label": "CPP: agitation rpm", "type": "concept", "domain": "d4", "content": "A-layer agitation 50-120 rpm; Borys 2021 optimum 40-60 rpm for Vertical-Wheel iPSC.", "_kind": "node"}
+{"id": "cpp_glucose", "label": "CPP: glucose", "type": "concept", "domain": "d7", "content": "A-layer glucose >1.5 mM; K_Glc=1.5 mM from Manstein 2021 Table 1; perfusion trigger source.", "_kind": "node"}
+{"id": "cpp_lactate", "label": "CPP: lactate", "type": "concept", "domain": "d7", "content": "A-layer lactate <50 mM; K_Lac=50 mM from Manstein 2021 Table 1; perfusion trigger source.", "_kind": "node"}
+{"id": "cpp_glutamine", "label": "CPP: glutamine", "type": "concept", "domain": "d7", "content": "A-layer glutamine >0.01 mM; K_Gln=0.01 mM from Manstein 2021 Table 1.", "_kind": "node"}
+{"id": "cpp_osmolality", "label": "CPP: osmolality", "type": "concept", "domain": "d7", "content": "A-layer osmolality <500 mOsm/kg; K_Osm=500 mOsm/kg from Manstein 2021 Table 1; perfusion trigger source.", "_kind": "node"}
+{"id": "cpp_ammonia", "label": "CPP: ammonia (monitoring)", "type": "concept", "domain": "d7", "content": "Ammonia monitoring-only CPP for v1; mammalian toxicity threshold 4-6 mM, iPSC-native threshold not yet established.", "_kind": "node"}
+{"id": "cpp_aggregate_diameter", "label": "CPP: aggregate diameter", "type": "concept", "domain": "d7", "content": "A-layer aggregate diameter 150-350 um; Borys 2021 reports >400 um necrosis risk.", "_kind": "node"}
+{"id": "cpp_vcd", "label": "CPP: viable cell density", "type": "concept", "domain": "d7", "content": "A-layer VCD target ~35e6 cells/mL; measured by in-line capacitance; triggers passage.", "_kind": "node"}
+{"id": "cpp_viability", "label": "CPP: viability", "type": "concept", "domain": "d7", "content": "A-layer viability target >90%; primarily BO objective input, not L1 control target.", "_kind": "node"}
+{"id": "cpp_perfusion_rate", "label": "CPP: perfusion rate", "type": "concept", "domain": "d4", "content": "A-layer main actuator 0->7 vvd (Manstein 2021 Table 3); conditionally triggered by glucose/lactate/osmolality.", "_kind": "node"}
+{"id": "ramp_limit", "label": "ramp rate limit", "type": "concept", "domain": "d4", "content": "Maximum per-unit-time change for perfusion/agitation/DO setpoints to avoid shear/osmotic shock.", "_kind": "node"}
+{"id": "perfusion_trigger", "label": "perfusion ramp trigger", "type": "concept", "domain": "d4", "content": "L1 rule event that raises perfusion rate when glucose/lactate/osmolality cross thresholds.", "_kind": "node"}
+{"id": "y_27632", "label": "Y-27632 ROCK inhibitor", "type": "concept", "domain": "d1", "content": "Standard ROCK inhibitor added during dissociation passage to improve iPSC survival.", "_kind": "node"}
+{"id": "tool_set_perfusion_rate", "label": "tool: set_perfusion_rate", "type": "concept", "domain": "d5", "content": "LADS controller Function / DomainVertical tool for perfusion rate. Maps to devprofile.", "_kind": "node"}
+{"id": "tool_set_agitation_rpm", "label": "tool: set_agitation_rpm", "type": "concept", "domain": "d5", "content": "LADS controller Function / DomainVertical tool for agitation setpoint.", "_kind": "node"}
+{"id": "tool_trigger_passage", "label": "tool: trigger_passage", "type": "concept", "domain": "d5", "content": "LADS Program / DomainVertical tool for dissociation passage with Y-27632.", "_kind": "node"}
+{"id": "src_yehya2024", "label": "Yehya et al. 2024 (Stem Cell Res Ther)", "type": "source", "domain": "d4", "content": "Vertical-Wheel agitation DoE supporting lower optimum rpm (40-60 rpm).", "_kind": "node"}
+{"id": "src_xing2008", "label": "Xing et al. 2008 (Biotechnol Prog)", "type": "source", "domain": "d1", "content": "CHO osmolality threshold reference; iPSC-native value not established.", "_kind": "node"}
+{"id": "src_nova_flex2", "label": "Nova BioProfile FLEX2", "type": "source", "domain": "d7", "content": "16-parameter at-line analyzer for metabolites, osmolality, viability, cell diameter.\n\n[merged from multiple agents]\nNova Biomedical, BioProfile FLEX2 cell culture analyzer.", "_kind": "node"}
+{"id": "src_mqtt5", "label": "MQTT Version 5.0 | OASIS Standard", "type": "source", "domain": "d5", "content": "MQTT 5.0 標準仕様。Response Topic、Correlation Data、Message Expiry Interval、Reason Code 等により request-response とエラーハンドリングを規定。", "_kind": "node"}
+{"id": "lads_functional_unit", "label": "LADS Functional Unit", "type": "concept", "domain": "d5", "content": "LADS v1.0.0 で定義される機能単位。バイオリアクタ槽を 1 つの仮想デバイスとして集約し、内部に Sensor/Controller/Actuator Function と ProgramManager を持つ。", "_kind": "node"}
+{"id": "lads_sensor_function", "label": "LADS Sensor Function", "type": "concept", "domain": "d5", "content": "LADS Functional Unit に属するセンサ機能（analog/discrete/multi-state）。pH/DO/Temp/Agitation/Capacitance/Raman/Pressure/Level/Foam 等が該当。", "_kind": "node"}
+{"id": "lads_controller_function", "label": "LADS Controller Function", "type": "concept", "domain": "d5", "content": "LADS Functional Unit に属する制御機能。局所 PID（pH/DO/Temp/Agitation）の制御ロジックを内包し、ブレインからの検証済設定点を受け取る。", "_kind": "node"}
+{"id": "lads_actuator_function", "label": "LADS Actuator Function", "type": "concept", "domain": "d5", "content": "LADS Functional Unit に属する駆動機能。灌流ポンプ、給餌ポンプ、培地交換弁、サンプリング弁等の離散/連続駆動素子を表す。", "_kind": "node"}
+{"id": "lads_program_result", "label": "LADS Program/Result", "type": "concept", "domain": "d5", "content": "LADS ProgramManager が管理するプログラム（seed/passage/perfusion_ramp/clean）とその実行結果。EBR 導出の原材料となる。", "_kind": "node"}
+{"id": "sila_feature", "label": "SiLA2 Feature", "type": "concept", "domain": "d5", "content": "SiLA2 Feature Definition Language（FDL）で定義される機能単位。サンプリングロボ、分注、at-line 分析器等のコマンド/property を記述。", "_kind": "node"}
+{"id": "mqtt_topic_contract", "label": "MQTT topic contract", "type": "concept", "domain": "d5", "content": "auto_cell brain と device_gateway 間の MQTT topic 命名規則。cell/{culture_unit_id}/{direction}/{category}/{device_id}/{function_id} の形式。", "_kind": "node"}
+{"id": "gateway_cmd_ack", "label": "Gateway command/ack correlation", "type": "concept", "domain": "d5", "content": "MQTT 5.0 Response Topic + Correlation Data を使った非同期 request-response。冪等キーと Message Expiry Interval による重複/stale コマンド防止。", "_kind": "node"}
+{"id": "icd_setpoint_envelope", "label": "ICD setpoint envelope", "type": "concept", "domain": "d4", "content": "協業 ICD に定義された設定点範囲・単位・変化率制限。validate_tool_call と gateway 側の二重検証に使われる。", "_kind": "node"}
+{"id": "peripheral_sampler", "label": "SiLA2 サンプリングロボ", "type": "system", "domain": "d8", "content": "SiLA2 で統合される at-line サンプリングロボ。take_sample コマンドを提供。", "_kind": "node"}
+{"id": "peripheral_dispenser", "label": "SiLA2 自動分注器", "type": "system", "domain": "d8", "content": "SiLA2 で統合される液体分注器。feed/exchange_media 等の培地操作を実行。", "_kind": "node"}
+{"id": "peripheral_atline_analyzer", "label": "SiLA2 at-line 分析器", "type": "system", "domain": "d8", "content": "SiLA2 で統合される at-line 分析器（例: Nova BioProfile FLEX2）。代謝物パネル・浸透圧・生存率を提供。", "_kind": "node"}
+{"id": "src_mqtt5_reqresp", "url": "https://www.emqx.com/en/blog/mqtt5-request-response", "title": "MQTT Request / Response Explained and Example (MQTT 5.0)", "type": "source", "domain": "d5", "_kind": "node"}
+{"id": "src_sila_comm", "url": "https://www.nuget.org/packages/SiLA2.Communication", "title": "SiLA2.Communication — Runtime Dynamic Protobuf Generation for SiLA2 Features", "type": "source", "domain": "d5", "_kind": "node"}
+{"id": "measurement_vcd_capacitance", "label": "in-line capacitance VCD", "type": "concept", "domain": "d7", "content": "Aber/Hamilton/Sartorius 等の誘電分光/インピーダンスセンサによる生細胞密度の連続計測。iPSC 高密度では offline VCD・細胞径・生存率を用いた校正が必要。", "_kind": "node"}
+{"id": "measurement_raman_inline", "label": "in-line Raman 代謝物計測", "type": "concept", "domain": "d7", "content": "in-line Raman 分光による glucose/lactate/glutamine/glutamate の同時推定。CHO で PID 閉ループ実証あり。iPSC では chemometric 再校正が必要。", "_kind": "node"}
+{"id": "measurement_atline_nova", "label": "at-line Nova FLEX2 マルチパラメータ", "type": "concept", "domain": "d7", "content": "Nova BioProfile FLEX2 による 16 項目（代謝物/ガス/電解質/細胞密度/生存率/細胞径/浸透圧）のアットライン分析。Raman 校正・BO 入力の正解ラベル源。", "_kind": "node"}
+{"id": "measurement_aggregate_imaging", "label": "at-line 凝集体画像計測", "type": "concept", "domain": "d7", "content": "FlowCam または Kropp 型バイパス顕微鏡による凝集体径・形態の画像解析。v1 では離散/日次運用が現実的。", "_kind": "node"}
+{"id": "measurement_fbrm_cld", "label": "FBRM 弦長分布計測", "type": "concept", "domain": "d7", "content": "Mettler Toledo ParticleTrack による Focused Beam Reflectance Measurement。連続計測可能だが、CLD は真の粒径分布ではなく凝集体形状に依存。", "_kind": "node"}
+{"id": "measurement_ovizio_dhm", "label": "Ovizio D3HM ホログラフィ計測", "type": "concept", "domain": "d7", "content": "Ovizio iLINE-F PRO の Double Differential Digital Holographic Microscopy。ラベルフリー連続細胞/凝集体モニタリング。iPSC 実証は限定的。", "_kind": "node"}
+{"id": "monitoring_ammonia_atline", "label": "at-line アンモニウムモニタリング", "type": "concept", "domain": "d7", "content": "Nova FLEX2 による NH4+ のアットライン計測。CPP ではないが、代謝毒性早期発見のため監視。", "_kind": "node"}
+{"id": "monitoring_quality_offline", "label": "offline 品質マーカー計測", "type": "concept", "domain": "d7", "content": "未分化/多能性マーカー（OCT4/SOX2/NANOG/SSEA/TRA）、核型/同一性、自発分化等の offline/run 単位計測。BO 目的関数専用。", "_kind": "node"}
+{"id": "monitoring_sterility_offline", "label": "offline/rapid 無菌性計測", "type": "concept", "domain": "d7", "content": "汚染/無菌性の offline または rapid micro 検査。現時点で検証済み online 手段は未確認。CAPA トリガ源。", "_kind": "node"}
+{"id": "instr_aber_futura", "label": "Aber FUTURA", "type": "system", "domain": "d7", "content": "Aber Instruments の in-line capacitance biomass センサ。580 kHz 線形モデルで VCD を推定。", "_kind": "node"}
+{"id": "instr_hamilton_incytes", "label": "Hamilton Incyte Arc", "type": "system", "domain": "d7", "content": "Hamilton の in-line permittivity ベース VCD センサ。RS485 Modbus 出力、哺乳類 5e5–8e9 cells/mL レンジ。", "_kind": "node"}
+{"id": "instr_sartorius_viamass", "label": "Sartorius BioPAT ViaMass", "type": "system", "domain": "d7", "content": "Sartorius の in-line capacitance biomass センサ。Aber 技術ベース、BioPAT MFCS/DCU 統合。", "_kind": "node"}
+{"id": "instr_nova_flex2", "label": "Nova BioProfile FLEX2", "type": "system", "domain": "d7", "content": "Nova Biomedical の 16 項目 at-line 細胞培養分析器。275 µL・4.5 分、OLS による自動サンプリング対応。", "_kind": "node"}
+{"id": "instr_ovizio_ilinef", "label": "Ovizio iLINE-F PRO", "type": "system", "domain": "d7", "content": "Ovizio の D3HM ベース in-line ホログラフィ細胞/凝集体モニタリングシステム。OPC UA 対応。", "_kind": "node"}
+{"id": "instr_fbrm_g400", "label": "Mettler Toledo ParticleTrack G400", "type": "system", "domain": "d7", "content": "FBRM 技術による in-situ 弦長分布計測器。0.5–2000 µm レンジ。", "_kind": "node"}
+{"id": "instr_flowcam", "label": "FlowCam", "type": "system", "domain": "d7", "content": "Fluid Imaging Technologies のフローイメージング顕微鏡。2 µm–1 mm の粒子/凝集体画像解析。", "_kind": "node"}
+{"id": "src_aber_futura", "label": "Aber FUTURA app note", "type": "source", "domain": "d7", "content": "Aber Instruments, FUTURA capacitance perfusion monitoring.", "_kind": "node"}
+{"id": "src_hamilton_incytes", "label": "Hamilton Incyte Arc specs", "type": "source", "domain": "d7", "content": "Hamilton Company, Incyte Arc Viable Cell Density Sensor specifications.", "_kind": "node"}
+{"id": "src_sartorius_viamass", "label": "Sartorius BioPAT ViaMass", "type": "source", "domain": "d7", "content": "Sartorius, BioPAT ViaMass inline biomass measurement system.", "_kind": "node"}
+{"id": "src_ovizio_ilinef", "label": "Ovizio iLINE-F PRO press release", "type": "source", "domain": "d7", "content": "Ovizio Imaging Systems, iLINE-F PRO holographic in-line cell monitoring.", "_kind": "node"}
+{"id": "src_fbrm_g400", "label": "Mettler Toledo ParticleTrack FBRM", "type": "source", "domain": "d7", "content": "Mettler Toledo, ParticleTrack with FBRM technology.", "_kind": "node"}
+{"id": "src_flowcam", "label": "FlowCam overview", "type": "source", "domain": "d7", "content": "Fluid Imaging Technologies, FlowCam imaging particle analyzer overview.", "_kind": "node"}
+{"id": "src_raman_graf2022", "label": "Graf/Wei 2022 in-line Raman PID glucose", "type": "source", "domain": "d7", "content": "Graf/Wei et al. 2022, Frontiers in Bioengineering, in-line Raman closed-loop glucose control.", "_kind": "node"}
+{"id": "src_krause2023", "label": "Krause 2023 capacitance review", "type": "source", "domain": "d7", "content": "Krause et al. 2023, Curr Opin Biotechnol, biocapacitance online biomass monitoring.", "_kind": "node"}
+{"id": "tech_control", "label": "技術的統制", "type": "concept", "domain": "d6", "content": "R&D一次でありつつ将来GMP移行を妨げないよう、ソフトウェアに織り込むALCOA+/Part11/CSV/CSA/EBR/CAPAの実装上の統制群。", "sources": [{"title": "FDA Guidance for Industry: Data Integrity and Compliance With Drug CGMP Questions and Answers (2018)", "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/data-integrity-and-compliance-drug-cgmp-questions-and-answers"}], "_kind": "node"}
+{"id": "audit_schema", "label": "監査ログスキーマ", "type": "concept", "domain": "d6", "content": "副作用ツール呼び出し、承認状態遷移、センサ取り込み、システム状態変化をALCOA+/Part11準拠で記録するための構造化ログスキーマ。", "sources": [{"title": "21 CFR Part 11 — Electronic Records; Electronic Signatures", "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11"}], "_kind": "node"}
+{"id": "approval_log", "label": "承認記録", "type": "concept", "domain": "d6", "content": "Human-on-the-loopにおけるrequested→approved/rejected/timeout→executed/cancelledの承認状態遷移を記録する監査証跡。", "sources": [{"title": "21 CFR Part 11 — Electronic Records; Electronic Signatures", "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11"}], "_kind": "node"}
+{"id": "data_lifecycle", "label": "データライフサイクル管理", "type": "concept", "domain": "d6", "content": "生データの生成・処理・レビュー・保存・検索・廃棄までのALCOA+/Endurable/Availableを担保するライフサイクル管理。", "sources": [{"title": "WHO Good Data and Record Management Practice", "url": "https://www.who.int/teams/regulation-prequalification/regulation-and-safety/good-data-and-record-management-practice"}], "_kind": "node"}
+{"id": "llm_validation", "label": "LLM層検証戦略", "type": "concept", "domain": "d6", "content": "L3薄いLLMオーケストレータの非決定性を抑え、プロンプトバージョニング・出力根拠ログ・性能モニタリングでGAMP5 AI/ML要件に対応する戦略。", "sources": [{"title": "ISPE GAMP Guide: Artificial Intelligence (2025)", "url": "https://ispe.org/publications/guidance-documents/gamp-guide-artificial-intelligence"}], "_kind": "node"}
+{"id": "ebr_derivation", "label": "EBR導出ビュー", "type": "concept", "domain": "d6", "content": "1培養ラン=1EBRをevent_storeから導出するためのビュー。R&D一次ではEBR-like実験プロビナンスレポートとして運用。", "sources": [{"title": "EudraLex Volume 4 Annex 11 — Computerised Systems", "url": "https://health.ec.europa.eu/document/download/2c252435-6383-4ced-8206-8fef57024cc1_en"}], "_kind": "node"}
+{"id": "event_store", "label": "イベントストア", "type": "concept", "domain": "d5", "content": "時系列のイミュータブルイベントログを格納するデータ基盤。EBR導出、監査証跡、LADS Program/Result対応の基盤。", "sources": [{"title": "OPC UA for LADS Part 1 Basics (OPC 30500-1)", "url": "https://reference.opcfoundation.org/LADS/v100/docs/"}], "_kind": "node"}
+{"id": "src_fda_data_integrity", "label": "FDA 2018 Data Integrity Guidance", "type": "source", "domain": "d6", "content": "FDA 'Data Integrity and Compliance With Drug CGMP Questions and Answers' (2018)。ALCOA+原則を医薬品製造のデータインテグリティに適用したガイダンス。", "sources": [{"title": "FDA Guidance for Industry: Data Integrity and Compliance With Drug CGMP Questions and Answers (2018)", "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/data-integrity-and-compliance-drug-cgmp-questions-and-answers"}], "_kind": "node"}
+{"id": "src_part11", "label": "21 CFR Part 11", "type": "source", "domain": "d6", "content": "FDA regulation 'Electronic Records; Electronic Signatures'。電子記録・電子署名・監査証跡の技術的要件を定める。", "sources": [{"title": "21 CFR Part 11 — Electronic Records; Electronic Signatures", "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11"}], "_kind": "node"}
+{"id": "src_fda_csa", "label": "FDA CSA Guidance", "type": "source", "domain": "d6", "content": "FDA 'Computer Software Assurance for Production and Quality System Software' (2022 draft / 2025 final)。リスクベースでソフトウェア保証活動を選定する現代的CSV/CSAアプローチ。", "sources": [{"title": "FDA Guidance: Computer Software Assurance for Production and Quality System Software", "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/computer-software-assurance-production-and-quality-system-software"}], "_kind": "node"}
+{"id": "src_gamp5", "label": "ISPE GAMP 5 2nd Edition", "type": "source", "domain": "d6", "content": "ISPE GAMP 5 Guide: A Risk-Based Approach to Compliant GxP Computerized Systems, Second Edition (2022)。Cat.1/3/4/5とAI/ML Appendix D11を含む。", "sources": [{"title": "ISPE GAMP 5 Guide 2nd Edition (2022)", "url": "https://ispe.org/publications/guidance-documents/gamp-5-guide-2nd-edition"}], "_kind": "node"}
+{"id": "src_gamp5_ai", "label": "ISPE GAMP Guide: Artificial Intelligence", "type": "source", "domain": "d6", "content": "ISPE GAMP Guide: Artificial Intelligence (2025)。AI有効化コンピュータ化システムのライフサイクル全体の検証・データガバナンス・モデルリスク管理を扱う。", "sources": [{"title": "ISPE GAMP Guide: Artificial Intelligence (2025)", "url": "https://ispe.org/publications/guidance-documents/gamp-guide-artificial-intelligence"}], "_kind": "node"}
+{"id": "src_annex11", "label": "EudraLex Annex 11", "type": "source", "domain": "d6", "content": "EudraLex Volume 4 Annex 11 — Computerised Systems。EUのGMPデータコンピュータ化システム要件。", "sources": [{"title": "EudraLex Volume 4 Annex 11 — Computerised Systems", "url": "https://health.ec.europa.eu/document/download/2c252435-6383-4ced-8206-8fef57024cc1_en"}], "_kind": "node"}
+{"id": "src_pics041", "label": "PIC/S PI 041-1", "type": "source", "domain": "d6", "content": "PIC/S PI 041-1 — Good Practices for Data Management and Integrity in Regulated GMP/GDP Environments (2021)。ALCOA+運用の国際的実務指針。", "sources": [{"title": "PIC/S PI 041-1 (2021)", "url": "https://picscheme.org/en/publications"}], "_kind": "node"}
+{"id": "src_who_gdrp", "label": "WHO Good Data and Record Management Practice", "type": "source", "domain": "d6", "content": "WHO Good Data and Record Management Practice。ALCOA+とデータライフサイクルのWHO解釈。", "sources": [{"title": "WHO Good Data and Record Management Practice", "url": "https://www.who.int/teams/regulation-prequalification/regulation-and-safety/good-data-and-record-management-practice"}], "_kind": "node"}
+{"id": "tier2_plant_model", "label": "Tier2 plant_model（in-silico 検証リグ）", "type": "concept", "domain": "d4", "content": "auto_cell の Tier2 シミュレーション層。Manstein 2021 の 6 項 Monod 型 ODE を step(actuators)->sensors IF で実装し、L1 制御ループの回帰検証と L2 BO の低忠実度評価に使う。", "_kind": "node"}
+{"id": "plant_model_interface", "label": "plant_model step IF", "type": "concept", "domain": "d4", "content": "step(actuators)->sensors という決定的インターフェース。アクチュエータ（perfusion_rate_vvd, agitation_rpm, gas setpoints, feed bolus）を受け、センサ軌道（VCD/代謝物/凝集体径）を返す。", "_kind": "node"}
+{"id": "plant_model_calibration", "label": "plant_model パラメータ同定・不確実性", "type": "concept", "domain": "d4", "content": "文献値を prior とし、実 run データでベイズ推定または最小二乗により校正。パラメタ事後分布・GP バイアス・構造候補モデルで不確実性を表現。", "_kind": "node"}
+{"id": "multifidelity_sim", "label": "多忠実度シミュレーション接続", "type": "concept", "domain": "d4", "content": "L2 BO への多忠実度接続。Tier2 plant_model を低コスト低忠実度評価、実バイオリアクタ run を高忠実度評価として組み込む。", "_kind": "node"}
+{"id": "plant_model_regression", "label": "plant_model 回帰テスト", "type": "concept", "domain": "d4", "content": "同一アクチュエータ系列 → 同一センサ軌道の決定性を保証するゴールデンテスト。CSV/CSA 観点から L1 制御ループの検証リグとして運用。", "_kind": "node"}
+{"id": "cobrapy_gem", "label": "COBRApy + GEM 差替候補", "type": "concept", "domain": "d4", "content": "将来のゲノム規模代謝モデル（COBRApy）への差替候補。培地組成を制約ベースで解き、代謝物収支を予測。", "_kind": "node"}
+{"id": "aggregate_formation_model", "label": "凝集体形成動力学モデル", "type": "concept", "domain": "d1", "content": "凝集体の形成・合体・破砕を表す動的サブモデル。撹拌速度・細胞密度と凝集体径の関係を追加する拡張。", "_kind": "node"}
+{"id": "shear_stress_model", "label": "シアストレスモデル", "type": "concept", "domain": "d4", "content": "撹拌速度・粘度・凝集体径から Kolmogorov 長またはエネルギー散逸率を推定し、細胞傷害閾値を設計する拡張。", "_kind": "node"}
+{"id": "src_scipy", "label": "SciPy（数値積分）", "type": "source", "domain": "d5", "content": "Python の科学技術計算ライブラリ。plant_model の ODE 数値積分（solve_ivp 等）に使用。", "_kind": "node"}
+{"id": "src_cobrapy", "label": "COBRApy", "type": "source", "domain": "d5", "content": "Python によるゲノム規模代謝モデリングライブラリ。将来の COBRApy+GEM バックエンド差替の基盤。", "_kind": "node"}
+{"id": "hmi_dashboard", "label": "HMI ダッシュボード", "type": "concept", "domain": "d4", "content": "研究者が培養状態・承認待ち・アラート・BO 提案を一目で把握するメイン画面。CPP 現在値・トレンド・phase・承認キューを表示し、on-the-loop の接点となる。", "sources": [{"title": "ISA-101 HMI Design Standards（プロセス制御 HMI）", "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-101"}, {"title": "IEC 62366-1 Medical devices — Application of usability engineering", "url": "https://www.iso.org/standard/63179.html"}], "_kind": "node"}
+{"id": "alert_matrix", "label": "アラート/通知マトリクス", "type": "concept", "domain": "d4", "content": "各イベントの優先度（P0-P3）、抑制窓、通知チャネル、既定動作を定義したマトリクス。contamination_suspected は抑制不可（0 s）、BO 提案は run 単位（86400 s）など。", "sources": [{"title": "auto_cell A 層要求仕様（NFR-T, NFR-S）", "url": "docs/design/requirements.md"}, {"title": "ISA-101 HMI Design Standards", "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-101"}], "_kind": "node"}
+{"id": "escalation_policy", "label": "承認エスカレーションポリシー", "type": "concept", "domain": "d4", "content": "承認要求がタイムアウト・却下・実行失敗した場合のエスカレーションルール。安全側へ倒す（キャンセル/ホールド）を基本とし、リトライ上限超過時は人間介入待ち。", "sources": [{"title": "auto_cell A 層要求仕様（FR-4, NFR-S）", "url": "docs/design/requirements.md"}], "_kind": "node"}
+{"id": "contamination_response", "label": "汚染疑い応答フロー", "type": "concept", "domain": "d7", "content": "contamination_suspected 検知時の P0 即時対応。ブレインは安全系へのホールド要求を出し、デバイス局所が強制停止。研究者確認・誤検知記録・CAPA 起票の分岐。", "sources": [{"title": "KG → auto_cell 設計ブリッジ（sterility/capa 節）", "url": "docs/design/kg_to_auto_cell.md"}, {"title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）", "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}], "_kind": "node"}
+{"id": "degraded_mode", "label": "縮退運転モード", "type": "concept", "domain": "d4", "content": "ブレイン/LLM/通信断時にも L0 局所 PID と L1 最終検証済レシピで培養を継続するモード。再起動耐性・冪等性・安全を担保。", "sources": [{"title": "ADR-0001（L0-L3 分離、C4 縮退運転）", "url": "docs/design/adr/0001-control-architecture.md"}, {"title": "auto_cell A 層要求仕様（NFR-S, NFR-R）", "url": "docs/design/requirements.md"}], "_kind": "node"}
+{"id": "human_on_the_loop", "label": "Human-on-the-loop", "type": "concept", "domain": "d4", "content": "監視・判断・包絡線内アクションは自律、包絡線外や重大アクションは人の承認を要する運転形態。auto_cell A 層の自律度。", "sources": [{"title": "auto_cell A 層要求仕様", "url": "docs/design/requirements.md"}], "_kind": "node"}
+{"id": "audit_ui", "label": "監査/EBR UI", "type": "concept", "domain": "d6", "content": "event_store から 1 培養ランの操作ログ・イベント・承認履歴を検索/エクスポートするビュー。ALCOA+ と EBR 再構成を支援。", "sources": [{"title": "KG → auto_cell 設計ブリッジ（ALCOA+/EBR 節）", "url": "docs/design/kg_to_auto_cell.md"}, {"title": "Cell & Gene Therapy QC/QA（ALCOA, Part 11, CAPA）", "url": "https://www.cellandgene.com/topic/cell-gene-therapy-qa-qc"}], "_kind": "node"}
+{"id": "approval_request_event", "label": "承認要求イベント", "type": "concept", "domain": "d4", "content": "承認ワークフローで発行されるイベント型。request_id、提案アクション、根拠、要求時刻、レビュー、決定、実行結果を含む。event_store に append-only で記録。", "sources": [{"title": "auto_cell A 層要求仕様（FR-4, FR-9）", "url": "docs/design/requirements.md"}], "_kind": "node"}
+{"id": "notification_suppression", "label": "通知抑制（suppression_defaults）", "type": "concept", "domain": "d4", "content": "同一イベントの短時間再発を抑制し HMI/push のフラッディングを防ぐ仕組み。contamination_suspected は抑制不可とする。", "sources": [{"title": "KG → auto_cell 設計ブリッジ（DomainVertical slot 節）", "url": "docs/design/kg_to_auto_cell.md"}], "_kind": "node"}
+{"id": "src_nist_ai_rmf", "label": "NIST AI Risk Management Framework", "type": "source", "domain": "d4", "content": "NIST が公開する AI リスク管理フレームワーク。Human-on-the-loop / human-in-the-loop による AI システムのガバナンスと監視を含む。", "sources": [{"title": "NIST AI Risk Management Framework", "url": "https://www.nist.gov/itl/ai-risk-management-framework"}], "_kind": "node"}
+{"id": "src_iec62366", "label": "IEC 62366-1（医療機器ユーザビリティ）", "type": "source", "domain": "d4", "content": "医療機器のユーザビリティエンジニアリングを規定する国際標準。HMI 設計の人因工学基準。", "sources": [{"title": "IEC 62366-1:2015+AMD1:2020", "url": "https://www.iso.org/standard/63179.html"}], "_kind": "node"}
+{"id": "src_isa101", "label": "ISA-101（プロセス制御 HMI 設計）", "type": "source", "domain": "d4", "content": "ISA-101 標準群。プロセス産業向け HMI の視覚設計、アラーム管理、パフォーマンス指向ディスプレイを規定。", "sources": [{"title": "ISA-101 HMI Design Standards", "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-101"}], "_kind": "node"}
+{"id": "mpc", "label": "Model Predictive Control", "type": "concept", "domain": "d4", "content": "プロセスモデルを用いて未来の挙動を予測し、制約内で最適な操作変数を逐次計算する制御手法。A 層では灌流率・feed bolus を操作変数とする将来拡張候補。", "sources": [{"title": "Model Predictive Controller Design for Bioprocesses (Rashedi et al., DYCOPS-2022)", "url": "https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf"}, {"title": "フィジカルAI包括調査レポート §6.1", "url": "/home/sin/Downloads/report/report.md"}], "_kind": "node"}
+{"id": "mpc_ipsc_perfusion", "label": "iPSC 浮遊灌流 MPC", "type": "concept", "domain": "d4", "content": "iPSC 浮遊凝集体灌流プロセスに特化した MPC。状態 = VCD/viability/glucose/lactate/glutamine/osmolality/aggregate diameter、操作変数 = perfusion rate/feed bolus、制約 = CPP 包絡線・pump ramp・凝集体シア。現時点で直接実証例は限定的。", "sources": [{"title": "Process development and scale-up of pluripotent stem cell manufacturing (Huang et al. 2020)", "url": "https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/"}, {"title": "Manstein & Zweigerdt 2021, STAR Protocols Table 1", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/"}], "_kind": "node"}
+{"id": "mpc_lactate_feedback", "label": "乳酸フィードバック MPC", "type": "concept", "domain": "d4", "content": "累積乳酸濃度を細胞成長の soft sensor として、培地交換量を入力とする MPC。MSC 培養で実証されており、iPSC 浮遊灌流への転用可能性がある。", "sources": [{"title": "Van Beylen et al. 2020, Lactate-Based Model Predictive Control Strategy of Cell Growth for Cell Therapy Applications", "url": "https://doi.org/10.3390/bioengineering7030078"}], "_kind": "node"}
+{"id": "mpc_model_types", "label": "MPC モデルタイプ", "type": "concept", "domain": "d4", "content": "線形 MPC（LMPC）、非線形 MPC（NMPC）、経済 MPC（EMPC）、ハイブリッド MPC（PINN+ODE）、データ駆動 MPC（DARX/サブスペース）の分類。A 層では plant_model（Manstein ODE）起点で NMPC → ハイブリッド MPC へ段階拡大。", "sources": [{"title": "Model Predictive Controller Design for Bioprocesses (Rashedi et al., DYCOPS-2022)", "url": "https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf"}, {"title": "Van Beylen et al. 2020, Bioengineering", "url": "https://doi.org/10.3390/bioengineering7030078"}], "_kind": "node"}
+{"id": "mpc_constraints", "label": "MPC 制約集合", "type": "concept", "domain": "d4", "content": "MPC で考慮する制約群：CPP 包絡線（glucose/lactate/osmolality/aggregate diameter）、perfusion rate 範囲（0–7 vvd）、pump ramp 制限、凝集体シア上限、培地コスト。", "sources": [{"title": "Manstein & Zweigerdt 2021, STAR Protocols Table 1", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8666714/"}, {"title": "Process development and scale-up of pluripotent stem cell manufacturing (Huang et al. 2020)", "url": "https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/"}], "_kind": "node"}
+{"id": "mpc_prediction_horizon", "label": "MPC 予測ホライズン", "type": "concept", "domain": "d4", "content": "MPC が未来のプロセス挙動を予測する時間幅。iPSC 培養ではバッチ尺が数日～数週間のため、時間単位～日単位の予測ホライズンが妥当。CHO fed-batch 例では 30 日が報告されているが、iPSC では未確定。", "sources": [{"title": "Model Predictive Controller Design for Bioprocesses (Rashedi et al., DYCOPS-2022)", "url": "https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf"}], "_kind": "node"}
+{"id": "mpc_control_horizon", "label": "MPC 制御ホライズン", "type": "concept", "domain": "d4", "content": "MPC が最適化する未来の操作変数系列の長さ。予測ホライズン以下。iPSC では求解コストと制御性能のトレードオフで選定。CHO 例では 8 日。", "sources": [{"title": "Model Predictive Controller Design for Bioprocesses (Rashedi et al., DYCOPS-2022)", "url": "https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf"}], "_kind": "node"}
+{"id": "mpc_adaptive_update", "label": "MPC 適応更新", "type": "concept", "domain": "d4", "content": "オンライン/at-line データを用いて MPC 内部モデルのパラメータを逐次更新する機構。プロセス・モデルミスマッチ、細胞株変動、ドナー変動に対応。", "sources": [{"title": "Van Beylen et al. 2020, Bioengineering", "url": "https://doi.org/10.3390/bioengineering7030078"}], "_kind": "node"}
+{"id": "mpc_fail_safe", "label": "MPC フェイルセーフ", "type": "concept", "domain": "d4", "content": "MPC ソルバー非収束・異常予測・制約違反時に、L1 が最後の検証済 setpoint または安全側デフォルト灌流率を保持する機構。", "sources": [{"title": "ADR-0001 Control architecture", "url": "docs/design/adr/0001-control-architecture.md"}], "_kind": "node"}
+{"id": "mpc_human_on_the_loop", "label": "MPC Human-on-the-loop", "type": "concept", "domain": "d6", "content": "MPC の提案軌道・包絡線外 setpoint・低信頼度予測に対して研究者が承認/調整/却下する仕組み。Annex 22 対応の決定論的下位制御器としての位置づけと両立。", "sources": [{"title": "requirements.md FR-4", "url": "docs/design/requirements.md"}, {"title": "PIC/S GMP Annex 22 AI applicability (CiRA/Sugihara PMC11975184)", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11975184/"}], "_kind": "node"}
+{"id": "mpc_implementation_libraries", "label": "MPC 実装ライブラリ群", "type": "concept", "domain": "d5", "content": "A 層 MPC 実装候補ライブラリ：CasADi（記号計算）、do-mpc（プロトタイプ・OPC-UA 接続例あり）、acados（高速組み込み C コード生成）。", "sources": [{"title": "CasADi", "url": "https://web.casadi.org/"}, {"title": "do-mpc batch reactor example", "url": "https://www.do-mpc.com/en/latest/example_gallery/batch_reactor.html"}, {"title": "acados documentation", "url": "https://docs.acados.org/"}], "_kind": "node"}
+{"id": "dynamic_perfusion_ipsc", "label": "iPSC 動的灌流戦略", "type": "concept", "domain": "d1", "content": "pH トリガー等で perfusion rate を動的に増加させる iPSC 浮遊培養戦略。Huang et al. 2020 で pH 6.8 トリガー + 30%/日増加により固定灌流比 25% 向上。MPC で多変数化・最適化可能。", "sources": [{"title": "Process development and scale-up of pluripotent stem cell manufacturing (Huang et al. 2020)", "url": "https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/"}], "_kind": "node"}
+{"id": "cpsr_control", "label": "Cell-Specific Perfusion Rate 制御", "type": "concept", "domain": "d4", "content": "生存細胞数あたりの灌流率（CSPR）を一定に保つ制御戦略。培地利用効率と安定的基質濃度を両立。high cell density perfusion の標準的アプローチ。", "sources": [{"title": "Konstantinov et al. 2006, CSPR concept", "url": "https://pure.mpg.de/rest/items/item_3395904_4/component/file_3432420/content"}], "_kind": "node"}
+{"id": "mpc_vs_rule_engine", "label": "MPC vs ルールエンジン比較", "type": "concept", "domain": "d4", "content": "v1 の L1 決定的ルールと将来 MPC との比較軸：実装コスト、検証性、最適性、柔軟性、Annex 22 対応、Human-on-the-loop。v1 はルール、Phase 2 以降は MPC 拡張。", "sources": [{"title": "additional_mpc_for_ipsc.md", "url": "docs/design/ground_knowledge/additional_mpc_for_ipsc.md"}], "_kind": "node"}
+{"id": "mpc_roadmap_l1", "label": "L1 MPC 導入ロードマップ", "type": "concept", "domain": "d4", "content": "Phase 1: ルールベース L1。Phase 2: plant_model ベース MPC シミュレーション・単一操作変数（perfusion rate）。Phase 3: 多変数・適応・経済 MPC の実機適用。", "sources": [{"title": "additional_mpc_for_ipsc.md", "url": "docs/design/ground_knowledge/additional_mpc_for_ipsc.md"}], "_kind": "node"}
+{"id": "src_rashedi2022", "label": "Rashedi et al. 2022 (DYCOPS-2022)", "type": "source", "domain": "d4", "content": "Amgen の fed-batch CHO プロセスへの線形 MPC 実機適用。VCD 最大化、30 日予測ホライズン、8 日制御ホライズン、タイトル 2% 向上。", "sources": [{"title": "Model Predictive Controller Design for Bioprocesses", "url": "https://skoge.folk.ntnu.no/prost/proceedings/dycops-2022/files/0202.pdf"}], "_kind": "node"}
+{"id": "src_van_beylen2020", "label": "Van Beylen et al. 2020 (Bioengineering)", "type": "source", "domain": "d4", "content": "Lactate-Based Model Predictive Control Strategy of Cell Growth for Cell Therapy Applications. hBM-MSC 培養で累積乳酸を soft sensor とする適応 DARX-MPC。", "sources": [{"title": "Lactate-Based Model Predictive Control Strategy", "url": "https://doi.org/10.3390/bioengineering7030078"}], "_kind": "node"}
+{"id": "src_huang2020", "label": "Huang et al. 2020 (Cell Gene Therapy Insights)", "type": "source", "domain": "d1", "content": "PSC 10 L スケールアップ。動的灌流で pH 6.8 トリガー + 30%/日増加、固定灌流比 25% 向上、乳酸 15 mM 未満抑制。", "sources": [{"title": "Process development and scale-up of pluripotent stem cell manufacturing", "url": "https://www.insights.bio/cell-and-gene-therapy-insights/journal/article/1784/"}], "_kind": "node"}
+{"id": "src_do_mpc", "label": "do-mpc", "type": "source", "domain": "d5", "content": "CasADi ベースの Python MPC ライブラリ。非線形 MPC、ロバスト MPC、OPC-UA 接続例あり。", "sources": [{"title": "do-mpc batch reactor example", "url": "https://www.do-mpc.com/en/latest/example_gallery/batch_reactor.html"}], "_kind": "node"}
+{"id": "src_acados", "label": "acados", "type": "source", "domain": "d5", "content": "高速組み込み非線形 MPC ソルバー。C コード生成、HPIPM QP ソルバー、CasADi 記号モデル入力。", "sources": [{"title": "acados documentation", "url": "https://docs.acados.org/"}], "_kind": "node"}
+{"id": "src_casadi", "label": "CasADi", "type": "source", "domain": "d5", "content": "非線形最適化と自動微分のためのオープンソース記号計算フレームワーク。MPC モデリングの基盤。", "sources": [{"title": "CasADi", "url": "https://web.casadi.org/"}], "_kind": "node"}
+{"id": "pinn", "label": "Physics-Informed Neural Network (PINN)", "type": "concept", "domain": "d4", "content": "Neural network trained with both data loss and physics loss (ODE/PDE residuals). For iPSC suspension/aggregate bioreactors, PINNs are a future-phase technology; most published examples are CHO/microbial, not directly transferable to iPSC.", "_kind": "node"}
+{"id": "digital_twin", "label": "Digital Twin (DT)", "type": "concept", "domain": "d4", "content": "Virtual replica of the bioreactor process that predicts concentration/state profiles and supports what-if analysis. Industrial examples (Yokogawa Insilico) are CHO/mAb-centric; iPSC aggregate-specific DTs are not yet established.", "_kind": "node"}
+{"id": "hybrid_ode_nn", "label": "Hybrid ODE + Neural Network model", "type": "concept", "domain": "d4", "content": "Mechanistic ODE structure (mass balances) with kinetic terms represented or corrected by neural networks. More data-efficient than pure NN and a realistic Phase 2/3 extension of the Manstein ODE plant_model.", "_kind": "node"}
+{"id": "pinn_mpc", "label": "PINN-based Model Predictive Control", "type": "concept", "domain": "d4", "content": "MPC that uses a PINN as the prediction model instead of a numerical ODE. Demonstrated in microbial/CHO contexts; iPSC applicability is unverified and should remain advisory/Human-on-the-loop.", "_kind": "node"}
+{"id": "uncertainty_quantification", "label": "Uncertainty Quantification (UQ) for learned models", "type": "concept", "domain": "d4", "content": "Quantification of epistemic and aleatoric uncertainty in PINN/NN/DT predictions, typically expressed as 95% confidence intervals. Required for Human-on-the-loop escalation when model confidence is low.", "_kind": "node"}
+{"id": "deep_ensemble", "label": "Deep Ensemble UQ", "type": "concept", "domain": "d4", "content": "Multiple independently trained networks whose prediction distribution defines mean and variance. Simplest practical UQ method for hybrid ODE+NN models.", "_kind": "node"}
+{"id": "bayesian_pinn", "label": "Bayesian PINN (B-PINN)", "type": "concept", "domain": "d4", "content": "Variational inference over PINN weights to produce posterior predictive distributions. Theoretically grounded but computationally expensive and prior-dependent.", "_kind": "node"}
+{"id": "efi_pinn", "label": "EFI-based UQ for PINN", "type": "concept", "domain": "d4", "content": "Extended Fiducial Inference for PINNs. Avoids subjective priors/dropout rates by solving data-generating equations; shown to achieve ~95% coverage on synthetic PDEs, but unverified on bioreactor time series.", "_kind": "node"}
+{"id": "mc_dropout", "label": "MC Dropout UQ", "type": "concept", "domain": "d4", "content": "Dropout retained at inference time to approximate Bayesian predictive distributions. Sensitive to dropout-rate choice; intervals can be poorly calibrated.", "_kind": "node"}
+{"id": "gp_bias_correction", "label": "GP bias correction for plant_model", "type": "concept", "domain": "d4", "content": "Gaussian Process that learns the residual between Manstein ODE predictions and observed run data. Natural Phase 2 extension that integrates with existing BO infrastructure.", "_kind": "node"}
+{"id": "multifidelity_pinn", "label": "Multi-fidelity PINN/DT integration", "type": "concept", "domain": "d4", "content": "Use of Manstein ODE and Hybrid ODE+NN as low/medium-fidelity surrogates and real bioreactor runs as high-fidelity evaluations within multi-fidelity Bayesian optimization.", "_kind": "node"}
+{"id": "digital_twin_calibration", "label": "Digital Twin calibration", "type": "concept", "domain": "d4", "content": "Online/offline parameter estimation and model-mismatch correction using real batch data. Required to keep the DT aligned with the physical process.", "_kind": "node"}
+{"id": "universal_differential_equation", "label": "Universal Differential Equation (UDE)", "type": "concept", "domain": "d4", "content": "Hybrid model where known mechanistic terms remain explicit and unknown terms are learned by a neural network. Bridges Manstein ODE and full PINN approaches.", "_kind": "node"}
+{"id": "neural_ode", "label": "Neural ODE", "type": "concept", "domain": "d4", "content": "Learned ordinary differential equation dx/dt = f_theta(x). Can be combined with known physics (UDE) for bioreactor dynamics.", "_kind": "node"}
+{"id": "kinetic_cell_model", "label": "Kinetic Cell Model", "type": "concept", "domain": "d1", "content": "Sub-model describing cell metabolism and growth kinetics. In advanced DTs it combines genome-scale metabolic networks with neural networks.", "_kind": "node"}
+{"id": "reactor_model", "label": "Reactor Model", "type": "concept", "domain": "d4", "content": "Mass-balance model of batch/fed-batch/perfusion reactor volumes and concentrations due to inlet/outlet streams.", "_kind": "node"}
+{"id": "extracellular_reaction_model", "label": "Extracellular Reaction Model", "type": "concept", "domain": "d4", "content": "Model of abiotic reactions in culture media, e.g. glutamine degradation.", "_kind": "node"}
+{"id": "model_mismatch_correction", "label": "Model mismatch correction", "type": "concept", "domain": "d4", "content": "Learned correction that refines low-fidelity digital twin or simulation predictions using real data. Essential for trustworthy multi-fidelity BO.", "_kind": "node"}
+{"id": "prediction_confidence_score", "label": "Prediction confidence score", "type": "concept", "domain": "d6", "content": "Normalized score derived from model predictive uncertainty (e.g. 95% CI width). Drives Human-on-the-loop escalation for DT/BO/MPC proposals.", "_kind": "node"}
+{"id": "data_requirement_pinn", "label": "Data requirement for PINN/hybrid models", "type": "concept", "domain": "d4", "content": "Industry rule-of-thumb: hybrid ODE+NN needs ~50-100 batches, pure NN needs 200-500 batches, PINN ~30-80 batches. CHO/microbial-derived figures; iPSC-native requirements are unverified and likely higher.", "_kind": "node"}
+{"id": "src_thirugnanasambandam_2025", "label": "Thirugnanasambandam et al. 2025 (Comput Chem Eng)", "type": "source", "domain": "d4", "content": "Dual-ANN PINN framework for generic bioreactor modelling; shows extrapolation limits under time-varying controls.", "_kind": "node"}
+{"id": "src_yang_2024_pinn", "label": "Yang et al. 2024 (Ind Eng Chem Res)", "type": "source", "domain": "d4", "content": "Hybrid PINN model for large-scale pilot CHO fed-batch culture. CHO example, not directly transferable to iPSC.", "_kind": "node"}
+{"id": "src_catalao_2025", "label": "Catalão et al. 2025 (J Process Control)", "type": "source", "domain": "d4", "content": "Bioprocess MPC with physics-informed neural networks, microbial community PHA production.", "_kind": "node"}
+{"id": "src_patel_2024", "label": "Patel et al. 2024 (ADCHEM)", "type": "source", "domain": "d4", "content": "MPC using physics-informed neural networks for DAE systems with ResNet + NTK training.", "_kind": "node"}
+{"id": "src_shih_2025", "label": "Shih, Jiang & Liang 2025 (NeurIPS / arXiv)", "type": "source", "domain": "d4", "content": "Extended Fiducial Inference for rigorous uncertainty quantification in PINNs without subjective priors/dropout rates.", "_kind": "node"}
+{"id": "src_nobar_2025", "label": "Nobar et al. 2025 (arXiv)", "type": "source", "domain": "d4", "content": "Guided multi-fidelity Bayesian optimization with learned correction model for digital twin controller tuning.", "_kind": "node"}
+{"id": "src_bioprocesstools_2026", "label": "Bioprocesstools 2026: AI and ML for Bioprocess Optimization", "type": "source", "domain": "d4", "content": "Industry survey of ML method data requirements for bioprocess optimization.", "_kind": "node"}
+{"id": "src_bioprocessintl_2026", "label": "Bioprocess International 2026: Multifidelity Optimization in Biopharma", "type": "source", "domain": "d4", "content": "Case study of multi-fidelity BO in mAb process with mechanistic simulator bias up to 15%.", "_kind": "node"}
+{"id": "src_yokogawa_pharma40", "label": "Yokogawa: Building Intelligent processes for Pharma 4.0", "type": "source", "domain": "d8", "content": "Yokogawa Insilico digital twin architecture: Reactor + Extracellular Reaction + Kinetic Cell models.", "_kind": "node"}
+{"id": "src_pharma_manufacturing_2022", "label": "Pharma Manufacturing 2022: Pharma Innovation Awards", "type": "source", "domain": "d8", "content": "Yokogawa Insilico Digital Twin Factory award and up to 50% experimental effort reduction claim.", "_kind": "node"}
+{"id": "raman_calibration_ipsc", "label": "iPSC 浮遊凝集体 Raman 校正戦略", "type": "concept", "domain": "d7", "content": "iPSC 浮遊/凝集体バイオリアクターにおける in-line Raman の再校正アプローチ。Nova FLEX2 を正解ラベル、capacitance を VCD anchor、凝集体画像を光散乱補正の共変量として用いる。CHO 由来モデルは転用不可。v1 では Nova 校正後のオプション、v2 以降の閉ループ入力昇格を目指す。〔推定：設計提案〕", "_kind": "node"}
+{"id": "raman_pls_model", "label": "Raman PLS chemometric モデル", "type": "concept", "domain": "d4", "content": "Raman スペクトルから glucose/lactate/glutamine 等を推定する部分最小二乗回帰モデル。前処理（ベースライン補正、Savitzky-Golay 微分、SNV/MSC）、変数選択、leave-one-batch-out 交差検証、外部検証を含む。iPSC では凝集体・高密度細胞による光散乱補正が必要。〔推定：CHO 事例を参考に iPSC 再解釈〕", "_kind": "node"}
+{"id": "raman_reference_nova", "label": "Nova FLEX2 Raman 正解ラベル", "type": "concept", "domain": "d7", "content": "Raman PLS モデルの校正に使用する at-line リファレンス計測。Nova BioProfile FLEX2 による glucose/lactate/glutamine/osmolality/viability/細胞径等の多パラメータ正解。ALCOA-lite でサンプル時刻・スペクトル ID・モデル version と紐付ける。〔事実：Nova FLEX2 は 16 項 at-line analyzer; 推定：Raman 校正用途〕", "_kind": "node"}
+{"id": "raman_cell_scattering", "label": "Raman 細胞光散乱", "type": "concept", "domain": "d7", "content": "懸濁細胞・凝集体による Mie 散乱により Raman 強度が減衰する現象。Beer-Lambert 則では記述できず、細胞密度との非線形関係が知られる。iPSC 凝集体（150–350 µm）は 785 nm レーザーに対して大きな散乱体となり、スペクトルベースラインと強度に影響を与える。〔事実：Yang 2024 J Biotechnol 396:41-52 DOI:10.1016/j.jbiotec.2024.10.007; 推定：iPSC 凝集体への適用〕", "_kind": "node"}
+{"id": "raman_aggregate_interference", "label": "Raman 凝集体干渉", "type": "concept", "domain": "d7", "content": "凝集体径・密度の増大が Raman プローブの光路長と散乱断面積を変化させ、代謝物推定精度を低下させる要因。凝集体径は培養日数とともに増大し（95 µm → 530 µm）、多能性維持のため 400 µm 以下が推奨される。〔事実：Eppendorf AN485; StemCell mTeSR 3D manual; 推定：Raman 干渉〕", "_kind": "node"}
+{"id": "raman_cho_to_ipsc_transfer", "label": "CHO→iPSC Raman モデル転移制限", "type": "concept", "domain": "d4", "content": "CHO/mAb 由来の chemometric モデルを iPSC 浮遊凝集体に直接転用できない制約。培地マトリックス、代謝プロファイル、細胞サイズ/凝集体構造、品質指標が異なる。クローン間・スケール間転移すら補正を要する事例が報告されている。〔推定：Pétillot 2020 DOI:10.1002/eng2.12230; Machleidt 2024 DOI:10.1002/biot.202300289; Rowland-Jones 2021 DOI:10.1002/btpr.3074〕", "_kind": "node"}
+{"id": "raman_model_lifecycle", "label": "Raman モデルライフサイクル管理", "type": "concept", "domain": "d6", "content": "Raman PLS モデルの version 管理、再校正トリガ（培地ロット変更、細胞株変更、プローブ交換、スケール変更）、性能モニタリング、監査証跡を含む技術的統制。ALCOA-lite・GAMP5 AI/ML Appendix D11 に準じた扱い。〔推定：GAMP5 2nd Ed D11; FDA data integrity guidance〕", "_kind": "node"}
+{"id": "raman_confidence_score", "label": "Raman 推定信頼度スコア", "type": "concept", "domain": "d4", "content": "Raman PLS モデルの予測不確実性を定量化するスコア（Q 残差、Hotelling T²、予測分散、校正範囲外判定）。低信頼度時は Human-on-the-loop 承認へエスカレーションし、Nova FLEX2 値を優先する。〔推定：設計提案〕", "_kind": "node"}
+{"id": "src_abu_absi_2011", "label": "Abu-Absi et al. 2011 in-line Raman CHO", "type": "source", "domain": "d7", "content": "Real time monitoring of multiple parameters in mammalian cell culture bioreactors using an in-line Raman spectroscopy probe. Biotechnol Bioeng 108(5):1215-1221. CHO fed-batch で glucose/lactate/glutamine/glutamate/ammonium/VCD/TCD の同時 in-line 予測を実証。DOI:10.1002/bit.23023", "_kind": "node"}
+{"id": "src_matthews_2016", "label": "Matthews et al. 2016 Raman 乳酸閉ループ制御", "type": "source", "domain": "d7", "content": "Closed loop control of lactate concentration in mammalian cell culture by Raman spectroscopy leads to improved cell density, viability, and biopharmaceutical protein production. Biotechnol Bioeng 113(11):2416-2424. Raman PLS ベースの乳酸閉ループ制御で培養期間延長・収量向上。DOI:10.1002/bit.26018", "_kind": "node"}
+{"id": "src_berry_2015", "label": "Berry et al. 2015 cross-scale Raman CHO", "type": "source", "domain": "d7", "content": "Cross-scale predictive modeling of CHO cell culture growth and metabolites using Raman spectroscopy and multivariate analysis. Biotechnol Prog 31(2):566-577. Raman モデルのスケール横断予測。DOI:10.1002/btpr.2035", "_kind": "node"}
+{"id": "src_yan_2024", "label": "Yan et al. 2024 Raman バッチ数影響", "type": "source", "domain": "d7", "content": "Development of an in-line Raman analytical method for commercial-scale CHO cell culture process monitoring: influence of measurement channels and batch number on model performance. Biotechnol J 19(1):2300395. 商業規模 CHO での in-line Raman 法開発。チャネル数とバッチ数がモデル性能に与える影響を評価。DOI:10.1002/biot.202300395", "_kind": "node"}
+{"id": "src_costa_2024", "label": "Costa et al. 2024 Raman cell therapy review", "type": "source", "domain": "d7", "content": "Harnessing Raman spectroscopy for cell therapy bioprocessing. Biotechnol Adv 2024. Cell therapy 製造における Raman の包括レビュー。細胞密度、生存率、代謝物、細胞同一性バイオマーカーの同時計測可能性を議論。DOI:10.1016/j.biotechadv.2024.108166", "_kind": "node"}
+{"id": "src_yang_2024_raman", "label": "Yang et al. 2024 Raman 細胞散乱補正", "type": "source", "domain": "d7", "content": "In-line monitoring of bioreactor by Raman spectroscopy: direct use of a standard-based model through cell-scattering correction. J Biotechnol 396:41-52 (2024). 酵母培養において細胞散乱による Raman 強度減衰を非線形式で補正し、標準液ベース PLS モデルを直接使用。DOI:10.1016/j.jbiotec.2024.10.007", "_kind": "node"}
+{"id": "src_petillot_2020", "label": "Pétillot et al. 2020 Raman calibration transfer", "type": "source", "domain": "d7", "content": "Calibration transfer for bioprocess Raman monitoring using Kennard-Stone piecewise direct standardization and multivariate algorithms. Eng Rep 2(11):e12230. バイオプロセス Raman モデルのキャリブレーション転移の困難性と補正手法。DOI:10.1002/eng2.12230", "_kind": "node"}
+{"id": "src_machleidt_2024", "label": "Machleidt et al. 2024 cross-clone Raman CHO", "type": "source", "domain": "d7", "content": "Feasibility and performance of cross-clone Raman calibration models in CHO cultivation. Biotechnol J 19(1):2300289. CHO クローン間でも Raman 校正モデルの性能が制限されることを示唆。DOI:10.1002/biot.202300289", "_kind": "node"}
+{"id": "src_rowland_jones_2021", "label": "Rowland-Jones et al. 2021 Raman scale transfer", "type": "source", "domain": "d7", "content": "Spectroscopy integration to miniature bioreactors and large scale production bioreactors—increasing current capabilities and model transfer. Biotechnol Prog 37(1):e3074. ミニバイオリアクタから大規模槽への Raman モデル転移の課題。DOI:10.1002/btpr.3074", "_kind": "node"}
+{"id": "src_bioprocesstools_raman", "label": "Bioprocess Tools Raman monitoring guide", "type": "source", "domain": "d7", "content": "How to Use Raman Spectroscopy for Real-Time Bioprocess Monitoring. PLS モデル構築ワークフロー、前処理、5–15 バッチ校正、性能指標（RMSEP/R²/bias）の実務ガイド。URL:https://bioprocesstools.com/blog/raman-spectroscopy-bioprocess-monitoring/", "_kind": "node"}
+{"id": "src_metrohm_an_pan_1065", "label": "Metrohm 2060 Raman cell culture AN-PAN-1065", "type": "source", "domain": "d7", "content": "Inline monitoring of cell cultures with Raman spectroscopy. Metrohm 2060 Raman Analyzer による細胞培養 glucose/lactate in-line 計測アプリケーションノート。SEP glucose 0.20 g/L、lactate 0.12 g/L。URL:https://www.metrohm.com/en/applications/application-notes/prozess-applikationen-anpan/an-pan-1065.html", "_kind": "node"}
+{"id": "src_repligen_maverick", "label": "Repligen MAVERICK Raman PAT", "type": "source", "domain": "d8", "content": "Instant Implementation of Raman-Based PAT With MAVERICK System for Monitoring Glucose and Lactate. de novo モデルによる glucose/lactate/biomass 計測。複数哺乳類培地で線形性・選択性を検証。URL:https://www.repligen.com/Products/analytics/maverick/Resources/DOC043_1.PDF", "_kind": "node"}
+{"id": "src_yokogawa_2023", "label": "Yokogawa Raman calibration model without culture data", "type": "source", "domain": "d8", "content": "Yokogawa Electric / Kwansei Gakuin University. Development of Raman calibration model without culture data for in-line cell culture monitoring. glucose RMSEP 0.23 g/L、lactate 0.29 g/L、antibody 0.20 g/L を報告。原論文確認中。URL:https://www.spectroscopyonline.com/view/using-a-new-raman-method-for-real-time-inline-cell-culture-monitoring", "_kind": "node"}
+{"id": "add_cho_ipsc_cho_metabolism", "label": "CHO 代謝プロファイル", "type": "concept", "domain": "d1", "content": "ハムスター卵巢由来 CHO 細胞の代謝特性。高グルコース消費、活発な乳酸産生、グルタミン分解によるアンモニア蓄積、mAb タイトル最大化が最適化目標。iPSC にはそのまま転用不可。", "_kind": "node"}
+{"id": "add_cho_ipsc_ipsc_metabolism", "label": "iPSC 代謝プロファイル", "type": "concept", "domain": "d1", "content": "ヒト多能性幹細胞 iPSC の代謝特性。highly glycolytic で高密度化に伴いグルコース消費と乳酸分泌が急増。乳酸蓄積・浸透圧ピーク・凝集体サイズが成長制限因子。多能性維持が品質目標。", "_kind": "node"}
+{"id": "add_cho_ipsc_glycolytic_shift", "label": "iPSC の高解糖性シフト", "type": "concept", "domain": "d1", "content": "iPSC が未分化状態で解糖系を優位に使う代謝特性。高密度培養ではグルコース供給と乳酸洗浄のトレードオフが顕在化し、灌流制御の中核となる。", "_kind": "node"}
+{"id": "add_cho_ipsc_lactate_threshold", "label": "乳酸閾値の細胞種差", "type": "concept", "domain": "d7", "content": "CHO では株により 15–50 mM の阻害閾値が報告される。iPSC では Manstein 2021 のモデル値 K_Lac=50 mM が用いられるが、実際の iPSC 株・培地で再校正が必要。CHO 値をそのまま転用しない。", "_kind": "node"}
+{"id": "add_cho_ipsc_ammonia_threshold", "label": "アンモニア閾値の未確定性", "type": "concept", "domain": "d7", "content": "CHO では 5 mM で成長阻害が報告されるが、iPSC のネイティブ閾値は未確定。auto_cell A 層では監視値として扱い、実データまたは文献調査で再校正。", "_kind": "node"}
+{"id": "add_cho_ipsc_osmolality_threshold", "label": "浸透圧閾値の細胞種差", "type": "concept", "domain": "d7", "content": "CHO/哺乳類培養では 380–450 mOsm/kg 超で成長低下が報告される。iPSC では Manstein 2021 が K_Osm=500 mOsm/kg を採用。培地・密度依存で再校正要。", "_kind": "node"}
+{"id": "add_cho_ipsc_glucose_threshold", "label": "グルコース閾値の細胞種差", "type": "concept", "domain": "d7", "content": "CHO では 2–3 g/L（11–17 mM）維持が推奨される。iPSC では Manstein 2021 が K_Glc=1.5 mM を採用。iPSC は低グルコースで飢餓制限を受けやすい。", "_kind": "node"}
+{"id": "add_cho_ipsc_aggregate_oxygen_diffusion", "label": "凝集体内酸素拡散限界", "type": "concept", "domain": "d1", "content": "iPSC 凝集体では径が大きくなると中心部への酸素/栄養拡散が制限され壊死コアが形成。100–200 µm の拡散距離、300 µm 以下の径制御が目安。", "_kind": "node"}
+{"id": "add_cho_ipsc_aggregate_size_cpp", "label": "凝集体サイズを CPP として扱う", "type": "concept", "domain": "d4", "content": "iPSC 浮遊培養では凝集体径が酸素拡散、シアストレス、未分化性維持を同時に規定する独立した CPP。平均径だけでなく大径凝集体割合も考慮。", "_kind": "node"}
+{"id": "add_cho_ipsc_shear_sensitivity", "label": "iPSC のシア感受性", "type": "concept", "domain": "d4", "content": "iPSC は攪拌によるシアストレスに敏感。Vertical-Wheel では 40–60 rpm が最適、DASbox では 80 rpm（150mL）が報告。反応器形状とスケールで再設定必要。", "_kind": "node"}
+{"id": "add_cho_ipsc_mab_titer_objective", "label": "CHO の mAb タイトル目的関数", "type": "concept", "domain": "d4", "content": "CHO fed-batch/perfusion の最適化目標。抗体タイトル（g/L）、viable cell density × specific productivity、糖鎖パターン（CQA）。iPSC 目的関数とは本質的に異なる。", "_kind": "node"}
+{"id": "add_cho_ipsc_pluripotency_objective", "label": "iPSC の多能性品質目的関数", "type": "concept", "domain": "d4", "content": "iPSC 浮遊拡大の最適化目標。細胞収量 × 生存率 × 多能性マーカー陽性率（OCT4/SOX2/NANOG/SSEA/TRA）× 凝集体適正サイズ。重みは細胞株・用途で変動。", "_kind": "node"}
+{"id": "add_cho_ipsc_qc_marker_panel", "label": "iPSC 多能性 QC マーカーパネル", "type": "concept", "domain": "d1", "content": "iPSC の未分化性を評価するマーカー群。核内転写因子 OCT4/SOX2/NANOG、細胞表面マーカー SSEA-3/SSEA-4/TRA-1-60/TRA-1-81、核型/同一性。offline/run 単位で測定。", "_kind": "node"}
+{"id": "add_cho_ipsc_transfer_caution", "label": "CHO→iPSC 知見転用注意", "type": "concept", "domain": "d4", "content": "CHO 由来の CPP 数値・制御戦略・目的関数を iPSC にそのまま転用しないこと。細胞種・培地・反応器形状・製品特性（mAb vs 細胞製品）の違いを再解釈。", "_kind": "node"}
+{"id": "add_cho_ipsc_cpp_reinterpretation", "label": "CPP の iPSC 再解釈", "type": "concept", "domain": "d4", "content": "CHO/mAb 中心の調査レポートから得られた知見を、iPSC 浮遊/凝集体灌流の文脈に再解釈する設計活動。L1 レシピ、L2 BO、L3 HMI に反映。", "_kind": "node"}
+{"id": "src_add_cho_ipsc_manstein2021", "label": "Manstein & Zweigerdt 2021 hiPSC perfusion", "type": "source", "domain": "d1", "content": "hPSC 灌流撹拌槽高密度培養。7 日で 35×10⁶ cells/mL、乳酸/浸透圧/グルコース制御、6 項 Monod モデル。", "_kind": "node"}
+{"id": "src_add_cho_ipsc_borys2021", "label": "Borys et al. 2021 Vertical-Wheel hiPSC", "type": "source", "domain": "d4", "content": "Vertical-Wheel 撹拌槽での hiPSC 凝集体拡大。40 rpm 最適、>400 µm で壊死リスク。", "_kind": "node"}
+{"id": "src_add_cho_ipsc_huang2020", "label": "Huang et al. 2020 PSC 10L stirred tank manufacturing", "type": "source", "domain": "d1", "content": "10 L 撹拌槽での PSC 製造プロセス開発。凝集体サイズ 300 µm 制限、酸素拡散限界 100–200 µm。", "_kind": "node"}
+{"id": "src_add_cho_ipsc_xing2008", "label": "Xing et al. 2008 CHO metabolite inhibition thresholds", "type": "source", "domain": "d7", "content": "CHO 培養における乳酸・アンモニア・浸透圧・pCO₂ の阻害閾値多変量解析。iPSC への直接転用不可。", "_kind": "node"}
+{"id": "src_add_cho_ipsc_toussaint2016", "label": "Toussaint et al. 2016 CHO lactate metabolism engineering", "type": "source", "domain": "d1", "content": "CHO の乳酸代謝改変（PYC2）による抗体タイトル向上。CHO 特異的戦略。", "_kind": "node"}
+{"id": "src_add_cho_ipsc_mabion2025", "label": "Mabion 2025 CHO metabolite analysis guide", "type": "source", "domain": "d7", "content": "CHO 培養の代謝物/栄養解析に関する業界ガイダンス。乳酸・アンモニア・浸透圧の影響。", "_kind": "node"}
+{"id": "src_add_cho_ipsc_gfi2025", "label": "GFI 2025 Cultivated meat techno-economics report", "type": "source", "domain": "d7", "content": "哺乳類細胞培養における乳酸・浸透圧の阻害メカニズムと閾値範囲。CHO 培養知見を含む。", "_kind": "node"}
+{"id": "src_add_cho_ipsc_seo2021", "label": "Seo et al. 2021 Vertical-Wheel iPSC aggregate DoE", "type": "source", "domain": "d4", "content": "Vertical-Wheel での iPSC 凝集体安定性 DoE。OCT4/SOX2/NANOG の個別最適化と多能性維持。", "_kind": "node"}
+{"id": "src_add_cho_ipsc_stemcellpis", "label": "STEMCELL hPSC aggregate culture PIS", "type": "source", "domain": "d1", "content": "hPSC 凝集体培養プロトコル。理想平均凝集体径 50–200 µm。", "_kind": "node"}
+{"id": "src_add_cho_ipsc_amsbio", "label": "Amsbio stem cell QC guide", "type": "source", "domain": "d1", "content": "幹細胞品質管理ガイド。OCT4/SOX2/NANOG/SSEA/TRA 等の多能性マーカー。", "_kind": "node"}
+{"id": "src_add_cho_ipsc_chen2014", "label": "Chen et al. 2014 hPSC culture considerations", "type": "source", "domain": "d1", "content": "hPSC 培養の維持・拡大・治療応用における考慮事項。酸素拡散限界 100–200 µm。", "_kind": "node"}
+{"id": "annex22", "label": "PIC/S GMP Annex 22（AI）", "type": "concept", "domain": "d6", "content": "PIC/S・EU GMP の AI/ML 専用アネックス（2025-07-07 草案公開）。クリティカル用途では静的・決定論的 AI/ML モデルのみ許容し、動的学習・確率的出力・生成 AI/LLM を禁止。非クリティカル用途の生成 AI は HITL 下で使用可能。Annex 11 上に位置づけられる。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}, {"title": "PIC/S news — Joint stakeholders consultation on Chapter 4 / Annex 11 / Annex 22", "url": "https://picscheme.org/en/news/joint-stakeholders-consultation-on-the-revision-of-chapter-4"}], "_kind": "node"}
+{"id": "critical_ai", "label": "クリティカル AI", "type": "concept", "domain": "d6", "content": "患者安全・製品品質・データインテグリティに直接影響する GMP 判断を支援・自動化する AI/ML モデル。Annex 22 では静的・決定論的モデルのみ許可され、厳格な検証・監視・説明性が求められる。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}], "_kind": "node"}
+{"id": "noncritical_ai", "label": "非クリティカル AI", "type": "concept", "domain": "d6", "content": "文書作成、トレーニング、スケジューリング、非 GMP 傾向分析など、患者安全・品質・データ完全性に直接影響しない AI。生成 AI/LLM も HITL 下で使用可能。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}], "_kind": "node"}
+{"id": "static_model", "label": "静的 AI モデル", "type": "concept", "domain": "d6", "content": "デプロイ後に新データを取り込んで性能を適応させない凍結モデル。Annex 22 クリティカル用途で要求される。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}], "_kind": "node"}
+{"id": "deterministic_output", "label": "決定論的出力", "type": "concept", "domain": "d6", "content": "同一入力に対し同一出力を返すモデル特性。Annex 22 クリティカル用途で必須。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}], "_kind": "node"}
+{"id": "dynamic_model", "label": "動的 AI モデル", "type": "concept", "domain": "d6", "content": "使用中又は新データを継続的・自動的に学習し性能を適応させるモデル。Annex 22 ではクリティカル GMP 用途で禁止。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}], "_kind": "node"}
+{"id": "probabilistic_model", "label": "確率的 AI モデル", "type": "concept", "domain": "d6", "content": "同一入力でも異なる出力を生じうるモデル。Annex 22 ではクリティカル GMP 用途で禁止。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}], "_kind": "node"}
+{"id": "generative_ai", "label": "生成 AI", "type": "concept", "domain": "d6", "content": "テキスト・画像等を生成する確率的モデル群。クリティカル GMP 用途では禁止され、非クリティカル用途で HITL 下でのみ使用可能。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}], "_kind": "node"}
+{"id": "hitl", "label": "Human-in-the-Loop（HITL）", "type": "concept", "domain": "d6", "content": "AI 出力を適格な人間がレビュー・承認する仕組み。Annex 22 では非クリティカル AI やテスト負荷が軽減されたクリティカル AI で要求される。auto_cell では Human-on-the-loop として実装。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}], "_kind": "node"}
+{"id": "xai", "label": "説明可能 AI（XAI）", "type": "concept", "domain": "d6", "content": "AI 判断の根拠を人間が理解・監査できる技術。Annex 22 では特徴量帰属（feature attribution）の記録を要求。SHAP・LIME・ヒートマップ等が例。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}], "_kind": "node"}
+{"id": "confidence_score", "label": "信頼度スコア", "type": "concept", "domain": "d6", "content": "AI モデルの予測・分類ごとの信頼度を数値化したもの。Annex 22 では低信頼度出力を undecided として人間レビューへルーティングすることを求める。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}], "_kind": "node"}
+{"id": "feature_attribution", "label": "特徴量帰属", "type": "concept", "domain": "d6", "content": "モデル出力に寄与した入力特徴量を特定・記録する技術。XAI の中核。Annex 22 8.Explainability で要求。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}], "_kind": "node"}
+{"id": "drift_monitoring", "label": "ドリフト監視", "type": "concept", "domain": "d6", "content": "AI モデルの性能劣化や入力データ分布の変化を継続的に監視する仕組み。Annex 22 10.Operation で要求。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}], "_kind": "node"}
+{"id": "test_data_independence", "label": "テストデータ独立性", "type": "concept", "domain": "d6", "content": "テスト用データが訓練・検証に使用されないよう技術的・手続き的に保証すること。Annex 22 6.Test Data Independency で要求。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}], "_kind": "node"}
+{"id": "staff_independence", "label": "職員独立性", "type": "concept", "domain": "d6", "content": "テストデータにアクセスした職員が同じモデルの訓練・検証に関与しないこと。不可能な場合は dual control/4-eyes で緩和。Annex 22 6.5 で要求。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}], "_kind": "node"}
+{"id": "data_segregation", "label": "データ分離", "type": "concept", "domain": "d6", "content": "訓練・検証・テスト・運用データを分離し、混同・漏洩を防ぐ技術的管理。Annex 22 の test data independency と運用監視の前提。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}], "_kind": "node"}
+{"id": "static_deterministic_proof", "label": "静的決定論的証明", "type": "concept", "domain": "d6", "content": "AI モデルが静的（凍結パラメータ）かつ決定論的（同一入力→同一出力）であることを、チェックサム・固定シード・再現性テスト・モデルカードで証明する手法。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}], "_kind": "node"}
+{"id": "esignature", "label": "電子署名", "type": "concept", "domain": "d6", "content": "電子的な承認・検証を行う仕組み。R&D 一次では PIN/パスフレーズ+監査ログで済ませ、GMP 移行時に 21 CFR Part 11 / Annex 11 準拠の完全電子署名へ移行。", "sources": [{"title": "21 CFR Part 11 — Electronic Records; Electronic Signatures", "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-11"}], "_kind": "node"}
+{"id": "gamp_ai_lifecycle", "label": "GAMP5 AI ライフサイクル", "type": "concept", "domain": "d6", "content": "ISPE GAMP 5 Appendix D11 及び GAMP AI Guide が定める concept / project / operation / retirement の AI 有効化システムライフサイクル。Annex 22 実装の業界標準フレームワーク。", "sources": [{"title": "ISPE GAMP Guide: Artificial Intelligence (2025)", "url": "https://ispe.org/publications/guidance-documents/gamp-guide-artificial-intelligence"}], "_kind": "node"}
+{"id": "src_pics_annex22_draft", "label": "PIC/S GMP Annex 22 草案", "type": "source", "domain": "d6", "content": "EudraLex Volume 4, Draft Annex 22: Artificial Intelligence, published 2025-07-07 for PIC/S and EU consultation. 患者安全・品質・データインテグリティに影響するクリティカル AI には静的決定論的モデルのみを許容。", "sources": [{"title": "EudraLex Volume 4 — Draft Annex 22: Artificial Intelligence (July 2025)", "url": "https://health.ec.europa.eu/document/download/5f38a92d-bb8e-4264-8898-ea076e926db6_en?filename=mp_vol4_chap4_annex22_consultation_guideline_en.pdf"}], "_kind": "node"}
+{"id": "src_eu_ai_act", "label": "EU AI Act (Regulation 2024/1689)", "type": "source", "domain": "d6", "content": "欧州 AI 規則。製造プロセス制御等の high-risk AI に透明性・文書化・人間監視を要求。Annex 22 と併用される。", "sources": [{"title": "Regulation (EU) 2024/1689 — Artificial Intelligence Act", "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689"}], "_kind": "node"}
+{"id": "add_aggimg_aggregate_imaging_survey", "label": "浮遊凝集体画像解析調査", "type": "concept", "domain": "d2", "content": "iPSC 浮遊/凝集体の径・形態を at-line/in-line で計測し、label-free DL で品質代理指標を推定する技術群。v1 では at-line 明視野/位相差画像を主軸とし、DHM/FBRM/FlowCam はオプション〜後段。", "sources": [{"title": "Borys et al. 2021, Stem Cell Res Ther 12:55", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/"}, {"title": "Eppendorf App Note 485: hiPSC Aggregate Expansion in Stirred-tank Bioreactors", "url": "https://www.eppendorf.com/product-media/doc/en/11804882/Fermentors-Bioreactors_Application-Note_485_SciVario_Human-Induced-Pluripotent-Stem-Cell-hiPSC-Aggregate-Expansion-Stirred-tank-Bioreactors-SciVario-twin-Bioprocess-Controller.pdf"}], "_kind": "node"}
+{"id": "add_aggimg_dhm_ovizio", "label": "DHM / Ovizio iLINE-F PRO", "type": "system", "domain": "d7", "content": "差分デジタルホログラフィー（D3HM）による in-line ラベルフリー細胞/凝集体モニタリング。VCD・viability・形態パラメータを連続計測。OPC UA 対応・cGMP 対応。iPSC 凝集体の個別径絶対精度には校正が必要。", "sources": [{"title": "Ovizio iLINE-F PRO commercial partnership (BioProcess Online)", "url": "https://www.bioprocessonline.com/doc/ovizio-imaging-systems-is-entering-into-a-commercial-partnership-with-merck-to-promote-its-iline-f-pro-solution-for-the-cell-gene-therapy-market-0001"}], "_kind": "node"}
+{"id": "add_aggimg_fbrm_cld_detail", "label": "FBRM 弦長分布（CLD）解析", "type": "concept", "domain": "d7", "content": "Focused Beam Reflectance Measurement による in-line chord length distribution。0.5–1000 µm のトレンド監視が可能。CLD は真の粒径分布ではなく、凝集体の非球形・透光性により径換算に誤差。画像法で補正が必要。", "sources": [{"title": "Mettler Toledo ParticleTrack with FBRM technology", "url": "https://www.mt.com/my/en/home/products/L1_AutochemProducts/particle-size-analyzers/particletrack-fbrm.html"}], "_kind": "node"}
+{"id": "add_aggimg_flowcam_atline", "label": "FlowCam at-line 凝集体画像", "type": "system", "domain": "d7", "content": "フローイメージング顕微鏡による at-line 粒子/凝集体解析。2 µm–1 mm の径・面積・円形度・アスペクト比を画像ベースで出力。高濃度・重なり凝集体では計数漏れあり。日次運用が現実的。", "sources": [{"title": "FlowCam — What is FlowCam?", "url": "https://www.fluidimaging.com/blog/what-is-the-flowcam"}], "_kind": "node"}
+{"id": "add_aggimg_brightfield_atline", "label": "明視野/位相差 at-line 凝集体画像", "type": "concept", "domain": "d7", "content": "iPSC 浮遊凝集体で最も普及している at-line 画像計測。サンプリング＋光学顕微鏡＋ImageJ 等で径・形態を手動/半自動計測。Kropp 型バイパス顕微鏡または自動サンプリング＋顕微鏡で自動化可能。", "sources": [{"title": "Kropp/Lipsitz et al. 2019, Sci Rep — at-line bypass imaging of hiPSC aggregates", "url": "https://www.nature.com/articles/s41598-019-48814-w"}, {"title": "Eppendorf App Note 485: hiPSC Aggregate Expansion in Stirred-tank Bioreactors", "url": "https://www.eppendorf.com/product-media/doc/en/11804882/Fermentors-Bioreactors_Application-Note_485_SciVario_Human-Induced-Pluripotent-Stem-Cell-hiPSC-Aggregate-Expansion-Stirred-tank-Bioreactors-SciVario-twin-Bioprocess-Controller.pdf"}], "_kind": "node"}
+{"id": "add_aggimg_aggregate_quality_proxy", "label": "凝集体品質代理指標", "type": "concept", "domain": "d2", "content": "凝集体画像特徴量（径分布、円形度、内部輝度勾配、輪郭粗さ等）から OCT4/SOX2/NANOG/SSEA4/TRA-1-60 等の offline 品質マーカーを推定する代理指標。v1 では未導入、v2 以降の DL 化候補。", "sources": [{"title": "Park et al. 2022, Deep learning predicts kidney organoid differentiation", "url": "https://www.krcp-ksn.org/upload/pdf/j-krcp-22-017.pdf"}, {"title": "Piotrowski et al. 2021, Comput Biol Med 129:104172", "url": "https://doi.org/10.1016/j.compbiomed.2020.104172"}], "_kind": "node"}
+{"id": "add_aggimg_dl_morphology_pluripotency", "label": "DL 形態から多能性予測", "type": "concept", "domain": "d2", "content": "明視野/位相差画像から CNN/U-Net/DenseNet 等で未分化/自発分化を予測する技術。2D コロニー・organoid で実証多数。iPSC 浮遊凝集体への転移は有望だが、教師データ・細胞株汎化が未解決。", "sources": [{"title": "Chu et al. 2023, Comput Methods Programs Biomed 229:107264", "url": "https://doi.org/10.1016/j.cmpb.2022.107264"}, {"title": "Waisman et al. 2019, Stem Cell Rep 12:845–859", "url": "https://doi.org/10.1016/j.stemcr.2019.02.004"}], "_kind": "node"}
+{"id": "add_aggimg_aggregate_size_pluripotency", "label": "凝集体径と多能性維持", "type": "concept", "domain": "d1", "content": "凝集体径が大きくなると拡散制限により内部の酸素/栄養濃度が低下し、未分化性マーカー（OCT4 等）が低下・壊死が増大する。Borys 2021 では >400 µm で壊死リスク。細胞株・培地による変動あり。", "sources": [{"title": "Borys et al. 2021, Stem Cell Res Ther 12:55", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/"}, {"title": "StemCell Technologies, Expansion of hPSCs as Aggregates in Suspension Culture Using mTeSR 3D", "url": "https://cdn.stemcell.com/media/files/manual/10000005520-Expansion_of_Human_Pluripotent_Stem_Cells_as_Aggregates_in_Suspension_Culture_Using_mTeSR_3D.pdf"}], "_kind": "node"}
+{"id": "add_aggimg_2d_to_aggregate_transfer", "label": "2D 画像解析→凝集体解析転移", "type": "concept", "domain": "d2", "content": "2D confluency は浮遊凝集体に不適用。コロニー形態分類・分化領域検出・増殖曲線予測の技術スタックは転移可能だが、教師ラベルと特徴量を凝集体の径・形態・内部構造に読み替える必要がある。", "sources": [{"title": "Gursky 2023, How Morphology of hPSCs Determines Clone Selection (IntechOpen)", "url": "https://www.intechopen.com/online-first/87934"}], "_kind": "node"}
+{"id": "add_aggimg_human_approval_imaging", "label": "画像品質代理指標の Human-on-the-loop", "type": "concept", "domain": "d6", "content": "DL 品質代理指標を BO 目的関数や passage トリガに使う場合、予測不確実性・OOD 検出により低信頼度の場合は研究者承認を必須とする。GAMP5 AI/ML Appendix D11 に準拠したモデル管理が前提。", "sources": [{"title": "auto_cell A 層要求仕様（Human-on-the-loop）", "url": "docs/design/requirements.md"}, {"title": "ADR-0001: thin LLM orchestrator over deterministic tools + Bayesian optimization", "url": "docs/design/adr/0001-control-architecture.md"}], "_kind": "node"}
+{"id": "add_aggimg_src_borys_2021", "label": "Borys et al. 2021 (hiPSC Vertical-Wheel)", "type": "source", "domain": "d4", "content": "Vertical-Wheel 撹拌槽での hiPSC 凝集体培養。40–80 rpm で day 5 径 169–275 µm、>400 µm で壊死リスク。PMC7805206。", "sources": [{"title": "Borys et al. 2021, Stem Cell Res Ther 12:55", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7805206/"}], "_kind": "node"}
+{"id": "add_aggimg_src_eppendorf_485", "label": "Eppendorf App Note 485 (hiPSC stirred-tank)", "type": "source", "domain": "d7", "content": "1 L DASGIP Spinner Vessel での hiPSC 凝集体拡大。day 0–5 で 0.5×10⁶ → 8×10⁶ cells/mL。凝集体径は at-line 明視野画像＋ImageJ で手動測定。", "sources": [{"title": "Eppendorf App Note 485", "url": "https://www.eppendorf.com/product-media/doc/en/11804882/Fermentors-Bioreactors_Application-Note_485_SciVario_Human-Induced-Pluripotent-Stem-Cell-hiPSC-Aggregate-Expansion-Stirred-tank-Bioreactors-SciVario-twin-Bioprocess-Controller.pdf"}], "_kind": "node"}
+{"id": "add_aggimg_src_stemcell_mtesr3d", "label": "StemCell mTeSR 3D suspension manual", "type": "source", "domain": "d1", "content": "hPSC 浮遊凝集体培養マニュアル。>400 µm で core が栄養欠乏・分化/細胞死。3–4 日ごとの継代を推奨。", "sources": [{"title": "StemCell Technologies, Expansion of hPSCs as Aggregates in Suspension Culture Using mTeSR 3D", "url": "https://cdn.stemcell.com/media/files/manual/10000005520-Expansion_of_Human_Pluripotent_Stem_Cells_as_Aggregates_in_Suspension_Culture_Using_mTeSR_3D.pdf"}], "_kind": "node"}
+{"id": "add_aggimg_src_kropp_2019", "label": "Kropp/Lipsitz et al. 2019 (hiPSC bypass imaging)", "type": "source", "domain": "d7", "content": "hiPSC 撹拌懸濁培養の at-line バイパス顕微鏡画像。凝集体径・形態の自動計測への先行例。DOI 10.1038/s41598-019-48814-w。", "sources": [{"title": "Kropp/Lipsitz et al. 2019, Sci Rep", "url": "https://www.nature.com/articles/s41598-019-48814-w"}], "_kind": "node"}
+{"id": "add_aggimg_src_ovizio_ilinef", "label": "Ovizio iLINE-F PRO ベンダ資料", "type": "source", "domain": "d7", "content": "D3HM ベースの in-line ラベルフリー細胞/凝集体モニタリング。VCD・viability・形態パラメータ・OPC UA 対応。", "sources": [{"title": "Ovizio iLINE-F PRO commercial partnership", "url": "https://www.bioprocessonline.com/doc/ovizio-imaging-systems-is-entering-into-a-commercial-partnership-with-merck-to-promote-its-iline-f-pro-solution-for-the-cell-gene-therapy-market-0001"}], "_kind": "node"}
+{"id": "add_aggimg_src_fbrm_g400", "label": "Mettler Toledo FBRM 技術資料", "type": "source", "domain": "d7", "content": "FBRM 原理：回転レーザー後方散乱による chord length distribution。iPSC 凝集体では CLD→径換算に注意。", "sources": [{"title": "ParticleTrack with FBRM technology", "url": "https://www.mt.com/my/en/home/products/L1_AutochemProducts/particle-size-analyzers/particletrack-fbrm.html"}], "_kind": "node"}
+{"id": "add_aggimg_src_flowcam", "label": "FlowCam 技術資料", "type": "source", "domain": "d7", "content": "フローイメージング顕微鏡。2 µm–1 mm の粒子/凝集体画像解析。高濃度・重なり時は計数漏れ。", "sources": [{"title": "FlowCam — What is FlowCam?", "url": "https://www.fluidimaging.com/blog/what-is-the-flowcam"}], "_kind": "node"}
+{"id": "add_aggimg_src_chu_2023", "label": "Chu et al. 2023 (iPSC reprogramming DL)", "type": "source", "domain": "d2", "content": "明視野時系列画像から hiPSC 形成・コロニー形態を予測。CNN+U-Net+RNN。accuracy 0.8。DOI 10.1016/j.cmpb.2022.107264。", "sources": [{"title": "Chu et al. 2023, Comput Methods Programs Biomed 229:107264", "url": "https://doi.org/10.1016/j.cmpb.2022.107264"}], "_kind": "node"}
+{"id": "add_aggimg_src_park_2022", "label": "Park et al. 2022 (kidney organoid DL differentiation)", "type": "source", "domain": "d2", "content": "明視野画像から DenseNet121 で kidney organoid 分化を予測。qPCR 発現予測 PCC 0.783。", "sources": [{"title": "Park et al. 2022, Korean J Intern Med supplement", "url": "https://www.krcp-ksn.org/upload/pdf/j-krcp-22-017.pdf"}], "_kind": "node"}
+{"id": "add_aggimg_src_piotrowski_2021", "label": "Piotrowski et al. 2021 (hPSC DL segmentation)", "type": "source", "domain": "d2", "content": "hPSC 2D 培養のマルチクラス DL セグメンテーションによる培養状態自動評価。DOI 10.1016/j.compbiomed.2020.104172。", "sources": [{"title": "Piotrowski et al. 2021, Comput Biol Med 129:104172", "url": "https://doi.org/10.1016/j.compbiomed.2020.104172"}], "_kind": "node"}
+{"id": "add_aggimg_src_waisman_2019", "label": "Waisman et al. 2019 (early differentiation DL)", "type": "source", "domain": "d2", "content": "mESC の非常早期分化を DL で高精度予測。Stem Cell Rep 12:845–859。", "sources": [{"title": "Waisman et al. 2019, Stem Cell Rep 12:845–859", "url": "https://doi.org/10.1016/j.stemcr.2019.02.004"}], "_kind": "node"}
+{"id": "add_aggimg_src_maddah_2014", "label": "Maddah et al. 2014 (morphology-based iPSC evaluation)", "type": "source", "domain": "d2", "content": "time-lapse + 形態特徴量による iPSC コロニー品質自動評価。6 特徴量で accuracy 0.80–0.89。", "sources": [{"title": "Maddah et al. 2014, J Lab Autom 19:454–460", "url": "https://doi.org/10.1177/2211068214529287"}], "_kind": "node"}
+{"id": "add_aggimg_src_kato_2016", "label": "Kato et al. 2016 (colony morphology & gene expression)", "type": "source", "domain": "d2", "content": "hPSC コロニー形態のパラメトリック解析。形態カテゴリと遺伝子発現プロファイルが対応。Sci Rep 6:34009。", "sources": [{"title": "Kato et al. 2016, Sci Rep 6:34009", "url": "https://doi.org/10.1038/srep34009"}], "_kind": "node"}
+{"id": "add_aggimg_src_gursky_2023", "label": "Gursky 2023 (hPSC morphology review)", "type": "source", "domain": "d2", "content": "hPSC 形態と自動評価のレビュー。培地・マトリックス・細胞株による形態変動を指摘。", "sources": [{"title": "Gursky 2023, How Morphology of hPSCs Determines Clone Selection (IntechOpen)", "url": "https://www.intechopen.com/online-first/87934"}], "_kind": "node"}
+{"source": "root", "target": "d1", "rel": "contains", "_kind": "edge"}
+{"source": "root", "target": "d2", "rel": "contains", "_kind": "edge"}
+{"source": "root", "target": "d3", "rel": "contains", "_kind": "edge"}
+{"source": "root", "target": "d4", "rel": "contains", "_kind": "edge"}
+{"source": "root", "target": "d5", "rel": "contains", "_kind": "edge"}
+{"source": "root", "target": "d6", "rel": "contains", "_kind": "edge"}
+{"source": "root", "target": "d7", "rel": "contains", "_kind": "edge"}
+{"source": "root", "target": "d8", "rel": "contains", "_kind": "edge"}
+{"source": "d1", "target": "maint", "rel": "has", "_kind": "edge"}
+{"source": "d1", "target": "passage", "rel": "has", "_kind": "edge"}
+{"source": "d1", "target": "feeder", "rel": "has", "_kind": "edge"}
+{"source": "d1", "target": "diff", "rel": "has", "_kind": "edge"}
+{"source": "d1", "target": "signal", "rel": "has", "_kind": "edge"}
+{"source": "d1", "target": "suspension", "rel": "has", "_kind": "edge"}
+{"source": "d1", "target": "reprog", "rel": "has", "_kind": "edge"}
+{"source": "d1", "target": "qccrit", "rel": "has", "_kind": "edge"}
+{"source": "d2", "target": "bf", "rel": "has", "_kind": "edge"}
+{"source": "d2", "target": "conf", "rel": "has", "_kind": "edge"}
+{"source": "d2", "target": "morphcls", "rel": "has", "_kind": "edge"}
+{"source": "d2", "target": "diffdet", "rel": "has", "_kind": "edge"}
+{"source": "d2", "target": "growth", "rel": "has", "_kind": "edge"}
+{"source": "d2", "target": "dlmodel", "rel": "has", "_kind": "edge"}
+{"source": "d3", "target": "dualarm", "rel": "has", "_kind": "edge"}
+{"source": "d3", "target": "closeddev", "rel": "has", "_kind": "edge"}
+{"source": "d3", "target": "dispense", "rel": "has", "_kind": "edge"}
+{"source": "d3", "target": "transport", "rel": "has", "_kind": "edge"}
+{"source": "d3", "target": "motioncap", "rel": "has", "_kind": "edge"}
+{"source": "d4", "target": "sched", "rel": "has", "_kind": "edge"}
+{"source": "d4", "target": "loop", "rel": "has", "_kind": "edge"}
+{"source": "d4", "target": "bbo", "rel": "has", "_kind": "edge"}
+{"source": "d4", "target": "doe", "rel": "has", "_kind": "edge"}
+{"source": "d4", "target": "sdl", "rel": "has", "_kind": "edge"}
+{"source": "d4", "target": "rl", "rel": "has", "_kind": "edge"}
+{"source": "d5", "target": "sila", "rel": "has", "_kind": "edge"}
+{"source": "d5", "target": "opcua", "rel": "has", "_kind": "edge"}
+{"source": "d5", "target": "mtp", "rel": "has", "_kind": "edge"}
+{"source": "d5", "target": "orch", "rel": "has", "_kind": "edge"}
+{"source": "d5", "target": "gateway", "rel": "has", "_kind": "edge"}
+{"source": "d5", "target": "lims", "rel": "has", "_kind": "edge"}
+{"source": "d5", "target": "datamodel", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "gctp", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "ramlaw", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "alcoa", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "csv", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "part11", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "ebr", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "audit", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "capa", "rel": "has", "_kind": "edge"}
+{"source": "d7", "target": "envmon", "rel": "has", "_kind": "edge"}
+{"source": "d7", "target": "sterility", "rel": "has", "_kind": "edge"}
+{"source": "d7", "target": "cpv", "rel": "has", "_kind": "edge"}
+{"source": "d7", "target": "edge", "rel": "has", "_kind": "edge"}
+{"source": "d8", "target": "cira", "rel": "has", "_kind": "edge"}
+{"source": "d8", "target": "terumo", "rel": "has", "_kind": "edge"}
+{"source": "d8", "target": "pana", "rel": "has", "_kind": "edge"}
+{"source": "d8", "target": "kaneka", "rel": "has", "_kind": "edge"}
+{"source": "d8", "target": "rbi", "rel": "has", "_kind": "edge"}
+{"source": "d8", "target": "epistra", "rel": "has", "_kind": "edge"}
+{"source": "d8", "target": "moldev", "rel": "has", "_kind": "edge"}
+{"source": "d8", "target": "astellas", "rel": "has", "_kind": "edge"}
+{"source": "growth", "target": "passage", "rel": "triggers", "_kind": "edge"}
+{"source": "conf", "target": "sched", "rel": "feeds", "_kind": "edge"}
+{"source": "conf", "target": "loop", "rel": "feeds", "_kind": "edge"}
+{"source": "diffdet", "target": "qccrit", "rel": "evaluates", "_kind": "edge"}
+{"source": "morphcls", "target": "qccrit", "rel": "evaluates", "_kind": "edge"}
+{"source": "dlmodel", "target": "conf", "rel": "powers", "_kind": "edge"}
+{"source": "dlmodel", "target": "morphcls", "rel": "powers", "_kind": "edge"}
+{"source": "dlmodel", "target": "diffdet", "rel": "powers", "_kind": "edge"}
+{"source": "bf", "target": "dlmodel", "rel": "input_to", "_kind": "edge"}
+{"source": "loop", "target": "dispense", "rel": "commands", "_kind": "edge"}
+{"source": "loop", "target": "transport", "rel": "commands", "_kind": "edge"}
+{"source": "sched", "target": "loop", "rel": "drives", "_kind": "edge"}
+{"source": "bbo", "target": "signal", "rel": "optimizes", "_kind": "edge"}
+{"source": "bbo", "target": "diff", "rel": "optimizes", "_kind": "edge"}
+{"source": "doe", "target": "bbo", "rel": "formulates", "_kind": "edge"}
+{"source": "sdl", "target": "bbo", "rel": "uses", "_kind": "edge"}
+{"source": "sdl", "target": "loop", "rel": "extends", "_kind": "edge"}
+{"source": "rl", "target": "sdl", "rel": "advances", "_kind": "edge"}
+{"source": "passage", "target": "maint", "rel": "part_of", "_kind": "edge"}
+{"source": "signal", "target": "diff", "rel": "controls", "_kind": "edge"}
+{"source": "feeder", "target": "maint", "rel": "enables", "_kind": "edge"}
+{"source": "suspension", "target": "reprog", "rel": "scales", "_kind": "edge"}
+{"source": "reprog", "target": "maint", "rel": "precedes", "_kind": "edge"}
+{"source": "motioncap", "target": "passage", "rel": "reproduces", "_kind": "edge"}
+{"source": "dualarm", "target": "diff", "rel": "executes", "_kind": "edge"}
+{"source": "closeddev", "target": "maint", "rel": "executes", "_kind": "edge"}
+{"source": "dispense", "target": "maint", "rel": "executes", "_kind": "edge"}
+{"source": "sila", "target": "closeddev", "rel": "integrates", "_kind": "edge"}
+{"source": "sila", "target": "dualarm", "rel": "integrates", "_kind": "edge"}
+{"source": "sila", "target": "edge", "rel": "integrates", "_kind": "edge"}
+{"source": "opcua", "target": "closeddev", "rel": "integrates", "_kind": "edge"}
+{"source": "gateway", "target": "sila", "rel": "bridges_to", "_kind": "edge"}
+{"source": "orch", "target": "sched", "rel": "hosts", "_kind": "edge"}
+{"source": "orch", "target": "sila", "rel": "consumes", "_kind": "edge"}
+{"source": "datamodel", "target": "lims", "rel": "feeds", "_kind": "edge"}
+{"source": "lims", "target": "ebr", "rel": "produces", "_kind": "edge"}
+{"source": "edge", "target": "envmon", "rel": "carries", "_kind": "edge"}
+{"source": "envmon", "target": "maint", "rel": "monitors", "_kind": "edge"}
+{"source": "envmon", "target": "loop", "rel": "state_for", "_kind": "edge"}
+{"source": "sterility", "target": "closeddev", "rel": "guards", "_kind": "edge"}
+{"source": "cpv", "target": "qccrit", "rel": "verifies", "_kind": "edge"}
+{"source": "gctp", "target": "cira", "rel": "governs", "_kind": "edge"}
+{"source": "ramlaw", "target": "closeddev", "rel": "governs", "_kind": "edge"}
+{"source": "alcoa", "target": "ebr", "rel": "constrains", "_kind": "edge"}
+{"source": "alcoa", "target": "audit", "rel": "constrains", "_kind": "edge"}
+{"source": "alcoa", "target": "datamodel", "rel": "constrains", "_kind": "edge"}
+{"source": "csv", "target": "lims", "rel": "validates", "_kind": "edge"}
+{"source": "csv", "target": "loop", "rel": "validates", "_kind": "edge"}
+{"source": "part11", "target": "ebr", "rel": "requires", "_kind": "edge"}
+{"source": "part11", "target": "audit", "rel": "requires", "_kind": "edge"}
+{"source": "capa", "target": "sterility", "rel": "responds_to", "_kind": "edge"}
+{"source": "gctp", "target": "qccrit", "rel": "defines", "_kind": "edge"}
+{"source": "cira", "target": "closeddev", "rel": "uses", "_kind": "edge"}
+{"source": "cira", "target": "terumo", "rel": "partners", "_kind": "edge"}
+{"source": "cira", "target": "reprog", "rel": "pursues", "_kind": "edge"}
+{"source": "cira", "target": "maint", "rel": "pursues", "_kind": "edge"}
+{"source": "terumo", "target": "closeddev", "rel": "provides", "_kind": "edge"}
+{"source": "pana", "target": "closeddev", "rel": "builds", "_kind": "edge"}
+{"source": "pana", "target": "reprog", "rel": "automates", "_kind": "edge"}
+{"source": "kaneka", "target": "suspension", "rel": "demonstrates", "_kind": "edge"}
+{"source": "rbi", "target": "dualarm", "rel": "provides", "_kind": "edge"}
+{"source": "epistra", "target": "bbo", "rel": "provides", "_kind": "edge"}
+{"source": "moldev", "target": "conf", "rel": "implements", "_kind": "edge"}
+{"source": "moldev", "target": "diffdet", "rel": "implements", "_kind": "edge"}
+{"source": "moldev", "target": "loop", "rel": "implements", "_kind": "edge"}
+{"source": "astellas", "target": "dualarm", "rel": "uses", "_kind": "edge"}
+{"source": "src_kanda", "target": "bbo", "rel": "defines", "_kind": "edge"}
+{"source": "src_kanda", "target": "sdl", "rel": "defines", "_kind": "edge"}
+{"source": "src_kanda", "target": "diff", "rel": "demonstrates", "_kind": "edge"}
+{"source": "src_riken2020", "target": "growth", "rel": "demonstrates", "_kind": "edge"}
+{"source": "src_riken2020", "target": "loop", "rel": "demonstrates", "_kind": "edge"}
+{"source": "src_sila", "target": "sila", "rel": "specifies", "_kind": "edge"}
+{"source": "src_sila", "target": "orch", "rel": "informs", "_kind": "edge"}
+{"source": "src_gctp", "target": "gctp", "rel": "specifies", "_kind": "edge"}
+{"source": "src_cgt", "target": "alcoa", "rel": "explains", "_kind": "edge"}
+{"source": "src_cgt", "target": "csv", "rel": "explains", "_kind": "edge"}
+{"source": "src_cxa", "target": "conf", "rel": "illustrates", "_kind": "edge"}
+{"source": "src_cxa", "target": "diffdet", "rel": "illustrates", "_kind": "edge"}
+{"source": "src_susp", "target": "suspension", "rel": "reports", "_kind": "edge"}
+{"source": "d1", "target": "kinetics", "rel": "has", "_kind": "edge"}
+{"source": "kinetics", "target": "suspension", "rel": "reproduces", "_kind": "edge"}
+{"source": "kinetics", "target": "loop", "rel": "validates", "_kind": "edge"}
+{"source": "src_borys", "target": "suspension", "rel": "demonstrates", "_kind": "edge"}
+{"source": "src_kropp", "target": "suspension", "rel": "demonstrates", "_kind": "edge"}
+{"source": "src_traj", "target": "suspension", "rel": "reports", "_kind": "edge"}
+{"source": "src_manstein", "target": "kinetics", "rel": "defines", "_kind": "edge"}
+{"source": "src_manstein", "target": "suspension", "rel": "demonstrates", "_kind": "edge"}
+{"source": "src_galv", "target": "kinetics", "rel": "informs", "_kind": "edge"}
+{"source": "src_lads", "target": "opcua", "rel": "specifies", "_kind": "edge"}
+{"source": "gateway", "target": "opcua", "rel": "bridges_to", "_kind": "edge"}
+{"source": "d4", "target": "ctrl_split", "rel": "has", "_kind": "edge"}
+{"source": "ctrl_split", "target": "loop", "rel": "constrains", "_kind": "edge"}
+{"source": "csv", "target": "ctrl_split", "rel": "validates", "_kind": "edge"}
+{"source": "d5", "target": "devprofile", "rel": "has", "_kind": "edge"}
+{"source": "devprofile", "target": "opcua", "rel": "uses", "_kind": "edge"}
+{"source": "gateway", "target": "devprofile", "rel": "implements", "_kind": "edge"}
+{"source": "cpv", "target": "loop", "rel": "feeds", "_kind": "edge"}
+{"source": "src_manstein", "target": "cpv", "rel": "demonstrates", "_kind": "edge"}
+{"source": "recipe_executor", "target": "loop", "rel": "implements", "_kind": "edge"}
+{"source": "recipe_dsl", "target": "recipe_executor", "rel": "defines", "_kind": "edge"}
+{"source": "rule_engine", "target": "recipe_executor", "rel": "evaluates", "_kind": "edge"}
+{"source": "state_machine_l1", "target": "recipe_executor", "rel": "governs", "_kind": "edge"}
+{"source": "l0_local_pid", "target": "closeddev", "rel": "controls", "_kind": "edge"}
+{"source": "l0_fail_safe", "target": "l0_local_pid", "rel": "protects", "_kind": "edge"}
+{"source": "ctrl_split", "target": "l0_local_pid", "rel": "separates", "_kind": "edge"}
+{"source": "ctrl_split", "target": "recipe_executor", "rel": "separates", "_kind": "edge"}
+{"source": "ax_bayesian", "target": "bbo", "rel": "optimizes", "_kind": "edge"}
+{"source": "botorch", "target": "ax_bayesian", "rel": "powers", "_kind": "edge"}
+{"source": "multi_fidelity", "target": "kinetics", "rel": "uses", "_kind": "edge"}
+{"source": "multi_fidelity", "target": "bbo", "rel": "extends", "_kind": "edge"}
+{"source": "safe_bo", "target": "bbo", "rel": "constrains", "_kind": "edge"}
+{"source": "batch_bo", "target": "bbo", "rel": "extends", "_kind": "edge"}
+{"source": "llm_orchestrator", "target": "loop", "rel": "extends", "_kind": "edge"}
+{"source": "llm_orchestrator", "target": "human_approval", "rel": "mediates", "_kind": "edge"}
+{"source": "approval_workflow", "target": "human_approval", "rel": "requires", "_kind": "edge"}
+{"source": "approval_workflow", "target": "loop", "rel": "constrains", "_kind": "edge"}
+{"source": "idempotency", "target": "loop", "rel": "ensures", "_kind": "edge"}
+{"source": "validate_tool_call", "target": "recipe_executor", "rel": "constrains", "_kind": "edge"}
+{"source": "set_perfusion_rate", "target": "recipe_executor", "rel": "part_of", "_kind": "edge"}
+{"source": "set_agitation_rpm", "target": "recipe_executor", "rel": "part_of", "_kind": "edge"}
+{"source": "trigger_passage_l1", "target": "passage", "rel": "triggers", "_kind": "edge"}
+{"source": "take_sample_l1", "target": "cpv", "rel": "feeds", "_kind": "edge"}
+{"source": "recipe_executor", "target": "dispense", "rel": "commands", "_kind": "edge"}
+{"source": "recipe_executor", "target": "closeddev", "rel": "commands", "_kind": "edge"}
+{"source": "bbo", "target": "suspension", "rel": "optimizes", "_kind": "edge"}
+{"source": "kinetics", "target": "recipe_executor", "rel": "validates", "_kind": "edge"}
+{"source": "kinetics", "target": "cpp_glucose", "rel": "defines", "_kind": "edge"}
+{"source": "kinetics", "target": "cpp_lactate", "rel": "defines", "_kind": "edge"}
+{"source": "kinetics", "target": "cpp_glutamine", "rel": "defines", "_kind": "edge"}
+{"source": "kinetics", "target": "cpp_osmolality", "rel": "defines", "_kind": "edge"}
+{"source": "kinetics", "target": "cpp_aggregate_diameter", "rel": "defines", "_kind": "edge"}
+{"source": "src_manstein", "target": "cpp_perfusion_rate", "rel": "defines", "_kind": "edge"}
+{"source": "src_borys", "target": "cpp_agitation", "rel": "defines", "_kind": "edge"}
+{"source": "src_borys", "target": "cpp_aggregate_diameter", "rel": "constrains", "_kind": "edge"}
+{"source": "cpp_perfusion_rate", "target": "cpp_glucose", "rel": "controls", "_kind": "edge"}
+{"source": "cpp_perfusion_rate", "target": "cpp_lactate", "rel": "controls", "_kind": "edge"}
+{"source": "cpp_perfusion_rate", "target": "cpp_osmolality", "rel": "controls", "_kind": "edge"}
+{"source": "cpp_glucose", "target": "perfusion_trigger", "rel": "triggers", "_kind": "edge"}
+{"source": "cpp_lactate", "target": "perfusion_trigger", "rel": "triggers", "_kind": "edge"}
+{"source": "cpp_osmolality", "target": "perfusion_trigger", "rel": "triggers", "_kind": "edge"}
+{"source": "perfusion_trigger", "target": "tool_set_perfusion_rate", "rel": "commands", "_kind": "edge"}
+{"source": "ramp_limit", "target": "tool_set_perfusion_rate", "rel": "constrains", "_kind": "edge"}
+{"source": "ramp_limit", "target": "tool_set_agitation_rpm", "rel": "constrains", "_kind": "edge"}
+{"source": "cpp_aggregate_diameter", "target": "tool_trigger_passage", "rel": "triggers", "_kind": "edge"}
+{"source": "cpp_vcd", "target": "tool_trigger_passage", "rel": "triggers", "_kind": "edge"}
+{"source": "y_27632", "target": "passage", "rel": "part_of", "_kind": "edge"}
+{"source": "tool_trigger_passage", "target": "y_27632", "rel": "requires", "_kind": "edge"}
+{"source": "cpv", "target": "cpp_vcd", "rel": "measures", "_kind": "edge"}
+{"source": "cpv", "target": "cpp_glucose", "rel": "measures", "_kind": "edge"}
+{"source": "cpv", "target": "cpp_lactate", "rel": "measures", "_kind": "edge"}
+{"source": "cpv", "target": "cpp_glutamine", "rel": "measures", "_kind": "edge"}
+{"source": "cpv", "target": "cpp_osmolality", "rel": "measures", "_kind": "edge"}
+{"source": "cpv", "target": "cpp_ammonia", "rel": "measures", "_kind": "edge"}
+{"source": "cpv", "target": "cpp_viability", "rel": "measures", "_kind": "edge"}
+{"source": "envmon", "target": "cpp_ph", "rel": "measures", "_kind": "edge"}
+{"source": "envmon", "target": "cpp_do", "rel": "measures", "_kind": "edge"}
+{"source": "envmon", "target": "cpp_temp", "rel": "measures", "_kind": "edge"}
+{"source": "bbo", "target": "cpp_agitation", "rel": "optimizes", "_kind": "edge"}
+{"source": "bbo", "target": "cpp_perfusion_rate", "rel": "optimizes", "_kind": "edge"}
+{"source": "bbo", "target": "cpp_aggregate_diameter", "rel": "optimizes", "_kind": "edge"}
+{"source": "ctrl_split", "target": "cpp_ph", "rel": "constrains", "_kind": "edge"}
+{"source": "ctrl_split", "target": "cpp_do", "rel": "constrains", "_kind": "edge"}
+{"source": "ctrl_split", "target": "cpp_temp", "rel": "constrains", "_kind": "edge"}
+{"source": "ctrl_split", "target": "cpp_agitation", "rel": "constrains", "_kind": "edge"}
+{"source": "devprofile", "target": "cpp_ph", "rel": "contains", "_kind": "edge"}
+{"source": "devprofile", "target": "cpp_do", "rel": "contains", "_kind": "edge"}
+{"source": "devprofile", "target": "cpp_temp", "rel": "contains", "_kind": "edge"}
+{"source": "devprofile", "target": "cpp_agitation", "rel": "contains", "_kind": "edge"}
+{"source": "devprofile", "target": "cpp_perfusion_rate", "rel": "contains", "_kind": "edge"}
+{"source": "qccrit", "target": "cpp_viability", "rel": "verifies", "_kind": "edge"}
+{"source": "qccrit", "target": "cpp_aggregate_diameter", "rel": "verifies", "_kind": "edge"}
+{"source": "src_yehya2024", "target": "cpp_agitation", "rel": "supports", "_kind": "edge"}
+{"source": "src_xing2008", "target": "cpp_osmolality", "rel": "informs", "_kind": "edge"}
+{"source": "src_nova_flex2", "target": "cpv", "rel": "enables", "_kind": "edge"}
+{"source": "loop", "target": "tool_set_perfusion_rate", "rel": "commands", "_kind": "edge"}
+{"source": "loop", "target": "tool_set_agitation_rpm", "rel": "commands", "_kind": "edge"}
+{"source": "loop", "target": "tool_trigger_passage", "rel": "commands", "_kind": "edge"}
+{"source": "csv", "target": "ramp_limit", "rel": "validates", "_kind": "edge"}
+{"source": "opcua", "target": "lads_functional_unit", "rel": "contains", "_kind": "edge"}
+{"source": "lads_functional_unit", "target": "lads_sensor_function", "rel": "has", "_kind": "edge"}
+{"source": "lads_functional_unit", "target": "lads_controller_function", "rel": "has", "_kind": "edge"}
+{"source": "lads_functional_unit", "target": "lads_actuator_function", "rel": "has", "_kind": "edge"}
+{"source": "lads_functional_unit", "target": "lads_program_result", "rel": "has", "_kind": "edge"}
+{"source": "lads_sensor_function", "target": "envmon", "rel": "provides", "_kind": "edge"}
+{"source": "lads_sensor_function", "target": "cpv", "rel": "provides", "_kind": "edge"}
+{"source": "lads_controller_function", "target": "closeddev", "rel": "commands", "_kind": "edge"}
+{"source": "lads_actuator_function", "target": "dispense", "rel": "commands", "_kind": "edge"}
+{"source": "lads_program_result", "target": "ebr", "rel": "records", "_kind": "edge"}
+{"source": "sila", "target": "sila_feature", "rel": "contains", "_kind": "edge"}
+{"source": "sila_feature", "target": "peripheral_sampler", "rel": "integrates", "_kind": "edge"}
+{"source": "sila_feature", "target": "peripheral_dispenser", "rel": "integrates", "_kind": "edge"}
+{"source": "sila_feature", "target": "peripheral_atline_analyzer", "rel": "integrates", "_kind": "edge"}
+{"source": "peripheral_atline_analyzer", "target": "cpv", "rel": "verifies", "_kind": "edge"}
+{"source": "devprofile", "target": "lads_functional_unit", "rel": "defines", "_kind": "edge"}
+{"source": "devprofile", "target": "sila_feature", "rel": "defines", "_kind": "edge"}
+{"source": "devprofile", "target": "mqtt_topic_contract", "rel": "defines", "_kind": "edge"}
+{"source": "gateway", "target": "lads_functional_unit", "rel": "translates", "_kind": "edge"}
+{"source": "gateway", "target": "sila_feature", "rel": "translates", "_kind": "edge"}
+{"source": "gateway", "target": "mqtt_topic_contract", "rel": "bridges_to", "_kind": "edge"}
+{"source": "gateway_cmd_ack", "target": "mqtt_topic_contract", "rel": "implements", "_kind": "edge"}
+{"source": "icd_setpoint_envelope", "target": "lads_controller_function", "rel": "constrains", "_kind": "edge"}
+{"source": "icd_setpoint_envelope", "target": "lads_actuator_function", "rel": "constrains", "_kind": "edge"}
+{"source": "icd_setpoint_envelope", "target": "ctrl_split", "rel": "validates", "_kind": "edge"}
+{"source": "src_lads", "target": "lads_functional_unit", "rel": "specifies", "_kind": "edge"}
+{"source": "src_sila", "target": "sila_feature", "rel": "specifies", "_kind": "edge"}
+{"source": "src_mqtt5", "target": "mqtt_topic_contract", "rel": "specifies", "_kind": "edge"}
+{"source": "cpv", "target": "measurement_vcd_capacitance", "rel": "uses", "_kind": "edge"}
+{"source": "cpv", "target": "measurement_raman_inline", "rel": "uses", "_kind": "edge"}
+{"source": "cpv", "target": "measurement_atline_nova", "rel": "uses", "_kind": "edge"}
+{"source": "cpv", "target": "measurement_aggregate_imaging", "rel": "uses", "_kind": "edge"}
+{"source": "cpv", "target": "measurement_fbrm_cld", "rel": "uses", "_kind": "edge"}
+{"source": "cpv", "target": "measurement_ovizio_dhm", "rel": "uses", "_kind": "edge"}
+{"source": "measurement_vcd_capacitance", "target": "loop", "rel": "state_for", "_kind": "edge"}
+{"source": "measurement_raman_inline", "target": "loop", "rel": "state_for", "_kind": "edge"}
+{"source": "measurement_atline_nova", "target": "loop", "rel": "state_for", "_kind": "edge"}
+{"source": "measurement_aggregate_imaging", "target": "loop", "rel": "state_for", "_kind": "edge"}
+{"source": "measurement_fbrm_cld", "target": "loop", "rel": "state_for", "_kind": "edge"}
+{"source": "measurement_ovizio_dhm", "target": "loop", "rel": "state_for", "_kind": "edge"}
+{"source": "measurement_vcd_capacitance", "target": "growth", "rel": "feeds", "_kind": "edge"}
+{"source": "measurement_atline_nova", "target": "growth", "rel": "feeds", "_kind": "edge"}
+{"source": "measurement_aggregate_imaging", "target": "qccrit", "rel": "evaluates", "_kind": "edge"}
+{"source": "measurement_aggregate_imaging", "target": "passage", "rel": "triggers", "_kind": "edge"}
+{"source": "dlmodel", "target": "measurement_aggregate_imaging", "rel": "powers", "_kind": "edge"}
+{"source": "bf", "target": "measurement_aggregate_imaging", "rel": "input_to", "_kind": "edge"}
+{"source": "monitoring_ammonia_atline", "target": "loop", "rel": "state_for", "_kind": "edge"}
+{"source": "monitoring_quality_offline", "target": "qccrit", "rel": "verifies", "_kind": "edge"}
+{"source": "monitoring_quality_offline", "target": "bbo", "rel": "optimizes", "_kind": "edge"}
+{"source": "monitoring_sterility_offline", "target": "closeddev", "rel": "guards", "_kind": "edge"}
+{"source": "monitoring_sterility_offline", "target": "capa", "rel": "triggers", "_kind": "edge"}
+{"source": "instr_aber_futura", "target": "measurement_vcd_capacitance", "rel": "implements", "_kind": "edge"}
+{"source": "instr_hamilton_incytes", "target": "measurement_vcd_capacitance", "rel": "implements", "_kind": "edge"}
+{"source": "instr_sartorius_viamass", "target": "measurement_vcd_capacitance", "rel": "implements", "_kind": "edge"}
+{"source": "instr_nova_flex2", "target": "measurement_atline_nova", "rel": "implements", "_kind": "edge"}
+{"source": "instr_nova_flex2", "target": "monitoring_ammonia_atline", "rel": "implements", "_kind": "edge"}
+{"source": "instr_ovizio_ilinef", "target": "measurement_ovizio_dhm", "rel": "implements", "_kind": "edge"}
+{"source": "instr_fbrm_g400", "target": "measurement_fbrm_cld", "rel": "implements", "_kind": "edge"}
+{"source": "instr_flowcam", "target": "measurement_aggregate_imaging", "rel": "implements", "_kind": "edge"}
+{"source": "src_manstein", "target": "measurement_vcd_capacitance", "rel": "demonstrates", "_kind": "edge"}
+{"source": "src_borys", "target": "measurement_aggregate_imaging", "rel": "demonstrates", "_kind": "edge"}
+{"source": "src_kropp", "target": "measurement_aggregate_imaging", "rel": "demonstrates", "_kind": "edge"}
+{"source": "src_raman_graf2022", "target": "measurement_raman_inline", "rel": "demonstrates", "_kind": "edge"}
+{"source": "src_krause2023", "target": "measurement_vcd_capacitance", "rel": "explains", "_kind": "edge"}
+{"source": "src_aber_futura", "target": "instr_aber_futura", "rel": "specifies", "_kind": "edge"}
+{"source": "src_hamilton_incytes", "target": "instr_hamilton_incytes", "rel": "specifies", "_kind": "edge"}
+{"source": "src_sartorius_viamass", "target": "instr_sartorius_viamass", "rel": "specifies", "_kind": "edge"}
+{"source": "src_nova_flex2", "target": "instr_nova_flex2", "rel": "specifies", "_kind": "edge"}
+{"source": "src_ovizio_ilinef", "target": "instr_ovizio_ilinef", "rel": "specifies", "_kind": "edge"}
+{"source": "src_fbrm_g400", "target": "instr_fbrm_g400", "rel": "specifies", "_kind": "edge"}
+{"source": "src_flowcam", "target": "instr_flowcam", "rel": "specifies", "_kind": "edge"}
+{"source": "d6", "target": "tech_control", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "audit_schema", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "approval_log", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "data_lifecycle", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "llm_validation", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "ebr_derivation", "rel": "has", "_kind": "edge"}
+{"source": "d5", "target": "event_store", "rel": "has", "_kind": "edge"}
+{"source": "tech_control", "target": "alcoa", "rel": "enforces", "_kind": "edge"}
+{"source": "tech_control", "target": "part11", "rel": "enforces", "_kind": "edge"}
+{"source": "alcoa", "target": "audit_schema", "rel": "constrains", "_kind": "edge"}
+{"source": "alcoa", "target": "ebr_derivation", "rel": "constrains", "_kind": "edge"}
+{"source": "part11", "target": "approval_log", "rel": "requires", "_kind": "edge"}
+{"source": "part11", "target": "audit_schema", "rel": "requires", "_kind": "edge"}
+{"source": "audit", "target": "audit_schema", "rel": "implements", "_kind": "edge"}
+{"source": "csv", "target": "tech_control", "rel": "validates", "_kind": "edge"}
+{"source": "capa", "target": "audit_schema", "rel": "uses", "_kind": "edge"}
+{"source": "gctp", "target": "tech_control", "rel": "governs", "_kind": "edge"}
+{"source": "loop", "target": "audit_schema", "rel": "generates", "_kind": "edge"}
+{"source": "loop", "target": "approval_log", "rel": "uses", "_kind": "edge"}
+{"source": "ctrl_split", "target": "approval_log", "rel": "constrains", "_kind": "edge"}
+{"source": "data_lifecycle", "target": "datamodel", "rel": "governs", "_kind": "edge"}
+{"source": "data_lifecycle", "target": "audit", "rel": "governs", "_kind": "edge"}
+{"source": "ebr_derivation", "target": "ebr", "rel": "derives", "_kind": "edge"}
+{"source": "ebr_derivation", "target": "event_store", "rel": "derived_from", "_kind": "edge"}
+{"source": "llm_validation", "target": "loop", "rel": "validates", "_kind": "edge"}
+{"source": "event_store", "target": "ebr_derivation", "rel": "feeds", "_kind": "edge"}
+{"source": "event_store", "target": "audit", "rel": "feeds", "_kind": "edge"}
+{"source": "src_fda_data_integrity", "target": "alcoa", "rel": "explains", "_kind": "edge"}
+{"source": "src_fda_data_integrity", "target": "tech_control", "rel": "explains", "_kind": "edge"}
+{"source": "src_part11", "target": "part11", "rel": "specifies", "_kind": "edge"}
+{"source": "src_part11", "target": "audit_schema", "rel": "specifies", "_kind": "edge"}
+{"source": "src_fda_csa", "target": "csv", "rel": "informs", "_kind": "edge"}
+{"source": "src_fda_csa", "target": "tech_control", "rel": "informs", "_kind": "edge"}
+{"source": "src_gamp5", "target": "csv", "rel": "informs", "_kind": "edge"}
+{"source": "src_gamp5", "target": "tech_control", "rel": "informs", "_kind": "edge"}
+{"source": "src_gamp5_ai", "target": "llm_validation", "rel": "informs", "_kind": "edge"}
+{"source": "src_annex11", "target": "part11", "rel": "specifies", "_kind": "edge"}
+{"source": "src_annex11", "target": "ebr_derivation", "rel": "specifies", "_kind": "edge"}
+{"source": "src_pics041", "target": "alcoa", "rel": "explains", "_kind": "edge"}
+{"source": "src_pics041", "target": "audit_schema", "rel": "explains", "_kind": "edge"}
+{"source": "src_who_gdrp", "target": "alcoa", "rel": "explains", "_kind": "edge"}
+{"source": "src_who_gdrp", "target": "data_lifecycle", "rel": "explains", "_kind": "edge"}
+{"source": "d4", "target": "tier2_plant_model", "rel": "has", "_kind": "edge"}
+{"source": "tier2_plant_model", "target": "kinetics", "rel": "implements", "_kind": "edge"}
+{"source": "tier2_plant_model", "target": "suspension", "rel": "simulates", "_kind": "edge"}
+{"source": "tier2_plant_model", "target": "loop", "rel": "validates", "_kind": "edge"}
+{"source": "tier2_plant_model", "target": "bbo", "rel": "feeds", "_kind": "edge"}
+{"source": "plant_model_interface", "target": "tier2_plant_model", "rel": "defines", "_kind": "edge"}
+{"source": "plant_model_calibration", "target": "tier2_plant_model", "rel": "calibrates", "_kind": "edge"}
+{"source": "multifidelity_sim", "target": "tier2_plant_model", "rel": "uses", "_kind": "edge"}
+{"source": "plant_model_regression", "target": "tier2_plant_model", "rel": "tests", "_kind": "edge"}
+{"source": "cobrapy_gem", "target": "tier2_plant_model", "rel": "extends", "_kind": "edge"}
+{"source": "aggregate_formation_model", "target": "tier2_plant_model", "rel": "extends", "_kind": "edge"}
+{"source": "shear_stress_model", "target": "tier2_plant_model", "rel": "extends", "_kind": "edge"}
+{"source": "src_scipy", "target": "tier2_plant_model", "rel": "implements", "_kind": "edge"}
+{"source": "src_botorch", "target": "bbo", "rel": "informs", "_kind": "edge"}
+{"source": "src_ax", "target": "bbo", "rel": "informs", "_kind": "edge"}
+{"source": "src_cobrapy", "target": "cobrapy_gem", "rel": "informs", "_kind": "edge"}
+{"source": "loop", "target": "approval_workflow", "rel": "requires_approval", "_kind": "edge"}
+{"source": "sched", "target": "approval_workflow", "rel": "triggers", "_kind": "edge"}
+{"source": "bbo", "target": "approval_workflow", "rel": "proposes_to", "_kind": "edge"}
+{"source": "human_on_the_loop", "target": "approval_workflow", "rel": "approves", "_kind": "edge"}
+{"source": "approval_workflow", "target": "audit", "rel": "logs_to", "_kind": "edge"}
+{"source": "approval_workflow", "target": "ebr", "rel": "produces", "_kind": "edge"}
+{"source": "approval_workflow", "target": "escalation_policy", "rel": "escalates_via", "_kind": "edge"}
+{"source": "approval_workflow", "target": "approval_request_event", "rel": "emits", "_kind": "edge"}
+{"source": "approval_request_event", "target": "datamodel", "rel": "stored_in", "_kind": "edge"}
+{"source": "escalation_policy", "target": "approval_workflow", "rel": "governs", "_kind": "edge"}
+{"source": "hmi_dashboard", "target": "loop", "rel": "displays", "_kind": "edge"}
+{"source": "hmi_dashboard", "target": "envmon", "rel": "displays", "_kind": "edge"}
+{"source": "hmi_dashboard", "target": "cpv", "rel": "displays", "_kind": "edge"}
+{"source": "hmi_dashboard", "target": "bbo", "rel": "displays", "_kind": "edge"}
+{"source": "hmi_dashboard", "target": "approval_workflow", "rel": "displays", "_kind": "edge"}
+{"source": "qccrit", "target": "hmi_dashboard", "rel": "informs", "_kind": "edge"}
+{"source": "growth", "target": "hmi_dashboard", "rel": "informs", "_kind": "edge"}
+{"source": "alert_matrix", "target": "loop", "rel": "manages", "_kind": "edge"}
+{"source": "alert_matrix", "target": "notification_suppression", "rel": "suppresses", "_kind": "edge"}
+{"source": "notification_suppression", "target": "loop", "rel": "applies_to", "_kind": "edge"}
+{"source": "sterility", "target": "contamination_response", "rel": "triggers", "_kind": "edge"}
+{"source": "contamination_response", "target": "capa", "rel": "activates", "_kind": "edge"}
+{"source": "contamination_response", "target": "ctrl_split", "rel": "requests_hold", "_kind": "edge"}
+{"source": "ctrl_split", "target": "degraded_mode", "rel": "preserves", "_kind": "edge"}
+{"source": "degraded_mode", "target": "loop", "rel": "preserves", "_kind": "edge"}
+{"source": "degraded_mode", "target": "sched", "rel": "preserves", "_kind": "edge"}
+{"source": "audit_ui", "target": "audit", "rel": "reads", "_kind": "edge"}
+{"source": "audit_ui", "target": "ebr", "rel": "reads", "_kind": "edge"}
+{"source": "audit_ui", "target": "datamodel", "rel": "reads", "_kind": "edge"}
+{"source": "src_nist_ai_rmf", "target": "approval_workflow", "rel": "informs", "_kind": "edge"}
+{"source": "src_nist_ai_rmf", "target": "human_on_the_loop", "rel": "informs", "_kind": "edge"}
+{"source": "src_iec62366", "target": "hmi_dashboard", "rel": "informs", "_kind": "edge"}
+{"source": "src_isa101", "target": "hmi_dashboard", "rel": "informs", "_kind": "edge"}
+{"source": "src_isa101", "target": "alert_matrix", "rel": "informs", "_kind": "edge"}
+{"source": "d4", "target": "mpc", "rel": "has", "_kind": "edge"}
+{"source": "mpc", "target": "mpc_ipsc_perfusion", "rel": "specializes", "_kind": "edge"}
+{"source": "mpc", "target": "loop", "rel": "implements", "_kind": "edge"}
+{"source": "mpc_ipsc_perfusion", "target": "set_perfusion_rate", "rel": "controls", "_kind": "edge"}
+{"source": "mpc_ipsc_perfusion", "target": "cpp_perfusion_rate", "rel": "controls", "_kind": "edge"}
+{"source": "mpc_ipsc_perfusion", "target": "cpp_glucose", "rel": "constrains", "_kind": "edge"}
+{"source": "mpc_ipsc_perfusion", "target": "cpp_lactate", "rel": "constrains", "_kind": "edge"}
+{"source": "mpc_ipsc_perfusion", "target": "cpp_glutamine", "rel": "constrains", "_kind": "edge"}
+{"source": "mpc_ipsc_perfusion", "target": "cpp_osmolality", "rel": "constrains", "_kind": "edge"}
+{"source": "mpc_ipsc_perfusion", "target": "cpp_aggregate_diameter", "rel": "constrains", "_kind": "edge"}
+{"source": "mpc", "target": "tier2_plant_model", "rel": "uses", "_kind": "edge"}
+{"source": "mpc_ipsc_perfusion", "target": "measurement_vcd_capacitance", "rel": "uses", "_kind": "edge"}
+{"source": "mpc_ipsc_perfusion", "target": "measurement_raman_inline", "rel": "uses", "_kind": "edge"}
+{"source": "mpc_ipsc_perfusion", "target": "measurement_atline_nova", "rel": "uses", "_kind": "edge"}
+{"source": "mpc_ipsc_perfusion", "target": "measurement_aggregate_imaging", "rel": "uses", "_kind": "edge"}
+{"source": "mpc_lactate_feedback", "target": "cpp_lactate", "rel": "uses", "_kind": "edge"}
+{"source": "mpc_lactate_feedback", "target": "src_van_beylen2020", "rel": "demonstrated_by", "_kind": "edge"}
+{"source": "mpc", "target": "mpc_model_types", "rel": "uses", "_kind": "edge"}
+{"source": "mpc", "target": "mpc_constraints", "rel": "uses", "_kind": "edge"}
+{"source": "mpc", "target": "mpc_prediction_horizon", "rel": "uses", "_kind": "edge"}
+{"source": "mpc", "target": "mpc_control_horizon", "rel": "uses", "_kind": "edge"}
+{"source": "mpc", "target": "mpc_adaptive_update", "rel": "uses", "_kind": "edge"}
+{"source": "mpc", "target": "mpc_fail_safe", "rel": "requires", "_kind": "edge"}
+{"source": "mpc", "target": "mpc_human_on_the_loop", "rel": "requires", "_kind": "edge"}
+{"source": "mpc", "target": "mpc_implementation_libraries", "rel": "implemented_by", "_kind": "edge"}
+{"source": "mpc_implementation_libraries", "target": "src_casadi", "rel": "includes", "_kind": "edge"}
+{"source": "mpc_implementation_libraries", "target": "src_do_mpc", "rel": "includes", "_kind": "edge"}
+{"source": "mpc_implementation_libraries", "target": "src_acados", "rel": "includes", "_kind": "edge"}
+{"source": "dynamic_perfusion_ipsc", "target": "src_huang2020", "rel": "demonstrated_by", "_kind": "edge"}
+{"source": "dynamic_perfusion_ipsc", "target": "mpc_ipsc_perfusion", "rel": "optimizable_by", "_kind": "edge"}
+{"source": "cpsr_control", "target": "mpc_ipsc_perfusion", "rel": "related_to", "_kind": "edge"}
+{"source": "mpc", "target": "mpc_vs_rule_engine", "rel": "compared_to", "_kind": "edge"}
+{"source": "mpc_vs_rule_engine", "target": "rule_engine", "rel": "contrasts", "_kind": "edge"}
+{"source": "mpc_roadmap_l1", "target": "mpc", "rel": "plans", "_kind": "edge"}
+{"source": "mpc_roadmap_l1", "target": "recipe_executor", "rel": "extends", "_kind": "edge"}
+{"source": "mpc", "target": "src_rashedi2022", "rel": "demonstrated_by", "_kind": "edge"}
+{"source": "mpc_human_on_the_loop", "target": "mpc", "rel": "oversees", "_kind": "edge"}
+{"source": "mpc_fail_safe", "target": "loop", "rel": "preserves", "_kind": "edge"}
+{"source": "d4", "target": "pinn", "rel": "has", "_kind": "edge"}
+{"source": "d4", "target": "digital_twin", "rel": "has", "_kind": "edge"}
+{"source": "d4", "target": "hybrid_ode_nn", "rel": "has", "_kind": "edge"}
+{"source": "d4", "target": "uncertainty_quantification", "rel": "has", "_kind": "edge"}
+{"source": "d4", "target": "multifidelity_pinn", "rel": "has", "_kind": "edge"}
+{"source": "pinn", "target": "digital_twin", "rel": "implements", "_kind": "edge"}
+{"source": "hybrid_ode_nn", "target": "digital_twin", "rel": "implements", "_kind": "edge"}
+{"source": "universal_differential_equation", "target": "hybrid_ode_nn", "rel": "implements", "_kind": "edge"}
+{"source": "neural_ode", "target": "hybrid_ode_nn", "rel": "implements", "_kind": "edge"}
+{"source": "digital_twin", "target": "tier2_plant_model", "rel": "extends", "_kind": "edge"}
+{"source": "hybrid_ode_nn", "target": "tier2_plant_model", "rel": "extends", "_kind": "edge"}
+{"source": "pinn", "target": "loop", "rel": "researches", "_kind": "edge"}
+{"source": "pinn_mpc", "target": "loop", "rel": "researches", "_kind": "edge"}
+{"source": "uncertainty_quantification", "target": "pinn", "rel": "quantifies", "_kind": "edge"}
+{"source": "uncertainty_quantification", "target": "hybrid_ode_nn", "rel": "quantifies", "_kind": "edge"}
+{"source": "uncertainty_quantification", "target": "digital_twin", "rel": "quantifies", "_kind": "edge"}
+{"source": "deep_ensemble", "target": "uncertainty_quantification", "rel": "implements", "_kind": "edge"}
+{"source": "bayesian_pinn", "target": "uncertainty_quantification", "rel": "implements", "_kind": "edge"}
+{"source": "efi_pinn", "target": "uncertainty_quantification", "rel": "implements", "_kind": "edge"}
+{"source": "mc_dropout", "target": "uncertainty_quantification", "rel": "implements", "_kind": "edge"}
+{"source": "gp_bias_correction", "target": "uncertainty_quantification", "rel": "implements", "_kind": "edge"}
+{"source": "gp_bias_correction", "target": "tier2_plant_model", "rel": "corrects", "_kind": "edge"}
+{"source": "multifidelity_pinn", "target": "digital_twin", "rel": "uses", "_kind": "edge"}
+{"source": "multifidelity_pinn", "target": "hybrid_ode_nn", "rel": "uses", "_kind": "edge"}
+{"source": "multifidelity_pinn", "target": "bbo", "rel": "enhances", "_kind": "edge"}
+{"source": "multifidelity_pinn", "target": "multi_fidelity", "rel": "enhances", "_kind": "edge"}
+{"source": "digital_twin_calibration", "target": "digital_twin", "rel": "calibrates", "_kind": "edge"}
+{"source": "digital_twin_calibration", "target": "hybrid_ode_nn", "rel": "calibrates", "_kind": "edge"}
+{"source": "model_mismatch_correction", "target": "multifidelity_pinn", "rel": "corrects", "_kind": "edge"}
+{"source": "model_mismatch_correction", "target": "digital_twin", "rel": "corrects", "_kind": "edge"}
+{"source": "prediction_confidence_score", "target": "loop", "rel": "explains", "_kind": "edge"}
+{"source": "prediction_confidence_score", "target": "human_approval", "rel": "drives", "_kind": "edge"}
+{"source": "prediction_confidence_score", "target": "approval_workflow", "rel": "drives", "_kind": "edge"}
+{"source": "data_requirement_pinn", "target": "bbo", "rel": "constrains", "_kind": "edge"}
+{"source": "data_requirement_pinn", "target": "sdl", "rel": "constrains", "_kind": "edge"}
+{"source": "data_requirement_pinn", "target": "digital_twin", "rel": "constrains", "_kind": "edge"}
+{"source": "kinetic_cell_model", "target": "digital_twin", "rel": "part_of", "_kind": "edge"}
+{"source": "reactor_model", "target": "digital_twin", "rel": "part_of", "_kind": "edge"}
+{"source": "extracellular_reaction_model", "target": "digital_twin", "rel": "part_of", "_kind": "edge"}
+{"source": "kinetic_cell_model", "target": "suspension", "rel": "models", "_kind": "edge"}
+{"source": "reactor_model", "target": "suspension", "rel": "models", "_kind": "edge"}
+{"source": "kinetics", "target": "pinn", "rel": "informs", "_kind": "edge"}
+{"source": "kinetics", "target": "hybrid_ode_nn", "rel": "informs", "_kind": "edge"}
+{"source": "cpv", "target": "digital_twin", "rel": "feeds", "_kind": "edge"}
+{"source": "cpv", "target": "hybrid_ode_nn", "rel": "feeds", "_kind": "edge"}
+{"source": "qccrit", "target": "digital_twin", "rel": "verifies", "_kind": "edge"}
+{"source": "csv", "target": "digital_twin", "rel": "validates", "_kind": "edge"}
+{"source": "csv", "target": "hybrid_ode_nn", "rel": "validates", "_kind": "edge"}
+{"source": "audit", "target": "digital_twin", "rel": "logs", "_kind": "edge"}
+{"source": "audit", "target": "hybrid_ode_nn", "rel": "logs", "_kind": "edge"}
+{"source": "part11", "target": "digital_twin", "rel": "constrains", "_kind": "edge"}
+{"source": "alcoa", "target": "digital_twin", "rel": "constrains", "_kind": "edge"}
+{"source": "recipe_executor", "target": "pinn_mpc", "rel": "succeeds", "_kind": "edge"}
+{"source": "rule_engine", "target": "pinn_mpc", "rel": "succeeds", "_kind": "edge"}
+{"source": "state_machine_l1", "target": "pinn_mpc", "rel": "succeeds", "_kind": "edge"}
+{"source": "llm_orchestrator", "target": "prediction_confidence_score", "rel": "explains", "_kind": "edge"}
+{"source": "safe_bo", "target": "prediction_confidence_score", "rel": "uses", "_kind": "edge"}
+{"source": "batch_bo", "target": "multifidelity_pinn", "rel": "uses", "_kind": "edge"}
+{"source": "multi_fidelity", "target": "multifidelity_pinn", "rel": "includes", "_kind": "edge"}
+{"source": "src_thirugnanasambandam_2025", "target": "pinn", "rel": "informs", "_kind": "edge"}
+{"source": "src_yang_2024_pinn", "target": "pinn", "rel": "informs", "_kind": "edge"}
+{"source": "src_yang_2024_pinn", "target": "hybrid_ode_nn", "rel": "informs", "_kind": "edge"}
+{"source": "src_catalao_2025", "target": "pinn_mpc", "rel": "informs", "_kind": "edge"}
+{"source": "src_patel_2024", "target": "pinn_mpc", "rel": "informs", "_kind": "edge"}
+{"source": "src_shih_2025", "target": "efi_pinn", "rel": "informs", "_kind": "edge"}
+{"source": "src_shih_2025", "target": "uncertainty_quantification", "rel": "informs", "_kind": "edge"}
+{"source": "src_nobar_2025", "target": "multifidelity_pinn", "rel": "informs", "_kind": "edge"}
+{"source": "src_nobar_2025", "target": "model_mismatch_correction", "rel": "informs", "_kind": "edge"}
+{"source": "src_bioprocesstools_2026", "target": "data_requirement_pinn", "rel": "defines", "_kind": "edge"}
+{"source": "src_bioprocessintl_2026", "target": "multifidelity_pinn", "rel": "supports", "_kind": "edge"}
+{"source": "src_yokogawa_pharma40", "target": "digital_twin", "rel": "defines", "_kind": "edge"}
+{"source": "src_yokogawa_pharma40", "target": "reactor_model", "rel": "defines", "_kind": "edge"}
+{"source": "src_yokogawa_pharma40", "target": "extracellular_reaction_model", "rel": "defines", "_kind": "edge"}
+{"source": "src_yokogawa_pharma40", "target": "kinetic_cell_model", "rel": "defines", "_kind": "edge"}
+{"source": "src_pharma_manufacturing_2022", "target": "digital_twin", "rel": "supports", "_kind": "edge"}
+{"source": "src_manstein", "target": "hybrid_ode_nn", "rel": "informs", "_kind": "edge"}
+{"source": "src_manstein", "target": "pinn", "rel": "informs", "_kind": "edge"}
+{"source": "src_ax", "target": "multifidelity_pinn", "rel": "informs", "_kind": "edge"}
+{"source": "src_botorch", "target": "multifidelity_pinn", "rel": "informs", "_kind": "edge"}
+{"source": "raman_calibration_ipsc", "target": "cpv", "rel": "instance_of", "_kind": "edge"}
+{"source": "raman_calibration_ipsc", "target": "measurement_raman_inline", "rel": "uses", "_kind": "edge"}
+{"source": "raman_calibration_ipsc", "target": "measurement_vcd_capacitance", "rel": "uses", "_kind": "edge"}
+{"source": "raman_calibration_ipsc", "target": "measurement_atline_nova", "rel": "uses", "_kind": "edge"}
+{"source": "raman_calibration_ipsc", "target": "measurement_raman_inline", "rel": "calibrates", "_kind": "edge"}
+{"source": "raman_calibration_ipsc", "target": "loop", "rel": "informs", "_kind": "edge"}
+{"source": "raman_calibration_ipsc", "target": "bbo", "rel": "informs", "_kind": "edge"}
+{"source": "raman_pls_model", "target": "raman_calibration_ipsc", "rel": "implements", "_kind": "edge"}
+{"source": "raman_pls_model", "target": "raman_reference_nova", "rel": "requires", "_kind": "edge"}
+{"source": "raman_reference_nova", "target": "measurement_atline_nova", "rel": "instance_of", "_kind": "edge"}
+{"source": "raman_reference_nova", "target": "raman_pls_model", "rel": "calibrates", "_kind": "edge"}
+{"source": "raman_cell_scattering", "target": "raman_aggregate_interference", "rel": "causes", "_kind": "edge"}
+{"source": "raman_cell_scattering", "target": "raman_pls_model", "rel": "constrains", "_kind": "edge"}
+{"source": "raman_aggregate_interference", "target": "raman_pls_model", "rel": "constrains", "_kind": "edge"}
+{"source": "raman_cell_scattering", "target": "measurement_raman_inline", "rel": "constrains", "_kind": "edge"}
+{"source": "raman_aggregate_interference", "target": "measurement_raman_inline", "rel": "constrains", "_kind": "edge"}
+{"source": "raman_cho_to_ipsc_transfer", "target": "raman_calibration_ipsc", "rel": "constrains", "_kind": "edge"}
+{"source": "raman_cho_to_ipsc_transfer", "target": "raman_pls_model", "rel": "constrains", "_kind": "edge"}
+{"source": "raman_model_lifecycle", "target": "raman_pls_model", "rel": "manages", "_kind": "edge"}
+{"source": "raman_model_lifecycle", "target": "audit", "rel": "requires", "_kind": "edge"}
+{"source": "raman_model_lifecycle", "target": "alcoa", "rel": "requires", "_kind": "edge"}
+{"source": "raman_confidence_score", "target": "raman_pls_model", "rel": "evaluates", "_kind": "edge"}
+{"source": "raman_confidence_score", "target": "human_approval", "rel": "triggers", "_kind": "edge"}
+{"source": "raman_confidence_score", "target": "approval_workflow", "rel": "triggers", "_kind": "edge"}
+{"source": "src_abu_absi_2011", "target": "measurement_raman_inline", "rel": "supports", "_kind": "edge"}
+{"source": "src_matthews_2016", "target": "measurement_raman_inline", "rel": "supports", "_kind": "edge"}
+{"source": "src_berry_2015", "target": "raman_pls_model", "rel": "supports", "_kind": "edge"}
+{"source": "src_yan_2024", "target": "raman_pls_model", "rel": "supports", "_kind": "edge"}
+{"source": "src_costa_2024", "target": "raman_calibration_ipsc", "rel": "supports", "_kind": "edge"}
+{"source": "src_yang_2024_raman", "target": "raman_cell_scattering", "rel": "supports", "_kind": "edge"}
+{"source": "src_petillot_2020", "target": "raman_cho_to_ipsc_transfer", "rel": "supports", "_kind": "edge"}
+{"source": "src_machleidt_2024", "target": "raman_cho_to_ipsc_transfer", "rel": "supports", "_kind": "edge"}
+{"source": "src_rowland_jones_2021", "target": "raman_cho_to_ipsc_transfer", "rel": "supports", "_kind": "edge"}
+{"source": "src_bioprocesstools_raman", "target": "raman_pls_model", "rel": "supports", "_kind": "edge"}
+{"source": "src_metrohm_an_pan_1065", "target": "measurement_raman_inline", "rel": "supports", "_kind": "edge"}
+{"source": "src_repligen_maverick", "target": "measurement_raman_inline", "rel": "supports", "_kind": "edge"}
+{"source": "src_yokogawa_2023", "target": "measurement_raman_inline", "rel": "supports", "_kind": "edge"}
+{"source": "d1", "target": "add_cho_ipsc_cho_metabolism", "rel": "has", "_kind": "edge"}
+{"source": "d1", "target": "add_cho_ipsc_ipsc_metabolism", "rel": "has", "_kind": "edge"}
+{"source": "d4", "target": "add_cho_ipsc_aggregate_size_cpp", "rel": "has", "_kind": "edge"}
+{"source": "d4", "target": "add_cho_ipsc_mab_titer_objective", "rel": "has", "_kind": "edge"}
+{"source": "d4", "target": "add_cho_ipsc_pluripotency_objective", "rel": "has", "_kind": "edge"}
+{"source": "d4", "target": "add_cho_ipsc_transfer_caution", "rel": "has", "_kind": "edge"}
+{"source": "d7", "target": "add_cho_ipsc_lactate_threshold", "rel": "has", "_kind": "edge"}
+{"source": "d7", "target": "add_cho_ipsc_ammonia_threshold", "rel": "has", "_kind": "edge"}
+{"source": "d7", "target": "add_cho_ipsc_osmolality_threshold", "rel": "has", "_kind": "edge"}
+{"source": "d7", "target": "add_cho_ipsc_glucose_threshold", "rel": "has", "_kind": "edge"}
+{"source": "add_cho_ipsc_cho_metabolism", "target": "add_cho_ipsc_ipsc_metabolism", "rel": "differs_from", "_kind": "edge"}
+{"source": "add_cho_ipsc_ipsc_metabolism", "target": "add_cho_ipsc_glycolytic_shift", "rel": "exhibits", "_kind": "edge"}
+{"source": "add_cho_ipsc_glycolytic_shift", "target": "cpp_glucose", "rel": "increases", "_kind": "edge"}
+{"source": "add_cho_ipsc_glycolytic_shift", "target": "cpp_lactate", "rel": "increases", "_kind": "edge"}
+{"source": "add_cho_ipsc_lactate_threshold", "target": "cpp_lactate", "rel": "constrains", "_kind": "edge"}
+{"source": "add_cho_ipsc_ammonia_threshold", "target": "cpp_ammonia", "rel": "monitors", "_kind": "edge"}
+{"source": "add_cho_ipsc_osmolality_threshold", "target": "cpp_osmolality", "rel": "constrains", "_kind": "edge"}
+{"source": "add_cho_ipsc_glucose_threshold", "target": "cpp_glucose", "rel": "constrains", "_kind": "edge"}
+{"source": "add_cho_ipsc_aggregate_size_cpp", "target": "add_cho_ipsc_aggregate_oxygen_diffusion", "rel": "influences", "_kind": "edge"}
+{"source": "add_cho_ipsc_aggregate_oxygen_diffusion", "target": "cpp_viability", "rel": "limits", "_kind": "edge"}
+{"source": "add_cho_ipsc_aggregate_size_cpp", "target": "tool_trigger_passage", "rel": "triggers", "_kind": "edge"}
+{"source": "add_cho_ipsc_shear_sensitivity", "target": "cpp_agitation", "rel": "constrains", "_kind": "edge"}
+{"source": "add_cho_ipsc_mab_titer_objective", "target": "add_cho_ipsc_pluripotency_objective", "rel": "contrasts_with", "_kind": "edge"}
+{"source": "add_cho_ipsc_pluripotency_objective", "target": "add_cho_ipsc_qc_marker_panel", "rel": "measured_by", "_kind": "edge"}
+{"source": "add_cho_ipsc_qc_marker_panel", "target": "monitoring_quality_offline", "rel": "implemented_by", "_kind": "edge"}
+{"source": "add_cho_ipsc_pluripotency_objective", "target": "bbo", "rel": "optimizes", "_kind": "edge"}
+{"source": "add_cho_ipsc_transfer_caution", "target": "add_cho_ipsc_cpp_reinterpretation", "rel": "governs", "_kind": "edge"}
+{"source": "add_cho_ipsc_cpp_reinterpretation", "target": "bbo", "rel": "modifies", "_kind": "edge"}
+{"source": "add_cho_ipsc_cpp_reinterpretation", "target": "recipe_executor", "rel": "modifies", "_kind": "edge"}
+{"source": "src_add_cho_ipsc_manstein2021", "target": "add_cho_ipsc_ipsc_metabolism", "rel": "defines", "_kind": "edge"}
+{"source": "src_add_cho_ipsc_manstein2021", "target": "add_cho_ipsc_glucose_threshold", "rel": "defines", "_kind": "edge"}
+{"source": "src_add_cho_ipsc_manstein2021", "target": "add_cho_ipsc_lactate_threshold", "rel": "defines", "_kind": "edge"}
+{"source": "src_add_cho_ipsc_manstein2021", "target": "add_cho_ipsc_osmolality_threshold", "rel": "defines", "_kind": "edge"}
+{"source": "src_add_cho_ipsc_borys2021", "target": "add_cho_ipsc_aggregate_size_cpp", "rel": "defines", "_kind": "edge"}
+{"source": "src_add_cho_ipsc_borys2021", "target": "add_cho_ipsc_shear_sensitivity", "rel": "defines", "_kind": "edge"}
+{"source": "src_add_cho_ipsc_huang2020", "target": "add_cho_ipsc_aggregate_oxygen_diffusion", "rel": "informs", "_kind": "edge"}
+{"source": "src_add_cho_ipsc_xing2008", "target": "add_cho_ipsc_cho_metabolism", "rel": "informs", "_kind": "edge"}
+{"source": "src_add_cho_ipsc_toussaint2016", "target": "add_cho_ipsc_cho_metabolism", "rel": "illustrates", "_kind": "edge"}
+{"source": "src_add_cho_ipsc_mabion2025", "target": "add_cho_ipsc_cho_metabolism", "rel": "informs", "_kind": "edge"}
+{"source": "src_add_cho_ipsc_gfi2025", "target": "add_cho_ipsc_cho_metabolism", "rel": "informs", "_kind": "edge"}
+{"source": "src_add_cho_ipsc_seo2021", "target": "add_cho_ipsc_pluripotency_objective", "rel": "informs", "_kind": "edge"}
+{"source": "src_add_cho_ipsc_stemcellpis", "target": "add_cho_ipsc_aggregate_size_cpp", "rel": "defines", "_kind": "edge"}
+{"source": "src_add_cho_ipsc_amsbio", "target": "add_cho_ipsc_qc_marker_panel", "rel": "defines", "_kind": "edge"}
+{"source": "src_add_cho_ipsc_chen2014", "target": "add_cho_ipsc_aggregate_oxygen_diffusion", "rel": "informs", "_kind": "edge"}
+{"source": "d6", "target": "annex22", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "critical_ai", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "noncritical_ai", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "static_model", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "deterministic_output", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "dynamic_model", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "probabilistic_model", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "generative_ai", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "hitl", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "xai", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "confidence_score", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "feature_attribution", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "drift_monitoring", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "test_data_independence", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "staff_independence", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "data_segregation", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "static_deterministic_proof", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "esignature", "rel": "has", "_kind": "edge"}
+{"source": "d6", "target": "gamp_ai_lifecycle", "rel": "has", "_kind": "edge"}
+{"source": "annex22", "target": "part11", "rel": "complements", "_kind": "edge"}
+{"source": "annex22", "target": "loop", "rel": "constrains", "_kind": "edge"}
+{"source": "annex22", "target": "llm_orchestrator", "rel": "constrains", "_kind": "edge"}
+{"source": "annex22", "target": "critical_ai", "rel": "defines", "_kind": "edge"}
+{"source": "annex22", "target": "noncritical_ai", "rel": "defines", "_kind": "edge"}
+{"source": "critical_ai", "target": "static_model", "rel": "requires", "_kind": "edge"}
+{"source": "critical_ai", "target": "deterministic_output", "rel": "requires", "_kind": "edge"}
+{"source": "static_model", "target": "deterministic_output", "rel": "produces", "_kind": "edge"}
+{"source": "critical_ai", "target": "dynamic_model", "rel": "prohibits", "_kind": "edge"}
+{"source": "critical_ai", "target": "probabilistic_model", "rel": "prohibits", "_kind": "edge"}
+{"source": "critical_ai", "target": "generative_ai", "rel": "prohibits", "_kind": "edge"}
+{"source": "noncritical_ai", "target": "generative_ai", "rel": "permits", "_kind": "edge"}
+{"source": "noncritical_ai", "target": "hitl", "rel": "requires", "_kind": "edge"}
+{"source": "generative_ai", "target": "probabilistic_model", "rel": "isa", "_kind": "edge"}
+{"source": "llm_orchestrator", "target": "generative_ai", "rel": "isa", "_kind": "edge"}
+{"source": "critical_ai", "target": "xai", "rel": "requires", "_kind": "edge"}
+{"source": "xai", "target": "feature_attribution", "rel": "uses", "_kind": "edge"}
+{"source": "critical_ai", "target": "confidence_score", "rel": "requires", "_kind": "edge"}
+{"source": "confidence_score", "target": "hitl", "rel": "triggers", "_kind": "edge"}
+{"source": "critical_ai", "target": "drift_monitoring", "rel": "requires", "_kind": "edge"}
+{"source": "critical_ai", "target": "test_data_independence", "rel": "requires", "_kind": "edge"}
+{"source": "test_data_independence", "target": "data_segregation", "rel": "requires", "_kind": "edge"}
+{"source": "test_data_independence", "target": "staff_independence", "rel": "requires", "_kind": "edge"}
+{"source": "static_deterministic_proof", "target": "static_model", "rel": "proves", "_kind": "edge"}
+{"source": "static_deterministic_proof", "target": "deterministic_output", "rel": "proves", "_kind": "edge"}
+{"source": "part11", "target": "esignature", "rel": "requires", "_kind": "edge"}
+{"source": "esignature", "target": "approval_log", "rel": "implements", "_kind": "edge"}
+{"source": "gamp_ai_lifecycle", "target": "critical_ai", "rel": "governs", "_kind": "edge"}
+{"source": "gamp_ai_lifecycle", "target": "noncritical_ai", "rel": "governs", "_kind": "edge"}
+{"source": "human_approval", "target": "hitl", "rel": "implements", "_kind": "edge"}
+{"source": "approval_workflow", "target": "hitl", "rel": "implements", "_kind": "edge"}
+{"source": "loop", "target": "confidence_score", "rel": "uses", "_kind": "edge"}
+{"source": "drift_monitoring", "target": "loop", "rel": "monitors", "_kind": "edge"}
+{"source": "alcoa", "target": "data_segregation", "rel": "constrains", "_kind": "edge"}
+{"source": "csv", "target": "static_deterministic_proof", "rel": "validates", "_kind": "edge"}
+{"source": "tech_control", "target": "annex22", "rel": "enforces", "_kind": "edge"}
+{"source": "src_pics_annex22_draft", "target": "annex22", "rel": "specifies", "_kind": "edge"}
+{"source": "src_eu_ai_act", "target": "annex22", "rel": "informs", "_kind": "edge"}
+{"source": "src_gamp5_ai", "target": "gamp_ai_lifecycle", "rel": "informs", "_kind": "edge"}
+{"source": "d2", "target": "add_aggimg_aggregate_imaging_survey", "rel": "has", "_kind": "edge"}
+{"source": "d7", "target": "add_aggimg_dhm_ovizio", "rel": "has", "_kind": "edge"}
+{"source": "d7", "target": "add_aggimg_fbrm_cld_detail", "rel": "has", "_kind": "edge"}
+{"source": "d7", "target": "add_aggimg_flowcam_atline", "rel": "has", "_kind": "edge"}
+{"source": "d7", "target": "add_aggimg_brightfield_atline", "rel": "has", "_kind": "edge"}
+{"source": "add_aggimg_aggregate_imaging_survey", "target": "add_aggimg_dhm_ovizio", "rel": "uses", "_kind": "edge"}
+{"source": "add_aggimg_aggregate_imaging_survey", "target": "add_aggimg_fbrm_cld_detail", "rel": "uses", "_kind": "edge"}
+{"source": "add_aggimg_aggregate_imaging_survey", "target": "add_aggimg_flowcam_atline", "rel": "uses", "_kind": "edge"}
+{"source": "add_aggimg_aggregate_imaging_survey", "target": "add_aggimg_brightfield_atline", "rel": "uses", "_kind": "edge"}
+{"source": "add_aggimg_aggregate_imaging_survey", "target": "qccrit", "rel": "evaluates", "_kind": "edge"}
+{"source": "add_aggimg_aggregate_imaging_survey", "target": "passage", "rel": "triggers", "_kind": "edge"}
+{"source": "add_aggimg_aggregate_imaging_survey", "target": "cpp_aggregate_diameter", "rel": "informs", "_kind": "edge"}
+{"source": "add_aggimg_aggregate_quality_proxy", "target": "qccrit", "rel": "predicts", "_kind": "edge"}
+{"source": "add_aggimg_dl_morphology_pluripotency", "target": "add_aggimg_aggregate_quality_proxy", "rel": "implements", "_kind": "edge"}
+{"source": "add_aggimg_aggregate_size_pluripotency", "target": "add_aggimg_aggregate_quality_proxy", "rel": "informs", "_kind": "edge"}
+{"source": "add_aggimg_aggregate_size_pluripotency", "target": "cpp_aggregate_diameter", "rel": "constrains", "_kind": "edge"}
+{"source": "add_aggimg_2d_to_aggregate_transfer", "target": "dlmodel", "rel": "transfers", "_kind": "edge"}
+{"source": "add_aggimg_2d_to_aggregate_transfer", "target": "add_aggimg_aggregate_quality_proxy", "rel": "adapts", "_kind": "edge"}
+{"source": "add_aggimg_2d_to_aggregate_transfer", "target": "conf", "rel": "differs_from", "_kind": "edge"}
+{"source": "add_aggimg_human_approval_imaging", "target": "add_aggimg_aggregate_quality_proxy", "rel": "oversees", "_kind": "edge"}
+{"source": "add_aggimg_human_approval_imaging", "target": "approval_workflow", "rel": "requires_approval", "_kind": "edge"}
+{"source": "add_aggimg_src_borys_2021", "target": "add_aggimg_aggregate_size_pluripotency", "rel": "demonstrates", "_kind": "edge"}
+{"source": "add_aggimg_src_eppendorf_485", "target": "add_aggimg_brightfield_atline", "rel": "illustrates", "_kind": "edge"}
+{"source": "add_aggimg_src_stemcell_mtesr3d", "target": "add_aggimg_aggregate_size_pluripotency", "rel": "guides", "_kind": "edge"}
+{"source": "add_aggimg_src_kropp_2019", "target": "add_aggimg_brightfield_atline", "rel": "demonstrates", "_kind": "edge"}
+{"source": "add_aggimg_src_ovizio_ilinef", "target": "add_aggimg_dhm_ovizio", "rel": "specifies", "_kind": "edge"}
+{"source": "add_aggimg_src_fbrm_g400", "target": "add_aggimg_fbrm_cld_detail", "rel": "specifies", "_kind": "edge"}
+{"source": "add_aggimg_src_flowcam", "target": "add_aggimg_flowcam_atline", "rel": "specifies", "_kind": "edge"}
+{"source": "add_aggimg_src_chu_2023", "target": "add_aggimg_dl_morphology_pluripotency", "rel": "demonstrates", "_kind": "edge"}
+{"source": "add_aggimg_src_park_2022", "target": "add_aggimg_dl_morphology_pluripotency", "rel": "demonstrates", "_kind": "edge"}
+{"source": "add_aggimg_src_piotrowski_2021", "target": "add_aggimg_dl_morphology_pluripotency", "rel": "demonstrates", "_kind": "edge"}
+{"source": "add_aggimg_src_waisman_2019", "target": "add_aggimg_dl_morphology_pluripotency", "rel": "demonstrates", "_kind": "edge"}
+{"source": "add_aggimg_src_maddah_2014", "target": "add_aggimg_dl_morphology_pluripotency", "rel": "demonstrates", "_kind": "edge"}
+{"source": "add_aggimg_src_kato_2016", "target": "add_aggimg_dl_morphology_pluripotency", "rel": "demonstrates", "_kind": "edge"}
+{"source": "add_aggimg_src_gursky_2023", "target": "add_aggimg_2d_to_aggregate_transfer", "rel": "informs", "_kind": "edge"}

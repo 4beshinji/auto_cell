@@ -1,0 +1,323 @@
+{
+  "meta": {
+    "agent": "agent_pinn_dt_for_ipsc",
+    "scope": "A-layer iPSC suspension/aggregate bioreactor: PINN, digital twin, hybrid ODE+NN, uncertainty quantification, and multi-fidelity BO integration",
+    "mode": "B",
+    "generated": "2026-06-16",
+    "based_on": [
+      "docs/design/additional_tasks_memo.md",
+      "docs/design/alignment_with_downloaded_report.md",
+      "docs/design/requirements.md",
+      "docs/design/adr/0001-control-architecture.md",
+      "docs/design/kg_to_auto_cell.md",
+      "docs/design/ground_knowledge/integrated_report.md",
+      "docs/design/ground_knowledge/additional_pinn_dt_for_ipsc.md",
+      "docs/knowledge_graph/knowledge_graph_v2.json"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "pinn",
+      "label": "Physics-Informed Neural Network (PINN)",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Neural network trained with both data loss and physics loss (ODE/PDE residuals). For iPSC suspension/aggregate bioreactors, PINNs are a future-phase technology; most published examples are CHO/microbial, not directly transferable to iPSC."
+    },
+    {
+      "id": "digital_twin",
+      "label": "Digital Twin (DT)",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Virtual replica of the bioreactor process that predicts concentration/state profiles and supports what-if analysis. Industrial examples (Yokogawa Insilico) are CHO/mAb-centric; iPSC aggregate-specific DTs are not yet established."
+    },
+    {
+      "id": "hybrid_ode_nn",
+      "label": "Hybrid ODE + Neural Network model",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Mechanistic ODE structure (mass balances) with kinetic terms represented or corrected by neural networks. More data-efficient than pure NN and a realistic Phase 2/3 extension of the Manstein ODE plant_model."
+    },
+    {
+      "id": "pinn_mpc",
+      "label": "PINN-based Model Predictive Control",
+      "type": "concept",
+      "domain": "d4",
+      "content": "MPC that uses a PINN as the prediction model instead of a numerical ODE. Demonstrated in microbial/CHO contexts; iPSC applicability is unverified and should remain advisory/Human-on-the-loop."
+    },
+    {
+      "id": "uncertainty_quantification",
+      "label": "Uncertainty Quantification (UQ) for learned models",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Quantification of epistemic and aleatoric uncertainty in PINN/NN/DT predictions, typically expressed as 95% confidence intervals. Required for Human-on-the-loop escalation when model confidence is low."
+    },
+    {
+      "id": "deep_ensemble",
+      "label": "Deep Ensemble UQ",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Multiple independently trained networks whose prediction distribution defines mean and variance. Simplest practical UQ method for hybrid ODE+NN models."
+    },
+    {
+      "id": "bayesian_pinn",
+      "label": "Bayesian PINN (B-PINN)",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Variational inference over PINN weights to produce posterior predictive distributions. Theoretically grounded but computationally expensive and prior-dependent."
+    },
+    {
+      "id": "efi_pinn",
+      "label": "EFI-based UQ for PINN",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Extended Fiducial Inference for PINNs. Avoids subjective priors/dropout rates by solving data-generating equations; shown to achieve ~95% coverage on synthetic PDEs, but unverified on bioreactor time series."
+    },
+    {
+      "id": "mc_dropout",
+      "label": "MC Dropout UQ",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Dropout retained at inference time to approximate Bayesian predictive distributions. Sensitive to dropout-rate choice; intervals can be poorly calibrated."
+    },
+    {
+      "id": "gp_bias_correction",
+      "label": "GP bias correction for plant_model",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Gaussian Process that learns the residual between Manstein ODE predictions and observed run data. Natural Phase 2 extension that integrates with existing BO infrastructure."
+    },
+    {
+      "id": "multifidelity_pinn",
+      "label": "Multi-fidelity PINN/DT integration",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Use of Manstein ODE and Hybrid ODE+NN as low/medium-fidelity surrogates and real bioreactor runs as high-fidelity evaluations within multi-fidelity Bayesian optimization."
+    },
+    {
+      "id": "digital_twin_calibration",
+      "label": "Digital Twin calibration",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Online/offline parameter estimation and model-mismatch correction using real batch data. Required to keep the DT aligned with the physical process."
+    },
+    {
+      "id": "universal_differential_equation",
+      "label": "Universal Differential Equation (UDE)",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Hybrid model where known mechanistic terms remain explicit and unknown terms are learned by a neural network. Bridges Manstein ODE and full PINN approaches."
+    },
+    {
+      "id": "neural_ode",
+      "label": "Neural ODE",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Learned ordinary differential equation dx/dt = f_theta(x). Can be combined with known physics (UDE) for bioreactor dynamics."
+    },
+    {
+      "id": "kinetic_cell_model",
+      "label": "Kinetic Cell Model",
+      "type": "concept",
+      "domain": "d1",
+      "content": "Sub-model describing cell metabolism and growth kinetics. In advanced DTs it combines genome-scale metabolic networks with neural networks."
+    },
+    {
+      "id": "reactor_model",
+      "label": "Reactor Model",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Mass-balance model of batch/fed-batch/perfusion reactor volumes and concentrations due to inlet/outlet streams."
+    },
+    {
+      "id": "extracellular_reaction_model",
+      "label": "Extracellular Reaction Model",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Model of abiotic reactions in culture media, e.g. glutamine degradation."
+    },
+    {
+      "id": "model_mismatch_correction",
+      "label": "Model mismatch correction",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Learned correction that refines low-fidelity digital twin or simulation predictions using real data. Essential for trustworthy multi-fidelity BO."
+    },
+    {
+      "id": "prediction_confidence_score",
+      "label": "Prediction confidence score",
+      "type": "concept",
+      "domain": "d6",
+      "content": "Normalized score derived from model predictive uncertainty (e.g. 95% CI width). Drives Human-on-the-loop escalation for DT/BO/MPC proposals."
+    },
+    {
+      "id": "data_requirement_pinn",
+      "label": "Data requirement for PINN/hybrid models",
+      "type": "concept",
+      "domain": "d4",
+      "content": "Industry rule-of-thumb: hybrid ODE+NN needs ~50-100 batches, pure NN needs 200-500 batches, PINN ~30-80 batches. CHO/microbial-derived figures; iPSC-native requirements are unverified and likely higher."
+    },
+    {
+      "id": "src_thirugnanasambandam_2025",
+      "label": "Thirugnanasambandam et al. 2025 (Comput Chem Eng)",
+      "type": "source",
+      "domain": "d4",
+      "content": "Dual-ANN PINN framework for generic bioreactor modelling; shows extrapolation limits under time-varying controls."
+    },
+    {
+      "id": "src_yang_2024",
+      "label": "Yang et al. 2024 (Ind Eng Chem Res)",
+      "type": "source",
+      "domain": "d4",
+      "content": "Hybrid PINN model for large-scale pilot CHO fed-batch culture. CHO example, not directly transferable to iPSC."
+    },
+    {
+      "id": "src_catalao_2025",
+      "label": "Catalão et al. 2025 (J Process Control)",
+      "type": "source",
+      "domain": "d4",
+      "content": "Bioprocess MPC with physics-informed neural networks, microbial community PHA production."
+    },
+    {
+      "id": "src_patel_2024",
+      "label": "Patel et al. 2024 (ADCHEM)",
+      "type": "source",
+      "domain": "d4",
+      "content": "MPC using physics-informed neural networks for DAE systems with ResNet + NTK training."
+    },
+    {
+      "id": "src_shih_2025",
+      "label": "Shih, Jiang & Liang 2025 (NeurIPS / arXiv)",
+      "type": "source",
+      "domain": "d4",
+      "content": "Extended Fiducial Inference for rigorous uncertainty quantification in PINNs without subjective priors/dropout rates."
+    },
+    {
+      "id": "src_nobar_2025",
+      "label": "Nobar et al. 2025 (arXiv)",
+      "type": "source",
+      "domain": "d4",
+      "content": "Guided multi-fidelity Bayesian optimization with learned correction model for digital twin controller tuning."
+    },
+    {
+      "id": "src_bioprocesstools_2026",
+      "label": "Bioprocesstools 2026: AI and ML for Bioprocess Optimization",
+      "type": "source",
+      "domain": "d4",
+      "content": "Industry survey of ML method data requirements for bioprocess optimization."
+    },
+    {
+      "id": "src_bioprocessintl_2026",
+      "label": "Bioprocess International 2026: Multifidelity Optimization in Biopharma",
+      "type": "source",
+      "domain": "d4",
+      "content": "Case study of multi-fidelity BO in mAb process with mechanistic simulator bias up to 15%."
+    },
+    {
+      "id": "src_yokogawa_pharma40",
+      "label": "Yokogawa: Building Intelligent processes for Pharma 4.0",
+      "type": "source",
+      "domain": "d8",
+      "content": "Yokogawa Insilico digital twin architecture: Reactor + Extracellular Reaction + Kinetic Cell models."
+    },
+    {
+      "id": "src_pharma_manufacturing_2022",
+      "label": "Pharma Manufacturing 2022: Pharma Innovation Awards",
+      "type": "source",
+      "domain": "d8",
+      "content": "Yokogawa Insilico Digital Twin Factory award and up to 50% experimental effort reduction claim."
+    }
+  ],
+  "edges": [
+    {"source": "d4", "rel": "has", "target": "pinn"},
+    {"source": "d4", "rel": "has", "target": "digital_twin"},
+    {"source": "d4", "rel": "has", "target": "hybrid_ode_nn"},
+    {"source": "d4", "rel": "has", "target": "uncertainty_quantification"},
+    {"source": "d4", "rel": "has", "target": "multifidelity_pinn"},
+    {"source": "pinn", "rel": "implements", "target": "digital_twin"},
+    {"source": "hybrid_ode_nn", "rel": "implements", "target": "digital_twin"},
+    {"source": "universal_differential_equation", "rel": "implements", "target": "hybrid_ode_nn"},
+    {"source": "neural_ode", "rel": "implements", "target": "hybrid_ode_nn"},
+    {"source": "digital_twin", "rel": "extends", "target": "tier2_plant_model"},
+    {"source": "hybrid_ode_nn", "rel": "extends", "target": "tier2_plant_model"},
+    {"source": "pinn", "rel": "researches", "target": "loop"},
+    {"source": "pinn_mpc", "rel": "researches", "target": "loop"},
+    {"source": "uncertainty_quantification", "rel": "quantifies", "target": "pinn"},
+    {"source": "uncertainty_quantification", "rel": "quantifies", "target": "hybrid_ode_nn"},
+    {"source": "uncertainty_quantification", "rel": "quantifies", "target": "digital_twin"},
+    {"source": "deep_ensemble", "rel": "implements", "target": "uncertainty_quantification"},
+    {"source": "bayesian_pinn", "rel": "implements", "target": "uncertainty_quantification"},
+    {"source": "efi_pinn", "rel": "implements", "target": "uncertainty_quantification"},
+    {"source": "mc_dropout", "rel": "implements", "target": "uncertainty_quantification"},
+    {"source": "gp_bias_correction", "rel": "implements", "target": "uncertainty_quantification"},
+    {"source": "gp_bias_correction", "rel": "corrects", "target": "tier2_plant_model"},
+    {"source": "multifidelity_pinn", "rel": "uses", "target": "digital_twin"},
+    {"source": "multifidelity_pinn", "rel": "uses", "target": "hybrid_ode_nn"},
+    {"source": "multifidelity_pinn", "rel": "enhances", "target": "bbo"},
+    {"source": "multifidelity_pinn", "rel": "enhances", "target": "multi_fidelity"},
+    {"source": "digital_twin_calibration", "rel": "calibrates", "target": "digital_twin"},
+    {"source": "digital_twin_calibration", "rel": "calibrates", "target": "hybrid_ode_nn"},
+    {"source": "model_mismatch_correction", "rel": "corrects", "target": "multifidelity_pinn"},
+    {"source": "model_mismatch_correction", "rel": "corrects", "target": "digital_twin"},
+    {"source": "prediction_confidence_score", "rel": "explains", "target": "loop"},
+    {"source": "prediction_confidence_score", "rel": "drives", "target": "human_approval"},
+    {"source": "prediction_confidence_score", "rel": "drives", "target": "approval_workflow"},
+    {"source": "data_requirement_pinn", "rel": "constrains", "target": "bbo"},
+    {"source": "data_requirement_pinn", "rel": "constrains", "target": "sdl"},
+    {"source": "data_requirement_pinn", "rel": "constrains", "target": "digital_twin"},
+    {"source": "kinetic_cell_model", "rel": "part_of", "target": "digital_twin"},
+    {"source": "reactor_model", "rel": "part_of", "target": "digital_twin"},
+    {"source": "extracellular_reaction_model", "rel": "part_of", "target": "digital_twin"},
+    {"source": "kinetic_cell_model", "rel": "models", "target": "suspension"},
+    {"source": "reactor_model", "rel": "models", "target": "suspension"},
+    {"source": "kinetics", "rel": "informs", "target": "pinn"},
+    {"source": "kinetics", "rel": "informs", "target": "hybrid_ode_nn"},
+    {"source": "cpv", "rel": "feeds", "target": "digital_twin"},
+    {"source": "cpv", "rel": "feeds", "target": "hybrid_ode_nn"},
+    {"source": "qccrit", "rel": "verifies", "target": "digital_twin"},
+    {"source": "csv", "rel": "validates", "target": "digital_twin"},
+    {"source": "csv", "rel": "validates", "target": "hybrid_ode_nn"},
+    {"source": "audit", "rel": "logs", "target": "digital_twin"},
+    {"source": "audit", "rel": "logs", "target": "hybrid_ode_nn"},
+    {"source": "part11", "rel": "constrains", "target": "digital_twin"},
+    {"source": "alcoa", "rel": "constrains", "target": "digital_twin"},
+    {"source": "recipe_executor", "rel": "succeeds", "target": "pinn_mpc"},
+    {"source": "rule_engine", "rel": "succeeds", "target": "pinn_mpc"},
+    {"source": "state_machine_l1", "rel": "succeeds", "target": "pinn_mpc"},
+    {"source": "llm_orchestrator", "rel": "explains", "target": "prediction_confidence_score"},
+    {"source": "safe_bo", "rel": "uses", "target": "prediction_confidence_score"},
+    {"source": "batch_bo", "rel": "uses", "target": "multifidelity_pinn"},
+    {"source": "multi_fidelity", "rel": "includes", "target": "multifidelity_pinn"},
+    {"source": "src_thirugnanasambandam_2025", "rel": "informs", "target": "pinn"},
+    {"source": "src_yang_2024", "rel": "informs", "target": "pinn"},
+    {"source": "src_yang_2024", "rel": "informs", "target": "hybrid_ode_nn"},
+    {"source": "src_catalao_2025", "rel": "informs", "target": "pinn_mpc"},
+    {"source": "src_patel_2024", "rel": "informs", "target": "pinn_mpc"},
+    {"source": "src_shih_2025", "rel": "informs", "target": "efi_pinn"},
+    {"source": "src_shih_2025", "rel": "informs", "target": "uncertainty_quantification"},
+    {"source": "src_nobar_2025", "rel": "informs", "target": "multifidelity_pinn"},
+    {"source": "src_nobar_2025", "rel": "informs", "target": "model_mismatch_correction"},
+    {"source": "src_bioprocesstools_2026", "rel": "defines", "target": "data_requirement_pinn"},
+    {"source": "src_bioprocessintl_2026", "rel": "supports", "target": "multifidelity_pinn"},
+    {"source": "src_yokogawa_pharma40", "rel": "defines", "target": "digital_twin"},
+    {"source": "src_yokogawa_pharma40", "rel": "defines", "target": "reactor_model"},
+    {"source": "src_yokogawa_pharma40", "rel": "defines", "target": "extracellular_reaction_model"},
+    {"source": "src_yokogawa_pharma40", "rel": "defines", "target": "kinetic_cell_model"},
+    {"source": "src_pharma_manufacturing_2022", "rel": "supports", "target": "digital_twin"},
+    {"source": "src_manstein", "rel": "informs", "target": "hybrid_ode_nn"},
+    {"source": "src_manstein", "rel": "informs", "target": "pinn"},
+    {"source": "src_ax", "rel": "informs", "target": "multifidelity_pinn"},
+    {"source": "src_botorch", "rel": "informs", "target": "multifidelity_pinn"}
+  ],
+  "sources": [
+    {"id": "src_thirugnanasambandam_2025", "url": "https://doi.org/10.1016/j.compchemeng.2025.109354", "title": "Thirugnanasambandam et al. 2025, Comput Chem Eng 203:109354 — A Physics-Informed Neural Network (PINN) framework for generic bioreactor modelling"},
+    {"id": "src_yang_2024", "url": "https://doi.org/10.1021/acs.iecr.4c01459", "title": "Yang et al. 2024, Ind Eng Chem Res 63(39) — Hybrid Modeling of Fed-Batch Cell Culture Using Physics-Informed Neural Network"},
+    {"id": "src_catalao_2025", "url": "https://doi.org/10.1016/j.jprocont.2025.103594", "title": "Catalão et al. 2025, J Process Control 156:103594 — Bioprocess model-predictive control with physics-informed neural networks"},
+    {"id": "src_patel_2024", "url": "https://skoge.folk.ntnu.no/prost/proceedings/adchem-2024/files/0042.pdf", "title": "Patel et al. 2024, ADCHEM — Model Predictive Control Using Physics Informed Neural Networks"},
+    {"id": "src_shih_2025", "url": "https://arxiv.org/abs/2505.19136", "title": "Shih, Jiang & Liang 2025, NeurIPS / arXiv — Uncertainty Quantification for Physics-Informed Neural Networks with Extended Fiducial Inference"},
+    {"id": "src_nobar_2025", "url": "https://arxiv.org/abs/2509.17952", "title": "Nobar et al. 2025, arXiv — Guided Multi-Fidelity Bayesian Optimization for Data-driven Controller Tuning with Digital Twins"},
+    {"id": "src_bioprocesstools_2026", "url": "https://bioprocesstools.com/blog/ai-machine-learning-bioprocess-optimization/", "title": "Bioprocesstools 2026 — AI and Machine Learning for Bioprocess Optimization (data requirements survey)"},
+    {"id": "src_bioprocessintl_2026", "url": "https://www.bioprocessintl.com/qa-qc/doing-more-with-less-multifidelity-optimization-in-the-biopharmaceutical-industry/", "title": "Bioprocess International 2026 — Doing More with Less: Multifidelity Optimization in the Biopharmaceutical Industry"},
+    {"id": "src_yokogawa_pharma40", "url": "https://www.yokogawa.com/library/resources/media-publications/building-intelligent-processes-for-pharma-40/", "title": "Yokogawa — Building Intelligent processes for Pharma 4.0 (digital twin hybrid model)"},
+    {"id": "src_pharma_manufacturing_2022", "url": "https://www.pharmamanufacturing.com/home/article/21437943/pharma-innovation-awards-2022", "title": "Pharma Manufacturing 2022 — Pharma Innovation Awards (Yokogawa Insilico Digital Twin Factory)"}
+  ]
+}

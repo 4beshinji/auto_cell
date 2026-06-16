@@ -1,0 +1,366 @@
+{
+  "meta": {
+    "title": "auto_cell A 層 設計再検討 変更提案サマリー",
+    "generated": "2026-06-16",
+    "scope": "iPSC 浮遊/凝集体バイオリアクター制御（A 層）",
+    "base_documents": [
+      "docs/design/requirements.md",
+      "docs/design/adr/0001-control-architecture.md",
+      "docs/design/kg_to_auto_cell.md",
+      "docs/design/agent_swarm_investigation_prompts.md",
+      "docs/design/ground_knowledge/integrated_report.md",
+      "docs/knowledge_graph/knowledge_graph_v2.json",
+      "docs/knowledge_graph/knowledge_graph_v2_1.json",
+      "docs/design/alignment_with_downloaded_report.md",
+      "docs/design/additional_tasks_memo.md",
+      "docs/design/ground_knowledge/additional_investigation_integrated.md",
+      "docs/knowledge_graph/generated/additional_investigation_diff.json",
+      "src/auto_cell/plugins/cell_culture/__init__.py",
+      "sim/plant_model/__init__.py",
+      "pyproject.toml",
+      "README.md"
+    ]
+  },
+  "changes": [
+    {
+      "id": "C1",
+      "priority": "high",
+      "target_file": "docs/design/adr/0001-control-architecture.md",
+      "change_type": "append_or_new_adr",
+      "change_summary": "MPC、PINN/デジタルツイン、信頼度スコア層の将来位置づけを追記する。または ADR-0002 として新規作成。",
+      "details": {
+        "add_sections": [
+          "MPC as future L1 extension (Phase 2 simulation, Phase 3 multi-variable adaptive)",
+          "PINN/Digital Twin/Hybrid ODE+NN as plant_model evolution (Phase 2 GP bias correction, Phase 3 hybrid surrogate)",
+          "Prediction confidence score layer between L2/L3 and HMI",
+          "Human-on-the-loop requirement for all future AI-driven proposals"
+        ]
+      },
+      "reason": "ダウンロードレポートとの整合、KG v2.1 新規ノード（mpc, pinn, digital_twin, prediction_confidence_score）の設計反映、Annex 22 対応。",
+      "certainty": "推定/設計判断",
+      "related_kg_nodes": [
+        "mpc",
+        "mpc_ipsc_perfusion",
+        "mpc_roadmap_l1",
+        "pinn",
+        "digital_twin",
+        "hybrid_ode_nn",
+        "prediction_confidence_score",
+        "annex22",
+        "human_approval",
+        "approval_workflow"
+      ]
+    },
+    {
+      "id": "C2",
+      "priority": "high",
+      "target_file": "docs/design/kg_to_auto_cell.md",
+      "change_type": "update",
+      "change_summary": "§4 CPP カタログを更新し、制限値/早期警戒値/トリガ値を明確に区分する。",
+      "details": {
+        "add_cpp_variables": [
+          "ammonia (monitoring-only)",
+          "aggregate size distribution / fraction >400 um",
+          "CSPR (Cell-Specific Perfusion Rate)"
+        ],
+        "clarify_thresholds": {
+          "glucose": {"limit": "> 1.5 mM", "warning": "1.8 mM", "source": "Manstein 2021 Table 1"},
+          "lactate": {"limit": "< 50 mM", "warning": "35 mM", "source": "Manstein 2021 Table 1"},
+          "osmolality": {"limit": "< 500 mOsm/kg", "warning": "450 mOsm/kg", "source": "Manstein 2021 Table 1"}
+        },
+        "note": "凝集体径 150-350 um は初期仮説。細胞株・培地・攪拌形状で再校正。大径凝集体割合も監視。"
+      },
+      "reason": "閾値混同による L1 誤動作防止、品質リスク（壊死コア）低減、アンモニア監視の明確化。",
+      "certainty": "推定/設計判断",
+      "related_kg_nodes": [
+        "cpp_glucose",
+        "cpp_lactate",
+        "cpp_osmolality",
+        "cpp_ammonia",
+        "cpp_aggregate_diameter",
+        "cpsr_control",
+        "ramp_limit",
+        "perfusion_trigger",
+        "add_cho_ipsc_ammonia_threshold",
+        "add_aggimg_aggregate_size_pluripotency"
+      ]
+    },
+    {
+      "id": "C3",
+      "priority": "high",
+      "target_file": "docs/design/kg_to_auto_cell.md",
+      "change_type": "update_and_new_doc",
+      "change_summary": "§5 規制・データインテグリティに Annex 22-ready 技術的統制を追加。新規 `docs/design/regulatory_technical_controls.md` 作成。",
+      "details": {
+        "add_controls": [
+          "Intended Use documentation template",
+          "Data segregation (train/valid/test/operational)",
+          "Staff independence / dual control",
+          "Static-deterministic proof (checksum, fixed seed, reproducibility test, model card)",
+          "XAI / feature attribution",
+          "Confidence score and low-confidence escalation",
+          "Drift monitoring",
+          "L3 LLM non-critical use limitation and prompt versioning"
+        ]
+      },
+      "reason": "R&D 一次でありつつ将来 GMP/Annex 22 移行を妨げない骨格を実質化。",
+      "certainty": "推定/設計判断",
+      "related_kg_nodes": [
+        "annex22",
+        "critical_ai",
+        "noncritical_ai",
+        "static_model",
+        "deterministic_output",
+        "dynamic_model",
+        "probabilistic_model",
+        "generative_ai",
+        "hitl",
+        "xai",
+        "confidence_score",
+        "feature_attribution",
+        "drift_monitoring",
+        "test_data_independence",
+        "staff_independence",
+        "data_segregation",
+        "static_deterministic_proof",
+        "esignature",
+        "gamp_ai_lifecycle"
+      ]
+    },
+    {
+      "id": "C4",
+      "priority": "medium",
+      "target_file": "docs/design/roadmap.md",
+      "change_type": "create",
+      "change_summary": "新規ロードマップ文書を作成し、v1/Phase2/Phase3 の移行条件を数値化する。",
+      "details": {
+        "phase_gates": {
+          "v1": ["L1 rule engine", "Manstein ODE plant_model", "Nova FLEX2", "at-line aggregate imaging", "ALCOA-lite audit log", "basic HITL approval"],
+          "phase2": ["30+ runs accumulated", "MPC simulation", "Raman advisory (5+ batch calibration)", "image quantification", "static-deterministic AI controls"],
+          "phase3": ["50-100+ runs accumulated", "multi-variable adaptive MPC", "Raman closed-loop", "DL quality proxy integration", "GMP IQ/OQ/PQ migration"]
+        }
+      },
+      "reason": "段階的投資、リスク管理、KG v2.1 新規ノードの実装順序付け。",
+      "certainty": "推定/設計判断",
+      "related_kg_nodes": [
+        "mpc_roadmap_l1",
+        "raman_calibration_ipsc",
+        "hybrid_ode_nn",
+        "digital_twin",
+        "add_aggimg_aggregate_quality_proxy",
+        "data_requirement_pinn",
+        "multifidelity_pinn"
+      ]
+    },
+    {
+      "id": "C5",
+      "priority": "medium",
+      "target_file": "docs/design/kg_to_auto_cell.md",
+      "change_type": "update",
+      "change_summary": "§4.2 観測性スタックを更新。offline 品質/無菌の弱点を明記し、at-line 代理指標・rapid 無菌検知の調査をロードマップに追加。",
+      "details": {
+        "acknowledge_weakness": "Quality markers (OCT4 etc.) and sterility are offline/run-level only, limiting in-run quality control.",
+        "add_phase2_investigations": [
+          "at-line aggregate image quality proxy",
+          "rapid micro/ATP sterility detection",
+          "Raman advisory input validation"
+        ]
+      },
+      "reason": "run 内品質劣化/汚染検知の遅延リスクを低減。",
+      "certainty": "推定/設計判断",
+      "related_kg_nodes": [
+        "monitoring_quality_offline",
+        "monitoring_sterility_offline",
+        "measurement_aggregate_imaging",
+        "add_aggimg_aggregate_quality_proxy",
+        "raman_calibration_ipsc",
+        "raman_confidence_score"
+      ]
+    },
+    {
+      "id": "C6",
+      "priority": "medium",
+      "target_file": "docs/design/kg_to_auto_cell.md",
+      "change_type": "update",
+      "change_summary": "§7.3/§8 MQTT topic 契約に approval-state / HMI 通知 topic を追加。",
+      "details": {
+        "add_topics": [
+          "cell/{culture_unit_id}/state/approval/{request_id}",
+          "cell/{culture_unit_id}/notify/hmi/{priority}"
+        ],
+        "correlation": "Approval state transitions (requested/approved/rejected/pending_timeout/executed/cancelled) are published with correlation ID matching cmd/ack."
+      },
+      "reason": "承認フローと telemetry の一貫性、HMI リアルタイム更新。",
+      "certainty": "設計判断",
+      "related_kg_nodes": [
+        "mqtt_topic_contract",
+        "gateway_cmd_ack",
+        "approval_workflow",
+        "human_approval",
+        "hmi_dashboard"
+      ]
+    },
+    {
+      "id": "C7",
+      "priority": "low",
+      "target_file": "docs/design/kg_to_auto_cell.md",
+      "change_type": "update",
+      "change_summary": "CHO 由来数値・目的関数・戦略を iPSC にそのまま転用しないことを設計原則として強調。",
+      "details": {
+        "add_section": "CHO→iPSC transfer caution and CPP reinterpretation principles",
+        "points": [
+          "Do not transfer CHO lactate/ammonia/osmolality/glucose thresholds directly",
+          "Do not use mAb titer objective for iPSC",
+          "Do not apply CHO high-density/long-term strategies to iPSC aggregates"
+        ]
+      },
+      "reason": "ダウンロードレポート（CHO/mAb 中心）との混同防止。",
+      "certainty": "事実/設計判断",
+      "related_kg_nodes": [
+        "add_cho_ipsc_transfer_caution",
+        "add_cho_ipsc_cpp_reinterpretation",
+        "add_cho_ipsc_cho_metabolism",
+        "add_cho_ipsc_ipsc_metabolism",
+        "add_cho_ipsc_mab_titer_objective",
+        "add_cho_ipsc_pluripotency_objective"
+      ]
+    },
+    {
+      "id": "C8",
+      "priority": "low",
+      "target_file": "README.md",
+      "change_type": "update",
+      "change_summary": "README にロードマップと規制技術統制への参照を追加。",
+      "details": {
+        "add_links": [
+          "docs/design/roadmap.md",
+          "docs/design/regulatory_technical_controls.md"
+        ]
+      },
+      "reason": "設計文書間の一貫性とプロジェクト入り口の情報充実。",
+      "certainty": "設計判断",
+      "related_kg_nodes": []
+    },
+    {
+      "id": "C9",
+      "priority": "high",
+      "target_file": "docs/design/kg_to_auto_cell.md",
+      "change_type": "update",
+      "change_summary": "§4 ramp 制限表を更新し、各値が初期仮説であることを明示。",
+      "details": {
+        "ramp_limits": {
+          "set_perfusion_rate": {"value": "±0.5 vvd / 30 min", "status": "initial hypothesis, recalibrate with cell line"},
+          "set_agitation_rpm": {"value": "±20 rpm / 5 min", "status": "initial hypothesis"},
+          "set_gas_setpoint(DO)": {"value": "±5 % / 5 min", "status": "initial hypothesis"},
+          "set_gas_setpoint(pH/CO2)": {"value": "±0.1 / 5 min", "status": "initial hypothesis"}
+        }
+      },
+      "reason": "シア/浸透圧ショック回避の根拠を透明化。",
+      "certainty": "推定/未確定",
+      "related_kg_nodes": [
+        "ramp_limit",
+        "cpp_agitation",
+        "cpp_perfusion_rate",
+        "add_cho_ipsc_shear_sensitivity"
+      ]
+    },
+    {
+      "id": "C10",
+      "priority": "medium",
+      "target_file": "docs/design/additional_tasks_memo.md",
+      "change_type": "update",
+      "change_summary": "追加調査の完了状況と未解決事項を更新。",
+      "details": {
+        "mark_completed": [
+          "MPC for iPSC perfusion",
+          "PINN/DT for iPSC",
+          "Raman calibration for iPSC",
+          "CHO→iPSC CPP transfer",
+          "PIC/S Annex 22 roadmap",
+          "Aggregate imaging"
+        ],
+        "add_outstanding": [
+          "iPSC-native ammonia threshold",
+          "Raman cell-scattering correction quantitative formula",
+          "DL quality proxy validation",
+          "Approval timeout optimization"
+        ]
+      },
+      "reason": "タスク追跡の透明性。",
+      "certainty": "事実",
+      "related_kg_nodes": []
+    }
+  ],
+  "unresolved_items": [
+    {
+      "id": "U1",
+      "item": "BO 目的関数の重み（収量 vs 多能性 vs コスト）",
+      "impact": "L2 最適化方向性",
+      "next_step": "研究者ヒアリング",
+      "related_kg_nodes": ["add_cho_ipsc_pluripotency_objective", "bbo", "qccrit"]
+    },
+    {
+      "id": "U2",
+      "item": "承認タイムアウト値の運用最適化",
+      "impact": "HMI/ワークフロー",
+      "next_step": "感度分析",
+      "related_kg_nodes": ["approval_workflow", "human_approval"]
+    },
+    {
+      "id": "U3",
+      "item": "レシピ DSL の正式文法",
+      "impact": "L1 実装",
+      "next_step": "文法策定とパーサ実装",
+      "related_kg_nodes": ["recipe_dsl", "recipe_executor"]
+    },
+    {
+      "id": "U4",
+      "item": "core cognitive-loop 改修方針",
+      "impact": "L1/L3 実装",
+      "next_step": "core 改修設計",
+      "related_kg_nodes": ["loop", "llm_orchestrator"]
+    },
+    {
+      "id": "U5",
+      "item": "iPSC ネイティブアンモニア閾値",
+      "impact": "L1 イベント化の可否",
+      "next_step": "文献サーチ or 実験決定",
+      "related_kg_nodes": ["cpp_ammonia", "add_cho_ipsc_ammonia_threshold"]
+    },
+    {
+      "id": "U6",
+      "item": "Raman PLS の iPSC 校正精度（RMSEP/R²）",
+      "impact": "Raman アドバイザリ/閉ループ信頼性",
+      "next_step": "5+ バッチ校正実験",
+      "related_kg_nodes": ["raman_calibration_ipsc", "raman_pls_model", "raman_confidence_score"]
+    },
+    {
+      "id": "U7",
+      "item": "凝集体・高密度細胞による Raman 光散乱補正の定量式",
+      "impact": "Raman 推定精度",
+      "next_step": "標準添加/混合標準実験",
+      "related_kg_nodes": ["raman_cell_scattering", "raman_aggregate_interference"]
+    },
+    {
+      "id": "U8",
+      "item": "MPC シミュレータの求解時間と cadence",
+      "impact": "MPC 実用性",
+      "next_step": "do-mpc/acados プロトタイプ",
+      "related_kg_nodes": ["mpc_implementation_libraries", "mpc_prediction_horizon", "mpc_control_horizon"]
+    },
+    {
+      "id": "U9",
+      "item": "低信頼度閾値のプロセス毎検証",
+      "impact": "HITL 過剰/過少エスカレーション",
+      "next_step": "感度分析",
+      "related_kg_nodes": ["confidence_score", "prediction_confidence_score"]
+    },
+    {
+      "id": "U10",
+      "item": "Annex 22 最終文本・施行日",
+      "impact": "GMP 移行計画",
+      "next_step": "規制動向モニタリング",
+      "related_kg_nodes": ["annex22"]
+    }
+  ]
+}
