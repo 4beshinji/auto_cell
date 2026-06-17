@@ -242,6 +242,30 @@ deep-research（計測/分析サーベイ）＋一次検証。詳細・出典は
 - **凝集体径は in-line が弱い** → §8#3「analog channel」は維持だが **cadence は at-line 寄り（連続でない）** を前提に L1 を設計。
 - **品質/無菌が offline＝BO 側**である事実は **ADR-0001 の L1(物理 CPP の決定的制御)/L2(BO は run 結果の品質を最適化) 分離を裏付ける**。ただし Phase 2 以降は at-line 代理指標でこの弱点を段階的に補う。
 
+### 4.3 品質読み出し → BO 目的関数（#11/#12, 2026-06-15）
+
+deep-research（品質 assay 測定性）＋一次検証（Kanda 2022）。詳細・出典は
+[`../knowledge_graph/research/2026-06-15_qccrit_BO_objective.md`](../knowledge_graph/research/2026-06-15_qccrit_BO_objective.md)。
+正準な分子 assay は**どれも厳密な at-line でない**ため、BO は「**per-run スカラ化できる目的項**」と「**offline/periodic な
+合格ゲート＝制約**」に分けて構成する（ADR-0001 の constrained/safe BO と一体）。
+
+| 読み出し | 測定 | BO での扱い |
+|---|---|---|
+| 収量(VCD/fold) | capacitance/計数（§4.2, 非破壊） | **目的項**（連続） |
+| 生存率 | Nova FLEX2/画像 | **目的項**（連続%） |
+| 多能性 %陽性（OCT3/4・TRA-1-60・**SSEA5**） | フローサイト（破壊サンプリング, 分〜時間, per-run） | **目的項**（連続%。実務は多マーカー pass/fail ゲート化） |
+| ラベルフリー画像代理 | 明視野/DHM＋DL | ⚠️**未確立**（DR 確証ゼロ）→検証できれば非破壊目的項に昇格 |
+| 同一性(STR)・核型/CNV(KaryoStat 3-4日, G-band 7-10日) | offline・多日 | **制約/ゲート**（periodic: 初期＋~10継代毎。~70%株が CNV 保有） |
+| 残存未分化 | 上清 **miR-302b**(0.001%, 非破壊・単一RPE研究) / LIN28 | 最小化**制約**（非破壊 run 候補だが要検証） |
+| 三胚葉分化能 | ScoreCard qPCR(Z-score, 多日) / trilineage(~1週) | offline 事後/cadence |
+
+**推奨 BO 目的関数（R&D）**: per-run 連続スカラ `J = 収量(VCD/fold) × 生存率 × 多能性%陽性`（＋検証後に label-free 代理）。
+同一性・核型・残存未分化は **end-of-run/バンキング cadence の pass/fail 制約**（safe/constrained BO）。
+
+**先例（検証済）Kanda 2022**: 単一目的＝**画像由来スカラ**（色素 RPE 面積比）、**batch BO(GPyOpt, GP+EI+Local Penalization)**、
+7パラメタ/143条件/111日で **88%改善**。→ 単一目的 batch BO が iPSC で実証済（auto_cell の Ax/BoTorch は現代等価）、画像由来
+スカラを目的にできる。ただし **分化ドメイン**で、拡大の品質代理画像は未確立 → 拡大では測定 pluripotency%＋yield×viability を使う。
+
 ---
 
 ## 5. 規制・データインテグリティ → 技術的統制（d6）

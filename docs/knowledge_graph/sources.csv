@@ -27,6 +27,9 @@ reprog,iPSC樹立（初期化）,concept,パナソニックHD iPS樹立工程の
 reprog,iPSC樹立（初期化）,concept,ML label-free iPSC colony formation detection（Sci Rep）,https://www.nature.com/articles/s41598-017-13680-x
 qccrit,細胞品質基準,concept,Parametric analysis of hPSC colony morphology for QC（Sci Rep）,https://www.nature.com/articles/srep34009
 qccrit,細胞品質基準,concept,Long-term iPSC maintenance by automated culture system（Konagaya 2015）,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/
+qccrit,細胞品質基準,concept,国際多施設 QAR: OCT3/4・TRA-1-60・SSEA5 が最ロバスト多能性マーカー (Stem Cell Reports 2026),https://www.cell.com/stem-cell-reports/fulltext/S2213-6711(26)00068-8
+qccrit,細胞品質基準,concept,GMP hiPSC バッチリリース assay 検証 (Cytotherapy 2024),https://www.sciencedirect.com/science/article/pii/S1465324924006108
+qccrit,細胞品質基準,concept,上清 miR-302b で残存未分化 0.001% 非破壊検出 (Sci Rep 2022),https://www.nature.com/articles/s41598-022-14273-z
 bf,明視野/位相差イメージング,concept,Deep learning for label-free monitoring of iPSC & organoids,https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures
 conf,コンフルエンシー算出,concept,Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）,https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system
 conf,コンフルエンシー算出,concept,Deep learning for label-free monitoring of iPSC & organoids,https://www.moleculardevices.com/en/assets/app-note/dd/img/deep-learning-based-image-analysis-for-label-free-live-monitoring-of-ipsc-and-3d-organoid-cultures

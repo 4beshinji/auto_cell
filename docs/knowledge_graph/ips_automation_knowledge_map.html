@@ -263,6 +263,10 @@ const S = { // reusable sources
   graf:{t:'Graf/Wei et al. 2022, Front Bioeng — in-line Raman closed-loop glucose (PID)',u:'https://www.frontiersin.org/journals/bioengineering-and-biotechnology/articles/10.3389/fbioe.2022.719614/full'},
   nova:{t:'Nova Biomedical BioProfile FLEX2 (16-parameter at-line analyzer)',u:'https://www.novabiomedical.com/cell-culture-analyzers/bioprofile-flex2-basic/'},
   kropp2019:{t:'Kropp et al. 2019, Sci Rep — at-line bypass imaging of hiPSC aggregates',u:'https://www.nature.com/articles/s41598-019-48814-w'},
+  // ---- #11/#12 (2026-06-15): 品質読み出し → BO 目的関数 ----
+  scr_qar:{t:'国際多施設QAR: OCT3/4・TRA-1-60・SSEA5 が最ロバスト多能性マーカー (Stem Cell Reports 2026)',u:'https://www.cell.com/stem-cell-reports/fulltext/S2213-6711(26)00068-8'},
+  cyto2024:{t:'GMP hiPSC バッチリリース assay 検証 (Cytotherapy 2024)',u:'https://www.sciencedirect.com/science/article/pii/S1465324924006108'},
+  mir302b:{t:'上清 miR-302b で残存未分化 0.001% 非破壊検出 (Sci Rep 2022)',u:'https://www.nature.com/articles/s41598-022-14273-z'},
 };
 
 const NODES = [
@@ -311,8 +315,8 @@ const NODES = [
    content:'体細胞をRNA等で初期化しコロニーを得る最難関工程。形態が動的で良質コロニー選抜が職人技。財団・パナソニックが2026年に樹立工程の自動化実証に着手。',
    sources:[S.pana_est,S.colform]},
   {id:'qccrit',label:'細胞品質基準',type:'concept',domain:'d1',
-   content:'未分化マーカー発現・三胚葉分化能・核型など、製造物が満たすべき生物学的基準。自動判定の「正解ラベル」を定義し、画像代理指標と紐づける必要がある。',
-   sources:[S.morph,S.konagaya]},
+   content:'未分化マーカー発現・三胚葉分化能・核型など、製造物が満たすべき生物学的基準。自動判定の「正解ラベル」を定義し、画像代理指標と紐づける必要がある。【BO適性, 2026-06-15】per-run目的項=収量×生存率×多能性%陽性(フローサイト; OCT3/4・TRA-1-60・SSEA5が cross-lab 最ロバスト)。同一性(STR)・核型/CNV(KaryoStat 3-4日/G-band 7-10日, ~70%株がCNV保有→periodic監視)・残存未分化(上清miR-302b 0.001%非破壊)はoffline/periodic制約。ラベルフリー画像代理は未確立(要検証)。',
+   sources:[S.morph,S.konagaya,S.scr_qar,S.cyto2024,S.mir302b]},
 
   // ---- D2 画像CV ----
   {id:'bf',label:'明視野/位相差イメージング',type:'concept',domain:'d2',
@@ -359,7 +363,7 @@ const NODES = [
    content:'観察→判断→操作のサイクルを人手介入なしで回す。画像メトリクスを意思決定点に変換し、通知か次工程実行かを分岐する制御ロジック。',
    sources:[S.riken2020,S.cxa]},
   {id:'bbo',label:'バッチベイズ最適化',type:'concept',domain:'d4',
-   content:'数百万通りの培養条件を、ガウス過程＋バッチ取得関数で効率探索。RPE分化率を反復改善した自律実験の中核解法（GPyOptベース）。',
+   content:'数百万通りの培養条件を、ガウス過程＋バッチ取得関数で効率探索。RPE分化率を反復改善した自律実験の中核解法（GPyOptベース）。【検証2026-06-15】Kanda 2022は単一目的=画像由来の色素化スコア(day34 RPE面積比)、batch BO(GP+Expected Improvement+Batch Contextual Local Penalization, GPyOpt)、7パラメタ/143条件/111日で88%改善(0.91 vs 0.43)。単一目的batch BOがiPSCで実証済(現代等価=Ax/BoTorch)。auto_cell拡大BOの目的はqccrit由来=収量×生存率×多能性%陽性。',
    sources:[S.kanda,S.kanda_code]},
   {id:'doe',label:'実験計画の定式化',type:'concept',domain:'d4',
    content:'プロトコルをパラメータ空間に写像し、最適化問題として定義する工程。各操作を変数化（濃度・日数・剥離強度等）し探索可能にする前処理。',
@@ -626,6 +630,7 @@ const EDGES = [
   {s:'astellas',t:'dualarm',rel:'uses'},
   // landmark sources anchor concepts
   {s:'src_kanda',t:'bbo',rel:'defines'},
+  {s:'qccrit',t:'bbo',rel:'informs'},   // #11/#12: 品質読み出しがBO目的を規定
   {s:'src_kanda',t:'sdl',rel:'defines'},
   {s:'src_kanda',t:'diff',rel:'demonstrates'},
   {s:'src_riken2020',t:'growth',rel:'demonstrates'},

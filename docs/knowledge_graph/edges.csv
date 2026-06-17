@@ -157,3 +157,4 @@ devprofile,uses,opcua
 gateway,implements,devprofile
 cpv,feeds,loop
 src_manstein,demonstrates,cpv
+qccrit,informs,bbo

@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "iPS自動培養ソフトウェア ドメイン知識マップ",
-    "description": "京都大学iPS細胞研究財団と関連研究を起点に、自動細胞培養ソフトウェアの実装に必要なドメイン知識をナレッジグラフのシードとして構造化したもの。 [2026-06-14 P1拡張: 浮遊速度論ODEの原典(Galvanauskas et al. 2019)とCPP文献根拠を追加] [2026-06-14 P1続報: plant_model原典をManstein&Zweigerdt 2021と特定(Galvanauskas誤推定を訂正)] [2026-06-14 P3: デバイスIF=OPC-UA/LADS(バイオリアクタ)第一・SiLA2(ラボ自動化)従、閉鎖ターンキーは非制御対象] [2026-06-14 P3拡張: 協業前提の制御権限二層分界と単一デバイスプロファイル(ICD=LADS情報モデル)を追加] [2026-06-15 P5: 観測性スタック(in-line capacitance VCD/Raman代謝物/at-line Nova/凝集体画像; 品質・無菌はoffline=BO専用)をcpvに拡充]",
+    "description": "京都大学iPS細胞研究財団と関連研究を起点に、自動細胞培養ソフトウェアの実装に必要なドメイン知識をナレッジグラフのシードとして構造化したもの。 [2026-06-14 P1拡張: 浮遊速度論ODEの原典(Galvanauskas et al. 2019)とCPP文献根拠を追加] [2026-06-14 P1続報: plant_model原典をManstein&Zweigerdt 2021と特定(Galvanauskas誤推定を訂正)] [2026-06-14 P3: デバイスIF=OPC-UA/LADS(バイオリアクタ)第一・SiLA2(ラボ自動化)従、閉鎖ターンキーは非制御対象] [2026-06-14 P3拡張: 協業前提の制御権限二層分界と単一デバイスプロファイル(ICD=LADS情報モデル)を追加] [2026-06-15 P5: 観測性スタック(in-line capacitance VCD/Raman代謝物/at-line Nova/凝集体画像; 品質・無菌はoffline=BO専用)をcpvに拡充] [2026-06-15 #11/#12: 品質読み出しのBO適性(per-run目的=収量×生存率×多能性%; 同一性/核型/残存未分化はoffline制約)とKanda目的指標の検証をqccrit/bboに反映]",
     "generated": "2026-06-14",
     "node_types": [
       "root",
@@ -12,7 +12,7 @@
       "source"
     ],
     "node_count": 77,
-    "edge_count": 158,
+    "edge_count": 159,
     "updated": "2026-06-14"
   },
   "domains": [
@@ -303,7 +303,7 @@
       "label": "細胞品質基準",
       "type": "concept",
       "domain": "d1",
-      "content": "未分化マーカー発現・三胚葉分化能・核型など、製造物が満たすべき生物学的基準。自動判定の「正解ラベル」を定義し、画像代理指標と紐づける必要がある。",
+      "content": "未分化マーカー発現・三胚葉分化能・核型など、製造物が満たすべき生物学的基準。自動判定の「正解ラベル」を定義し、画像代理指標と紐づける必要がある。【BO適性, 2026-06-15】per-run目的項=収量×生存率×多能性%陽性(フローサイト; OCT3/4・TRA-1-60・SSEA5が cross-lab 最ロバスト)。同一性(STR)・核型/CNV(KaryoStat 3-4日/G-band 7-10日, ~70%株がCNV保有→periodic監視)・残存未分化(上清miR-302b 0.001%非破壊)はoffline/periodic制約。ラベルフリー画像代理は未確立(要検証)。",
       "sources": [
         {
           "title": "Parametric analysis of hPSC colony morphology for QC（Sci Rep）",
@@ -312,6 +312,18 @@
         {
           "title": "Long-term iPSC maintenance by automated culture system（Konagaya 2015）",
           "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/"
+        },
+        {
+          "title": "国際多施設 QAR: OCT3/4・TRA-1-60・SSEA5 が最ロバスト多能性マーカー (Stem Cell Reports 2026)",
+          "url": "https://www.cell.com/stem-cell-reports/fulltext/S2213-6711(26)00068-8"
+        },
+        {
+          "title": "GMP hiPSC バッチリリース assay 検証 (Cytotherapy 2024)",
+          "url": "https://www.sciencedirect.com/science/article/pii/S1465324924006108"
+        },
+        {
+          "title": "上清 miR-302b で残存未分化 0.001% 非破壊検出 (Sci Rep 2022)",
+          "url": "https://www.nature.com/articles/s41598-022-14273-z"
         }
       ]
     },
@@ -529,7 +541,7 @@
       "label": "バッチベイズ最適化",
       "type": "concept",
       "domain": "d4",
-      "content": "数百万通りの培養条件を、ガウス過程＋バッチ取得関数で効率探索。RPE分化率を反復改善した自律実験の中核解法（GPyOptベース）。",
+      "content": "数百万通りの培養条件を、ガウス過程＋バッチ取得関数で効率探索。RPE分化率を反復改善した自律実験の中核解法（GPyOptベース）。【検証2026-06-15】Kanda 2022は単一目的=画像由来の色素化スコア(day34 RPE面積比=分化誘導効率)、batch BO(GP+Expected Improvement+Batch Contextual Local Penalization, GPyOpt)、7パラメタ/143条件/111日で88%改善(0.91 vs 0.43)。単一目的 batch BO が iPSC で実証済(現代等価=Ax/BoTorch)。auto_cell 拡大BOの目的はqccrit由来=収量×生存率×多能性%陽性。",
       "sources": [
         {
           "title": "Robotic search for optimal cell culture（Kanda et al., eLife 2022）",
@@ -2026,6 +2038,11 @@
       "source": "src_manstein",
       "rel": "demonstrates",
       "target": "cpv"
+    },
+    {
+      "source": "qccrit",
+      "rel": "informs",
+      "target": "bbo"
     }
   ]
 }

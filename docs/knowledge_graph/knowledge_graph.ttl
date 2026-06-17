@@ -101,10 +101,13 @@
                [ dct:title "ML label-free iPSC colony formation detection（Sci Rep）"@ja ; :url <https://www.nature.com/articles/s41598-017-13680-x> ] .
 :n_qccrit a :Concept ;
     rdfs:label "細胞品質基準"@ja ;
-    :content "未分化マーカー発現・三胚葉分化能・核型など、製造物が満たすべき生物学的基準。自動判定の「正解ラベル」を定義し、画像代理指標と紐づける必要がある。"@ja ;
+    :content "未分化マーカー発現・三胚葉分化能・核型など、製造物が満たすべき生物学的基準。自動判定の「正解ラベル」を定義し、画像代理指標と紐づける必要がある。【BO適性, 2026-06-15】per-run目的項=収量×生存率×多能性%陽性(フローサイト; OCT3/4・TRA-1-60・SSEA5が cross-lab 最ロバスト)。同一性(STR)・核型/CNV(KaryoStat 3-4日/G-band 7-10日, ~70%株がCNV保有→periodic監視)・残存未分化(上清miR-302b 0.001%非破壊)はoffline/periodic制約。ラベルフリー画像代理は未確立(要検証)。"@ja ;
     :inDomain :n_d1 ;
     :hasSource [ dct:title "Parametric analysis of hPSC colony morphology for QC（Sci Rep）"@ja ; :url <https://www.nature.com/articles/srep34009> ] ,
-               [ dct:title "Long-term iPSC maintenance by automated culture system（Konagaya 2015）"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/> ] .
+               [ dct:title "Long-term iPSC maintenance by automated culture system（Konagaya 2015）"@ja ; :url <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4647834/> ] ,
+               [ dct:title "国際多施設 QAR: OCT3/4・TRA-1-60・SSEA5 が最ロバスト多能性マーカー (Stem Cell Reports 2026)"@ja ; :url <https://www.cell.com/stem-cell-reports/fulltext/S2213-6711(26)00068-8> ] ,
+               [ dct:title "GMP hiPSC バッチリリース assay 検証 (Cytotherapy 2024)"@ja ; :url <https://www.sciencedirect.com/science/article/pii/S1465324924006108> ] ,
+               [ dct:title "上清 miR-302b で残存未分化 0.001% 非破壊検出 (Sci Rep 2022)"@ja ; :url <https://www.nature.com/articles/s41598-022-14273-z> ] .
 :n_bf a :Concept ;
     rdfs:label "明視野/位相差イメージング"@ja ;
     :content "低光毒性で非侵襲なラベルフリー観察。一方で低コントラスト・不均一背景・ハロー/エッジ効果があり、頑健なセグメンテーションが難所。"@ja ;
@@ -182,7 +185,7 @@
                [ dct:title "Automation of iPSC culture/passaging with CellXpress.ai（Molecular Devices）"@ja ; :url <https://www.moleculardevices.com/en/assets/app-note/dd/3d-biology/automation-of-ipsc-culture-passaging-and-expansion-with-cellxpress-ai-automated-cell-culture-system> ] .
 :n_bbo a :Concept ;
     rdfs:label "バッチベイズ最適化"@ja ;
-    :content "数百万通りの培養条件を、ガウス過程＋バッチ取得関数で効率探索。RPE分化率を反復改善した自律実験の中核解法（GPyOptベース）。"@ja ;
+    :content "数百万通りの培養条件を、ガウス過程＋バッチ取得関数で効率探索。RPE分化率を反復改善した自律実験の中核解法（GPyOptベース）。【検証2026-06-15】Kanda 2022は単一目的=画像由来の色素化スコア(day34 RPE面積比=分化誘導効率)、batch BO(GP+Expected Improvement+Batch Contextual Local Penalization, GPyOpt)、7パラメタ/143条件/111日で88%改善(0.91 vs 0.43)。単一目的 batch BO が iPSC で実証済(現代等価=Ax/BoTorch)。auto_cell 拡大BOの目的はqccrit由来=収量×生存率×多能性%陽性。"@ja ;
     :inDomain :n_d4 ;
     :hasSource [ dct:title "Robotic search for optimal cell culture（Kanda et al., eLife 2022）"@ja ; :url <https://elifesciences.org/articles/77007> ] ,
                [ dct:title "LabDroid_optimizer（GitHub / GPyOpt）"@ja ; :url <https://github.com/labauto/LabDroid_optimizer> ] .
@@ -599,3 +602,4 @@
 :n_gateway :implements :n_devprofile .
 :n_cpv :feeds :n_loop .
 :n_src_manstein :demonstrates :n_cpv .
+:n_qccrit :informs :n_bbo .
