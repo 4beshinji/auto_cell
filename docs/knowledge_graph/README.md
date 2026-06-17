@@ -4,13 +4,19 @@
 ドメイン知識を構造化したナレッジグラフの **シード**。auto_cell の設計はこれを一次資料
 （research SoT）とする。設計への落とし込みは [`../design/kg_to_auto_cell.md`](../design/kg_to_auto_cell.md)。
 
-- 規模: **77 ノード / 158 エッジ / 8 ドメイン**（root=1, domain=8, concept=47, system=3, player=5, source=13）
-- 生成: 2026-06-14（P1/P3/制御権限）＋ 2026-06-15（P5 観測性）
+- 規模: **77 ノード / 159 エッジ / 8 ドメイン**（root=1, domain=8, concept=47, system=3, player=5, source=13）
+- 生成: 2026-06-14（P1/P3/制御権限）＋ 2026-06-15（P5 観測性・#11/#12 BO目的）
 
 > **P5 観測性 (2026-06-15)**: 計測スタックを `cpv` に拡充（in-line capacitance VCD＝Manstein iPSC で検証 /
 > in-line Raman 代謝物 / at-line Nova FLEX2 / 凝集体 at-line 画像; 品質・無菌は offline＝BO 目的関数専用）。
 > 詳細: [`research/2026-06-15_P5_observability.md`](research/2026-06-15_P5_observability.md)、設計反映は
-> [`../design/kg_to_auto_cell.md`](../design/kg_to_auto_cell.md) §4.2。現在 **77/158 で全整合**。
+> [`../design/kg_to_auto_cell.md`](../design/kg_to_auto_cell.md) §4.2。
+
+> **#11/#12 品質→BO目的 (2026-06-15)**: BO 目的関数を確定。per-run 連続目的＝収量×生存率×多能性%陽性
+> （`qccrit`）、同一性/核型/残存未分化は offline/periodic 制約（safe/constrained BO）。Kanda 2022 の目的指標
+> （画像由来色素化スコア・batch BO・88%改善）を一次検証し `bbo` に反映。詳細:
+> [`research/2026-06-15_qccrit_BO_objective.md`](research/2026-06-15_qccrit_BO_objective.md)、設計は §4.3 / ADR-0001。
+> 現在 **77/159 で全整合**。
 - 名前空間: `https://tangletech.dev/ips-automation-kg#`（TTL）
 
 > **P1 拡張＋続報 (2026-06-14)**: 浮遊速度論モデルと CPP の文献根拠を調査。**plant_model の真の原典は
@@ -28,17 +34,24 @@
 > （LADS 情報モデル, `devprofile`）で device 実装と DomainVertical を束ねる。設計反映は
 > [`../design/kg_to_auto_cell.md`](../design/kg_to_auto_cell.md) §7.1-7.3/§8。現在 **77/156 で全整合**。
 
+## クイックスタート
+
+- **人が読む目次・カタログ**: [`INDEX.md`](INDEX.md) ← まずここから
+- **対話的ビューア**: [`ips_automation_knowledge_map_v2_1.html`](ips_automation_knowledge_map_v2_1.html)（ブラウザで開く）
+- **設計ブリッジ**: [`../design/kg_to_auto_cell.md`](../design/kg_to_auto_cell.md)
+
 ## ファイル
 
 | ファイル | 形式 | 用途 |
 |---|---|---|
-| `knowledge_graph.json` | 単一 JSON（meta/domains/nodes/edges） | プログラム取り込みの正本。`json.load` 一発で全構造。 |
-| `knowledge_graph.jsonl` | 1 行 1 ノード/エッジ（`_kind`） | ストリーム取り込み・埋め込み生成・差分追記向き。 |
-| `knowledge_graph.ttl` | RDF/Turtle | SPARQL / トリプルストア取り込み。`:hasSource` `:inDomain` 等の述語付き。 |
-| `nodes.csv` | CSV | 表計算・pandas での俯瞰（`id,label,type,domain,domain_label,content,source_count`）。 |
-| `edges.csv` | CSV | エッジ一覧（`source,rel,target`）。関係動詞 = 設計上の依存方向。 |
-| `sources.csv` / `sources_unique.csv` | CSV | 出典（ノード別 / 重複排除）。各主張の根拠 URL。 |
-| `ips_automation_knowledge_map.html` | D3 力学グラフ | 対話的ビューア。ブラウザで直接開く（要ネット: d3 CDN）。 |
+| `INDEX.md` | Markdown | **人が読む目次・カタログ**。ドメイン別索引・主要概念・情報源一覧。 |
+| `knowledge_graph_v2_1.json` | 単一 JSON（meta/domains/nodes/edges） | プログラム取り込みの正本。`json.load` 一発で全構造。 |
+| `knowledge_graph_v2_1.jsonl` | 1 行 1 ノード/エッジ（`_kind`） | ストリーム取り込み・埋め込み生成・差分追記向き。 |
+| `knowledge_graph_v2_1.ttl` | RDF/Turtle | SPARQL / トリプルストア取り込み。`:hasSource` `:inDomain` 等の述語付き。 |
+| `nodes_v2_1.csv` | CSV | 表計算・pandas での俯瞰（`id,label,type,domain,domain_label,content,source_count`）。 |
+| `edges_v2_1.csv` | CSV | エッジ一覧（`source,rel,target`）。関係動詞 = 設計上の依存方向。 |
+| `sources_v2_1.csv` | CSV | 出典（ノード別）。各主張の根拠 URL。 |
+| `ips_automation_knowledge_map_v2_1.html` | D3 力学グラフ | **対話的ビューア**。ブラウザで直接開く（要ネット: d3 CDN）。 |
 
 ## ビューア
 
