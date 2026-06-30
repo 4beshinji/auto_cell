@@ -1,0 +1,64 @@
+# ramp limits are enforced by cell_culture sanitizer
+
+set_perfusion_rate:
+  requires_approval: true
+  timeout_sec: 600
+  safe_default: cancel
+  envelope:
+    vvd: [0.0, 7.0]
+
+set_agitation_rpm:
+  requires_approval: true
+  timeout_sec: 600
+  safe_default: cancel
+  envelope:
+    rpm: [30, 150]
+
+set_gas_setpoint:
+  requires_approval: true
+  timeout_sec: 600
+  safe_default: cancel
+  envelope:
+    do: [5.0, 50.0]
+    ph: [6.9, 7.3]
+
+feed:
+  requires_approval: true
+  timeout_sec: 600
+  safe_default: cancel
+  envelope:
+    max_volume_ml: 500.0
+
+exchange_media:
+  requires_approval: true
+  timeout_sec: 600
+  safe_default: cancel
+  envelope:
+    max_volume_ml: 2000.0
+
+take_sample:
+  requires_approval: false
+  timeout_sec: 0
+  safe_default: cancel
+
+trigger_passage:
+  requires_approval: true
+  timeout_sec: 1800
+  safe_default: cancel
+
+adjust_setpoint:
+  requires_approval: true
+  timeout_sec: 600
+  safe_default: cancel
+  envelope:
+    temp: [36.0, 38.0]
+
+contamination_suspected:
+  requires_approval: true
+  timeout_sec: 3600
+  safe_default: hold
+
+l2_bo_proposal:
+  requires_approval: true
+  timeout_sec: 86400
+  safe_default: reject
