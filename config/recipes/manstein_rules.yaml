@@ -1,0 +1,43 @@
+rules:
+  - id: do_transition_day3
+    priority: P2
+    when:
+      sensor: cycle_elapsed_hours
+      ge: 72.0
+    actions:
+      - tool: set_gas_setpoint
+        args: { gas: do, setpoint_ref: "setpoints.do_late.value" }
+    cooldown_minutes: 1440
+
+  - id: glucose_low_bolus
+    priority: P2
+    when:
+      sensor: glucose_mM
+      le: 1.8
+      for_minutes: 5.0
+    actions:
+      - tool: feed
+        args: { media_id: glucose_supplement, volume_ml: 1.0, glucose_mM: 200.0 }
+    cooldown_minutes: 30
+
+  - id: lactate_high_exchange
+    priority: P1
+    when:
+      sensor: lactate_mM
+      ge: 35.0
+      for_minutes: 10.0
+    actions:
+      - tool: exchange_media
+        args: { media_id: fresh_media, volume_ml: 75.0 }
+    cooldown_minutes: 60
+
+  - id: osmolality_high_perfusion
+    priority: P1
+    when:
+      sensor: osmolality_mOsm_kg
+      ge: 450.0
+      for_minutes: 10.0
+    actions:
+      - tool: set_perfusion_rate
+        args: { rate_ref: "variables.max_perfusion.value" }
+    cooldown_minutes: 60

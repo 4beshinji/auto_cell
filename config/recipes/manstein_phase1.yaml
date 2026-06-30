@@ -1,0 +1,96 @@
+recipe:
+  id: manstein_phase1
+  version: "0.1.0"
+  title: "Manstein 2021 perfusion 0-7 vvd protocol"
+  culture_unit_id: cu_001
+  initial_state: seed
+
+  setpoints:
+    ph: { value: 7.1, unit: pH }
+    do_early: { value: 40, unit: "%" }
+    do_late: { value: 10, unit: "%" }
+    temp: { value: 37, unit: degC }
+    agitation: { value: 80, unit: rpm }
+
+  variables:
+    seed_density: { value: 0.5e6, unit: cells/mL }
+    target_vcd: { value: 35.0e6, unit: cells/mL }
+    max_perfusion: { value: 7.0, unit: vvd }
+    perfusion_ramp_start_h: { value: 0.5, unit: h }
+    perfusion_ramp_end_h: { value: 120.0, unit: h }
+
+  states:
+    seed:
+      id: seed
+      entry_actions:
+        - tool: set_gas_setpoint
+          args: { gas: ph, setpoint_ref: "setpoints.ph.value" }
+        - tool: set_gas_setpoint
+          args: { gas: do, setpoint_ref: "setpoints.do_early.value" }
+        - tool: set_agitation_rpm
+          args: { rpm_ref: "setpoints.agitation.value" }
+        - tool: set_perfusion_rate
+          args: { rate: 0.0, unit: vvd }
+      exit_condition:
+        sensor: cycle_elapsed_hours
+        ge: 0.5
+      transitions:
+        - target: perfusion_ramp
+
+    perfusion_ramp:
+      id: perfusion_ramp
+      scheduled_actions:
+        - every_hours: 1.0
+          action:
+            tool: ramp_perfusion
+            args:
+              start_h_ref: "variables.perfusion_ramp_start_h.value"
+              end_h_ref: "variables.perfusion_ramp_end_h.value"
+              start_rate: 0.0
+              end_rate_ref: "variables.max_perfusion.value"
+      exit_condition:
+        sensor: vcd
+        ge_ref: "variables.target_vcd.value"
+      transitions:
+        - target: passage_ready
+      timeout_hours: 168
+      on_timeout: hold
+
+    passage_ready:
+      id: passage_ready
+      entry_actions:
+        - tool: notify
+          args: { priority: P1, message: "VCD target reached; awaiting passage approval" }
+      transitions:
+        - target: approved_passage
+          condition:
+            approval: trigger_passage
+            state: approved
+
+    approved_passage:
+      id: approved_passage
+      entry_actions:
+        - tool: trigger_passage
+          args: { method: dissociate, add_rock_inhibitor: true }
+      transitions:
+        - target: reseed
+          condition:
+            event: passage_completed
+
+    reseed:
+      id: reseed
+      entry_actions:
+        - tool: set_perfusion_rate
+          args: { rate: 0.0 }
+      transitions:
+        - target: seed
+          condition:
+            event: reseed_completed
+
+    hold:
+      id: hold
+      entry_actions:
+        - tool: set_perfusion_rate
+          args: { rate: 0.0 }
+        - tool: notify
+          args: { priority: P0, message: "Protocol entered hold state" }
