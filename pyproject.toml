@@ -27,6 +27,21 @@ dev = [
     "mypy",
     "httpx>=0.27,<1.0",
 ]
+bo = [
+    "ax-platform>=0.4.0",
+    "botorch>=0.11.0",
+    "torch>=2.2",
+]
+llm = [
+    "openai>=1.30",
+    "anthropic>=0.28",
+]
+imaging = [
+    "cellpose>=3.0",
+    "opencv-python-headless>=4.8",
+    "scikit-image>=0.22",
+    "Pillow>=10.0",
+]
 
 # Same-machine sibling: editable so core edits reflect instantly (no per-PJ update).
 # Switch to { git = "ssh://…/physical-ai-core", tag = "vX.Y.Z" } for CI / other machines.
