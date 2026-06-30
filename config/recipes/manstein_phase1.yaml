@@ -18,6 +18,7 @@ recipe:
     max_perfusion: { value: 7.0, unit: vvd }
     perfusion_ramp_start_h: { value: 0.5, unit: h }
     perfusion_ramp_end_h: { value: 120.0, unit: h }
+    y_27632_conc_um: { value: 5.0, unit: uM }
 
   states:
     seed:
@@ -71,7 +72,10 @@ recipe:
       id: approved_passage
       entry_actions:
         - tool: trigger_passage
-          args: { method: dissociate, add_rock_inhibitor: true }
+          args:
+            method: dissociate
+            add_rock_inhibitor: true
+            rock_inhibitor_conc_uM_ref: "variables.y_27632_conc_um.value"
       transitions:
         - target: reseed
           condition:

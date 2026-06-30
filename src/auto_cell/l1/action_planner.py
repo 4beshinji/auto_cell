@@ -104,6 +104,12 @@ class ActionPlanner:
                     args.setdefault("volume_ml", 1.0)
                 args.pop("concentration_mM", None)
 
+        elif tool == "trigger_passage":
+            if "rock_inhibitor_conc_uM_ref" in args and context is not None:
+                args["rock_inhibitor_conc_uM"] = context.resolve(
+                    args.pop("rock_inhibitor_conc_uM_ref")
+                )
+
         return ToolCall(tool=tool, args=args)
 
     def _expand_ramp(self, args: dict[str, Any], context: Context | None) -> ToolCall:
