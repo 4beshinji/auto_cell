@@ -1,0 +1,32 @@
+namespace: "cell"
+topics:
+  telemetry_single: "cell/{cu}/telemetry/{device_id}/{function_id}"
+  telemetry_all: "cell/{cu}/telemetry/{device_id}/all"
+  event: "cell/{cu}/event/{source}/{event_type}"
+  cmd: "cell/{cu}/cmd/{device_id}/{function_id}"
+  ack: "cell/{cu}/ack/{device_id}/{function_id}"
+  program_request: "cell/{cu}/program/{device_id}/request"
+  program_response: "cell/{cu}/program/{device_id}/response"
+  state_approval: "cell/{cu}/state/approval/{request_id}"
+  state_device: "cell/{cu}/state/device/{device_id}"
+  state_run: "cell/{cu}/state/run/{run_id}"
+  notify_hmi: "cell/{cu}/notify/hmi/{priority}"
+  hmi_approval: "cell/{cu}/hmi/approval/{request_id}"
+  hmi_command: "cell/{cu}/hmi/command/{command_name}"
+
+qos:
+  telemetry: 1
+  event: 1
+  cmd: 1
+  ack: 1
+  program: 1
+  state: 1
+  notify: 1
+  hmi: 1
+
+retain:
+  telemetry_single: true
+  telemetry_all: true
+  state_approval: true
+  state_device: true
+  state_run: true
