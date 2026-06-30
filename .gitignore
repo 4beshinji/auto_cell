@@ -8,6 +8,9 @@ dist/
 build/
 *.egg-info/
 .env
+# Local development infrastructure (e.g. MQTT broker configs, runtime data).
+infra/mosquitto/data/
+infra/mosquitto/log/
 # App: DO commit uv.lock (reproducible). Intentionally NOT ignored.
 
 # Raw KG seed archive — canonical content lives extracted in docs/knowledge_graph/
