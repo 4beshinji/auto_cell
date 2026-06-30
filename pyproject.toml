@@ -9,6 +9,14 @@ dependencies = [
     # Tier2 plant model (literature iPSC suspension ODE)
     "scipy>=1.11",
     "numpy>=1.26",
+    "pydantic>=2.0",
+    "paho-mqtt>=2.1",
+    "pyyaml>=6.0",
+    "transitions>=0.9",
+    # HMI / approval / audit (M05)
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.29",
+    "python-multipart>=0.0.18",
 ]
 
 [project.optional-dependencies]
@@ -17,6 +25,7 @@ dev = [
     "pytest-asyncio>=0.23",
     "ruff",
     "mypy",
+    "httpx>=0.27,<1.0",
 ]
 
 # Same-machine sibling: editable so core edits reflect instantly (no per-PJ update).
@@ -29,4 +38,15 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/auto_cell"]
+packages = ["src/auto_cell", "sim", "infra"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+explicit_package_bases = true
+mypy_path = ["src"]
+namespace_packages = true
+disable_error_code = ["prop-decorator", "misc"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
