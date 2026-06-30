@@ -32,3 +32,118 @@ mis-identification -- Galvanauskas is a related 3-term iPSC Monod model (glucose
 lactate + aggregate only, no glutamine/osmolality). The true source is Manstein 2021.
 See docs/design/kg_to_auto_cell.md §4.1.
 """
+
+import numpy as np
+from numpy.typing import NDArray
+
+from .constants import MansteinConstants
+from .factory import seed_state, sensors_to_env
+from .state import Actuators, PlantState, Sensors
+from .manstein_ode import manstein_rhs, select_feed
+from .solver import integrate_deterministic
+
+
+__all__ = [
+    "Actuators",
+    "MansteinConstants",
+    "PlantModel",
+    "PlantState",
+    "Sensors",
+    "integrate_deterministic",
+    "manstein_rhs",
+    "seed_state",
+    "select_feed",
+    "sensors_to_env",
+]
+
+
+class PlantModelError(RuntimeError):
+    """Raised when the plant model simulation cannot proceed."""
+
+
+class PlantModel:
+    """L1 サイクルから呼ばれる唯一の IF: step(actuators) -> sensors."""
+
+    def __init__(
+        self,
+        constants: MansteinConstants | None = None,
+        initial_state: PlantState | None = None,
+        solver_method: str = "RK45",
+        rtol: float = 1e-6,
+        atol: float = 1e-9,
+    ) -> None:
+        self._const = constants or MansteinConstants()
+        self._state = initial_state or seed_state()
+        self._t: float = 0.0
+        self._solver_method = solver_method
+        self._rtol = rtol
+        self._atol = atol
+
+    @property
+    def state(self) -> PlantState:
+        return self._state
+
+    @property
+    def time(self) -> float:
+        return self._t
+
+    def step(self, actuators: Actuators, dt: float = 30.0) -> Sensors:
+        """
+        現在時刻から dt (seconds) だけ積分し、センサ値を返す.
+
+        Args:
+            actuators: ステップ内で一定とみなすアクチュエータ値.
+            dt: 積分区間 [s]. L1 cadence は 30 s+ なので default 30 s.
+
+        Returns:
+            ステップ終了時点のセンサ値.
+
+        Raises:
+            PlantModelError: if dt is not positive or the ODE solver fails.
+        """
+        if dt <= 0.0:
+            raise PlantModelError(f"dt must be positive, got {dt}")
+        t_start = self._t
+        t_end = self._t + dt / 86400.0   # 内部時刻は day
+        feed = select_feed(t_start, self._const)
+
+        def rhs(t: float, y: NDArray) -> NDArray:
+            return manstein_rhs(t, y, actuators, self._const, feed)
+
+        try:
+            y_end = integrate_deterministic(
+                rhs,
+                self._state.to_array(),
+                (t_start, t_end),
+                method=self._solver_method,
+                rtol=self._rtol,
+                atol=self._atol,
+            )
+        except RuntimeError as exc:
+            raise PlantModelError(f"ODE integration failed from t={t_start} to {t_end}") from exc
+        self._state = PlantState.from_array(y_end)
+        self._t = t_end
+        return _sensors_from_state(self._state, actuators)
+
+    def reset(self, state: PlantState | None = None) -> None:
+        self._state = state or seed_state()
+        self._t = 0.0
+
+    def reset_after_passage(self) -> None:
+        """Stub for passage reset; preserves API used by virtual_edge."""
+        self.reset(seed_state(seeding_density=self._state.vcd * 0.1))
+
+
+def _sensors_from_state(state: PlantState, actuators: Actuators) -> Sensors:
+    return Sensors(
+        vcd=state.vcd,
+        viability=state.viability,
+        glucose=state.glucose,
+        lactate=state.lactate,
+        glutamine=state.glutamine,
+        osmolality=state.osmolality,
+        aggregate_diameter_um=state.aggregate_diameter,
+        do_percent=actuators.do_setpoint,
+        ph=actuators.ph_setpoint,
+        temp_c=37.0,
+    )
