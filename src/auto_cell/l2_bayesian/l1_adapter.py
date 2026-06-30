@@ -16,6 +16,7 @@ from auto_cell.l1.recipe_loader import load_recipe
 from auto_cell.l1.types import Recipe, ScalarValue
 from auto_cell.l2_bayesian.objective import RunMetrics
 from auto_cell.l2_bayesian.space import PerfusionRampProfile
+from auto_cell.plugins.cell_culture.aggregate_imaging import AggregateMetrics
 from auto_cell.plugins.cell_culture.environment import CellCultureEnv
 
 
@@ -96,11 +97,23 @@ class L1Adapter:
             seed_kwargs["initial_glucose"] = params["initial_glucose_mm"]
         return seed_kwargs
 
+    def apply_aggregate_metrics_to_env(
+        self,
+        aggregate_metrics: AggregateMetrics,
+        final_env: CellCultureEnv,
+    ) -> None:
+        """Override aggregate fields in ``final_env`` with image-derived metrics."""
+        final_env.aggregate_diameter_um = aggregate_metrics.mean_diameter_um
+        final_env.large_aggregate_ratio = aggregate_metrics.large_aggregate_ratio
+        final_env.circularity = aggregate_metrics.mean_circularity
+        final_env.aspect_ratio = aggregate_metrics.mean_aspect_ratio
+
     def collect_run_metrics(
         self,
         cycle_results: list[Any],
         final_env: CellCultureEnv,
         perfusion_demand: float | None = None,
+        aggregate_metrics: AggregateMetrics | None = None,
     ) -> RunMetrics:
         """Aggregate L1 run history into the scalar metrics BO consumes.
 
@@ -110,7 +123,13 @@ class L1Adapter:
             perfusion_demand: Total perfusion volume in vessel-volumes. If omitted,
                 it is approximated from ``final_env.perfusion_rate_vvd`` and culture
                 age, which is a rough lower bound.
+            aggregate_metrics: Optional image-derived aggregate metrics. When provided,
+                the corresponding fields in ``final_env`` are overridden before
+                constructing ``RunMetrics``.
         """
+        if aggregate_metrics is not None:
+            self.apply_aggregate_metrics_to_env(aggregate_metrics, final_env)
+
         max_lactate = 0.0
         max_osmolality = 0.0
 

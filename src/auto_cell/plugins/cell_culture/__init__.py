@@ -8,6 +8,9 @@ from pydantic import BaseModel
 
 from auto_cell.plugins.cell_culture.channels import channel_config as _channel_config
 from auto_cell.plugins.cell_culture.channels import route_channel as _route_channel
+from auto_cell.plugins.cell_culture.aggregate_imaging_service import (
+    AggregateImagingService,
+)
 from auto_cell.plugins.cell_culture.environment import CellCultureEnv
 from auto_cell.plugins.cell_culture.events import (
     CultureEvent,
@@ -27,7 +30,14 @@ from auto_cell.plugins.cell_culture.tools import (
     tool_schemas as _tool_schemas,
 )
 
-__all__ = ["CellCulturePlugin", "CellCultureEnv", "CultureEvent", "ToolResult", "plugin_class"]
+__all__ = [
+    "AggregateImagingService",
+    "CellCulturePlugin",
+    "CellCultureEnv",
+    "CultureEvent",
+    "ToolResult",
+    "plugin_class",
+]
 
 
 class CellCulturePlugin(DomainVertical):

@@ -12,11 +12,17 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+
 from auto_cell.l1.cycle_executor import L1CycleExecutor
 from auto_cell.l1.recipe_engine import RecipeEngine
 from auto_cell.l1.types import CycleResult, ToolCall
 from auto_cell.l2_bayesian.l1_adapter import L1Adapter
 from auto_cell.l2_bayesian.optimizer import BayesianOptimizer
+from auto_cell.plugins.cell_culture.aggregate_imaging import AggregateMetrics
+from auto_cell.plugins.cell_culture.aggregate_imaging_service import (
+    AggregateImagingService,
+)
 from auto_cell.plugins.cell_culture.environment import CellCultureEnv
 
 logger = logging.getLogger(__name__)
@@ -43,6 +49,7 @@ class RunResult:
     params: dict[str, Any]
     cycle_results: list[CycleResult] = field(default_factory=list)
     final_env: CellCultureEnv | None = None
+    aggregate_metrics: AggregateMetrics | None = None
     completed: bool = False
 
 
@@ -119,6 +126,9 @@ class RunOrchestrator:
         max_hours: float = 168.0,
         dt: float = 300.0,
         auto_approve: bool = True,
+        aggregate_image: str | Path | np.ndarray | None = None,
+        aggregate_is_mask: bool = False,
+        artifact_dir: str | Path | None = None,
     ) -> RunResult:
         """Execute one run against the plant_model until completion or timeout.
 
@@ -128,6 +138,10 @@ class RunOrchestrator:
             dt: Plant integration step in seconds.
             auto_approve: If True, approval requests are automatically approved.
                 Real HITL runs should set this to False and wire an approval service.
+            aggregate_image: Optional at-line aggregate image (or mask) to analyze
+                at the end of the run and override simulator-derived aggregate metrics.
+            aggregate_is_mask: If True, ``aggregate_image`` is treated as a labeled mask.
+            artifact_dir: Directory to save aggregate image artifacts.
         """
         # Deferred import to avoid coupling L2 to sim at module load time.
         from sim.plant_model import PlantModel, Actuators, seed_state, sensors_to_env
@@ -213,11 +227,27 @@ class RunOrchestrator:
             completed = True
 
         final_env = get_env()
+        aggregate_metrics: AggregateMetrics | None = None
+        if aggregate_image is not None:
+            imaging = AggregateImagingService(
+                pixel_size_um=1.0, artifact_dir=artifact_dir
+            )
+            sample_id = f"trial_{config.trial_index}"
+            run_id = f"run_trial_{config.trial_index}"
+            aggregate_metrics, _, _ = imaging.process(
+                aggregate_image,
+                final_env,
+                run_id=run_id,
+                sample_id=sample_id,
+                is_mask=aggregate_is_mask,
+            )
+
         return RunResult(
             trial_index=config.trial_index,
             params=config.params,
             cycle_results=audit_log,
             final_env=final_env,
+            aggregate_metrics=aggregate_metrics,
             completed=completed,
         )
 
@@ -226,7 +256,9 @@ class RunOrchestrator:
         if result.final_env is None:
             raise ValueError("cannot complete run without final_env")
         metrics = self.adapter.collect_run_metrics(
-            result.cycle_results, result.final_env
+            result.cycle_results,
+            result.final_env,
+            aggregate_metrics=result.aggregate_metrics,
         )
         self.optimizer.complete_trial(result.trial_index, metrics)
         logger.info(
@@ -236,12 +268,30 @@ class RunOrchestrator:
             metrics.vcd_final,
         )
 
-    def run_n(self, n: int, *, max_hours: float = 168.0, dt: float = 300.0) -> list[RunResult]:
+    def run_n(
+        self,
+        n: int,
+        *,
+        max_hours: float = 168.0,
+        dt: float = 300.0,
+        aggregate_images: list[str | Path | np.ndarray] | None = None,
+        aggregate_is_mask: bool = False,
+        artifact_dir: str | Path | None = None,
+    ) -> list[RunResult]:
         """Run the full suggest → execute → complete loop *n* times."""
+        aggregate_images = aggregate_images or []
         results: list[RunResult] = []
-        for _ in range(n):
+        for i in range(n):
             config = self.suggest_and_prepare_run()
-            result = self.execute_run(config, max_hours=max_hours, dt=dt)
+            aggregate_image = aggregate_images[i] if i < len(aggregate_images) else None
+            result = self.execute_run(
+                config,
+                max_hours=max_hours,
+                dt=dt,
+                aggregate_image=aggregate_image,
+                aggregate_is_mask=aggregate_is_mask,
+                artifact_dir=artifact_dir,
+            )
             self.complete_run(result)
             results.append(result)
         return results
