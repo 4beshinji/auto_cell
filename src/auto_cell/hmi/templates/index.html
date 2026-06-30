@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>auto_cell HMI Dashboard</title>
+  <link rel="stylesheet" href="/hmi/static/css/dashboard.css">
+</head>
+<body>
+  <header>
+    <h1>auto_cell HMI Dashboard</h1>
+    <div class="run-select">
+      <label for="run-select">Run:</label>
+      <select id="run-select">
+        <option value="">-- select run --</option>
+      </select>
+      <button id="refresh-runs" class="secondary">Refresh</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Culture Status</h2>
+      <div class="cpp-grid" id="cpp-grid"></div>
+      <div class="meta" style="margin-top: 0.75rem; color: var(--muted); font-size: 0.875rem;">
+        Phase: <strong id="phase">-</strong> · Pending approvals: <strong id="pending-count">-</strong>
+        · Updated: <span id="status-time">-</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Pending Approvals</h2>
+      <div class="list" id="approvals-list">
+        <div class="empty">no run selected</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="tabs">
+        <button class="tab active" data-tab="events">Events</button>
+        <button class="tab" id="tab-ebr" data-tab="ebr">EBR</button>
+      </div>
+      <div class="tab-panel active" data-tab="events">
+        <div class="list" id="events-list">
+          <div class="empty">no run selected</div>
+        </div>
+      </div>
+      <div class="tab-panel" data-tab="ebr">
+        <div id="ebr-content">
+          <div class="empty">no run selected</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/hmi/static/js/dashboard.js"></script>
+</body>
+</html>

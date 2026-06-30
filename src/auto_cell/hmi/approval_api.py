@@ -8,8 +8,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 
 from auto_cell._utils import validate_run_id
@@ -46,6 +48,14 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="auto_cell HMI API", lifespan=lifespan)
 
+_STATIC_DIR = Path(__file__).parent / "static"
+_TEMPLATE_DIR = Path(__file__).parent / "templates"
+
+if _STATIC_DIR.exists():
+    app.mount("/hmi/static", StaticFiles(directory=str(_STATIC_DIR)), name="static")
+
+templates = Jinja2Templates(directory=str(_TEMPLATE_DIR))
+
 
 class DecisionBody(BaseModel):
     actor: str = Field(..., min_length=1, max_length=64, pattern=r"^[A-Za-z0-9_:\-]+$")
@@ -74,6 +84,31 @@ def _validate_id(value: str) -> str:
         return validate_run_id(value)
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
+
+
+@app.get("/hmi")
+async def dashboard_page(request: Request) -> Any:
+    return templates.TemplateResponse(request, "index.html")
+
+
+@app.get("/hmi/runs")
+async def list_runs(
+    _api_key: None = Depends(_require_api_key),
+) -> list[str]:
+    """Return run IDs that have data in the event store."""
+    base_dir = get_services().event_writer.base_dir
+    run_ids: list[str] = []
+    if not base_dir.exists():
+        return run_ids
+    for entry in base_dir.iterdir():
+        if not entry.is_dir():
+            continue
+        try:
+            validate_run_id(entry.name)
+        except ValueError:
+            continue
+        run_ids.append(entry.name)
+    return sorted(run_ids)
 
 
 @app.get("/hmi/approvals/pending", response_model=list[ApprovalRequest])
