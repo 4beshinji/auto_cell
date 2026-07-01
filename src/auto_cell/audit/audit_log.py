@@ -100,6 +100,31 @@ class AuditLog:
         self._last_hash[run_id] = h
         return record
 
+    def load(self, run_id: str) -> list[AuditRecord]:
+        """Load all audit records for a run."""
+        path = self._path(run_id)
+        records: list[AuditRecord] = []
+        if not path.exists():
+            return records
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                records.append(AuditRecord.model_validate_json(line))
+        return records
+
+    def review(self, run_id: str, reviewer: str, comments: str) -> AuditRecord:
+        """Record an audit-trail review event (ALCOA+ review workflow)."""
+        return self.append(
+            run_id=run_id,
+            actor=reviewer,
+            action="audit_trail_reviewed",
+            target="audit_log",
+            params={},
+            reason=comments,
+        )
+
     def verify(self, run_id: str) -> list[str]:
         """Verify the chain. Returns list of broken seq messages. Empty list = OK."""
         broken: list[str] = []

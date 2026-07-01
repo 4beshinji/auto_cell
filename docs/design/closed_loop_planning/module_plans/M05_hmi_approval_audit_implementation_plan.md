@@ -1073,7 +1073,22 @@ async def test_out_of_envelope_requires_approval(services, tmp_path):
 
 ---
 
-## 13. 実装工数見積もり（週単位）
+## 13. Phase 2 GMP-ready 拡張（実装済み）
+
+Sprint 7 の ALCOA-lite 骨格に対し、以下の GMP-ready 機能を Phase 2 で追加実装した。
+
+| 機能 | 内容 | 主要ファイル |
+|---|---|---|
+| Identity / RBAC | bcrypt パスワード/PIN ハッシュ、JWT アクセス トークン、最小限のロール | `src/auto_cell/auth/` |
+| 電子署名 | 承認/却下時に PIN と meaning-of-signature を要求 | `src/auto_cell/hmi/approval_service.py` |
+| 職員独立性 | 承認者と要求者が同一ユーザーの場合は拒否 | `src/auto_cell/hmi/approval_service.py` |
+| 承認永続化 | SQLite テーブルで承認要求を永続化し、再起動後も復元 | `src/auto_cell/hmi/approval_store.py` |
+| 監査証跡レビュー | レビュー者・コメント・日時を audit_log に記録し EBR に含める | `src/auto_cell/audit/audit_log.py`, `ebr_report.py` |
+| HMI ログイン | `/hmi/login` から JWT を取得し、ダッシュボードで承認操作を実施 | `src/auto_cell/hmi/templates/login.html`, `static/js/auth.js` |
+
+これにより M05 は Phase 1 の「API + ALCOA-lite」から、Phase 2 の「認証・電子署名・承認永続化・レビュー記録」へ移行した。
+
+## 14. 実装工数見積もり（週単位）
 
 `05_implementation_plan_phase1.md` の Sprint 7（1 週間）をベースに、品質担保を含めた実工数を見積もる。
 
@@ -1089,7 +1104,7 @@ async def test_out_of_envelope_requires_approval(services, tmp_path):
 
 ---
 
-## 14. 参照
+## 15. 参照
 
 - `docs/design/closed_loop_planning/05_implementation_plan_phase1.md`
 - `docs/design/closed_loop_planning/06_critical_path_and_work_order.md`

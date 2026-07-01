@@ -10,11 +10,13 @@
   <header>
     <h1>auto_cell HMI Dashboard</h1>
     <div class="run-select">
+      <span id="current-user" style="color: var(--muted); font-size: 0.875rem;"></span>
       <label for="run-select">Run:</label>
       <select id="run-select">
         <option value="">-- select run --</option>
       </select>
       <button id="refresh-runs" class="secondary">Refresh</button>
+      <button id="logout-btn" class="secondary">Logout</button>
     </div>
   </header>
 
@@ -53,6 +55,7 @@
     </section>
   </main>
 
+  <script src="/hmi/static/js/auth.js"></script>
   <script src="/hmi/static/js/dashboard.js"></script>
 </body>
 </html>

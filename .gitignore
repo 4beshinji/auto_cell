@@ -13,5 +13,8 @@ infra/mosquitto/data/
 infra/mosquitto/log/
 # App: DO commit uv.lock (reproducible). Intentionally NOT ignored.
 
+# Runtime data directories (event store, audit logs, auth DB, approval DB).
+data/
+
 # Raw KG seed archive — canonical content lives extracted in docs/knowledge_graph/
 files.zip

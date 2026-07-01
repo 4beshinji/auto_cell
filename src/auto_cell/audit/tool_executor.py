@@ -11,7 +11,8 @@ from typing import Any
 from auto_cell.audit.audit_log import AuditLog
 from auto_cell.audit.event_store import EventWriter
 from auto_cell.hmi.approval_matrix import ApprovalMatrix
-from auto_cell.hmi.approval_service import ApprovalService, ApprovalState
+from auto_cell.hmi.approval_models import ApprovalState
+from auto_cell.hmi.approval_service import ApprovalService
 from auto_cell.schemas.audit_events import EventType
 
 _run_id_ctx: contextvars.ContextVar[str | None] = contextvars.ContextVar("run_id", default=None)

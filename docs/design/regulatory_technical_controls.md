@@ -50,6 +50,16 @@
 
 > **重要**: L3 LLM / 生成 AI は**クリティカル用途に使用しない**。クリティカル用途の定義例：setpoint の最終決定を人間の承認なしで行う、安全インターロックを上書きする、無菌バリアを無効化する。〔設計判断：`annex22 --constrains--> llm_orchestrator`〕
 
+### 3.3 Phase 2 で実装した GMP-ready 統制
+
+| 統制 | 実装 | ファイル |
+|---|---|---|
+| ユーザー認証・RBAC | bcrypt パスワード/PIN + JWT | `src/auto_cell/auth/` |
+| 電子署名 | 承認/却下時に PIN + meaning-of-signature を要求 | `src/auto_cell/hmi/approval_service.py` |
+| 職員独立性 | 承認者と要求者が同一の場合は拒否 | `src/auto_cell/hmi/approval_service.py` |
+| 承認永続化 | SQLite `approval_requests` テーブル | `src/auto_cell/hmi/approval_store.py` |
+| 監査証跡レビュー | `audit_trail_reviewed` 記録 + EBR 反映 | `src/auto_cell/audit/audit_log.py`, `ebr_report.py` |
+
 ---
 
 ## 3. 2 本柱：データ分離と職員独立性
@@ -80,7 +90,7 @@
 
 **R&D 一次の緩和**〔設計判断〕:
 - 完全な 4-eyes は R&D 一次では重荷。初期は「**開発者 ≠ 検証者**」と「**承認者 ≠ システム運用者**」の最低 2 点を満たす。
-- GMP 移行時に電子署名・完全職員独立性を追加する。`esignature`, `part11` は現段階では設計境界とする。
+- Phase 2 では電子署名・職員独立性・承認永続化の骨格を実装した（`src/auto_cell/auth/`, `src/auto_cell/hmi/approval_store.py`）。完全 Part 11 対応は今後の GMP 移行時に拡張する。
 
 ---
 

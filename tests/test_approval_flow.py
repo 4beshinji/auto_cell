@@ -9,8 +9,11 @@ import pytest
 
 from auto_cell.audit.audit_log import AuditLog
 from auto_cell.audit.event_store import EventWriter
+from auto_cell.auth.db import UserDB
+from auto_cell.auth.models import Role, UserCreate
 from auto_cell.hmi.approval_matrix import ApprovalMatrix
-from auto_cell.hmi.approval_service import ApprovalService, ApprovalState
+from auto_cell.hmi.approval_models import ApprovalState
+from auto_cell.hmi.approval_service import ApprovalService
 
 
 @pytest.fixture
@@ -18,13 +21,28 @@ def services(tmp_path: Path):
     ew = EventWriter(tmp_path / "events")
     al = AuditLog(tmp_path / "audit")
     matrix = ApprovalMatrix(Path(__file__).parent.parent / "config" / "approval_matrix.yaml")
-    svc = ApprovalService(ew, al, matrix)
-    return svc, ew, al
+    user_db = UserDB(tmp_path / "auth" / "users.db")
+    svc = ApprovalService(ew, al, matrix, user_db=user_db)
+    return svc, ew, al, user_db
+
+
+@pytest.fixture
+def approver(services):
+    _, _, _, user_db = services
+    return user_db.create_user(
+        UserCreate(
+            username="approver1",
+            full_name="Approver One",
+            password="password123",
+            pin="1234",
+            role=Role.OPERATOR,
+        )
+    )
 
 
 @pytest.mark.asyncio
-async def test_request_approve_execute(services):
-    svc, ew, al = services
+async def test_request_approve_execute(services, approver):
+    svc, ew, al, _ = services
     req = await svc.request(
         run_id="run_001",
         tool_name="set_perfusion_rate",
@@ -37,8 +55,15 @@ async def test_request_approve_execute(services):
     )
     assert req.state == ApprovalState.REQUESTED
 
-    approved = svc.approve(req.request_id, "user:tanaka", "confirmed by shift leader")
+    approved = svc.approve(
+        req.request_id,
+        approver,
+        "1234",
+        "confirmed by shift leader",
+        "reviewed and approved",
+    )
     assert approved.state == ApprovalState.APPROVED
+    assert approved.meaning_of_signature == "reviewed and approved"
 
     executed = svc.execute(req.request_id)
     assert executed.state == ApprovalState.EXECUTED
@@ -47,8 +72,8 @@ async def test_request_approve_execute(services):
 
 
 @pytest.mark.asyncio
-async def test_reject_cancels(services):
-    svc, ew, al = services
+async def test_reject_cancels(services, approver):
+    svc, ew, al, _ = services
     req = await svc.request(
         run_id="run_001",
         tool_name="trigger_passage",
@@ -59,14 +84,20 @@ async def test_reject_cancels(services):
         correlation_id="corr_2",
         reason="vcd target reached",
     )
-    rejected = svc.reject(req.request_id, "user:sato", "not ready for passage")
+    rejected = svc.reject(
+        req.request_id,
+        approver,
+        "1234",
+        "not ready for passage",
+        "reviewed and rejected",
+    )
     assert rejected.state == ApprovalState.REJECTED
     assert len(al.verify("run_001")) == 0
 
 
 @pytest.mark.asyncio
 async def test_timeout_cancels(services):
-    svc, ew, al = services
+    svc, ew, al, _ = services
     req = await svc.request(
         run_id="run_001",
         tool_name="trigger_passage",
@@ -83,7 +114,7 @@ async def test_timeout_cancels(services):
 
 @pytest.mark.asyncio
 async def test_timeout_hold(services):
-    svc, ew, al = services
+    svc, ew, al, _ = services
     req = await svc.request(
         run_id="run_001",
         tool_name="contamination_suspected",
@@ -99,8 +130,8 @@ async def test_timeout_hold(services):
 
 
 @pytest.mark.asyncio
-async def test_double_approval_raises(services):
-    svc, ew, al = services
+async def test_double_approval_raises(services, approver):
+    svc, ew, al, _ = services
     req = await svc.request(
         run_id="run_001",
         tool_name="set_perfusion_rate",
@@ -111,13 +142,13 @@ async def test_double_approval_raises(services):
         correlation_id="corr_4",
         reason="test",
     )
-    svc.approve(req.request_id, "user:tanaka", "ok")
+    svc.approve(req.request_id, approver, "1234", "ok", "reviewed and approved")
     with pytest.raises(ValueError):
-        svc.approve(req.request_id, "user:tanaka", "ok again")
+        svc.approve(req.request_id, approver, "1234", "ok again", "reviewed and approved")
 
 
 def test_cancel_all_pending(services):
-    svc, ew, al = services
+    svc, ew, al, _ = services
     import asyncio
 
     req = asyncio.run(

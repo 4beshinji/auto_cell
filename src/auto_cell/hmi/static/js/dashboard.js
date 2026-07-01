@@ -15,9 +15,27 @@ const els = {
   ebrContent: document.getElementById('ebr-content'),
   tabs: document.querySelectorAll('.tab'),
   panels: document.querySelectorAll('.tab-panel'),
+  currentUser: document.getElementById('current-user'),
+  logoutBtn: document.getElementById('logout-btn'),
 };
 
-function init() {
+async function init() {
+  if (!getToken()) {
+    window.location.href = '/hmi/login';
+    return;
+  }
+  const user = await fetchCurrentUser();
+  if (!user) {
+    logout();
+    return;
+  }
+  if (els.currentUser) {
+    els.currentUser.textContent = `${user.username} (${user.role})`;
+  }
+  if (els.logoutBtn) {
+    els.logoutBtn.addEventListener('click', logout);
+  }
+
   els.runSelect.addEventListener('change', (e) => selectRun(e.target.value));
   els.refreshRuns.addEventListener('click', loadRuns);
   els.tabs.forEach((tab) => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
@@ -26,7 +44,7 @@ function init() {
 
 async function loadRuns() {
   try {
-    const res = await fetch('/hmi/runs');
+    const res = await apiFetch('/hmi/runs');
     const runs = await res.json();
     const current = els.runSelect.value;
     els.runSelect.innerHTML = '<option value="">-- select run --</option>';
@@ -85,7 +103,7 @@ async function refreshAll() {
 
 async function refreshStatus() {
   try {
-    const res = await fetch(`/hmi/runs/${encodeURIComponent(state.runId)}/status`);
+    const res = await apiFetch(`/hmi/runs/${encodeURIComponent(state.runId)}/status`);
     const data = await res.json();
     els.statusTime.textContent = new Date().toLocaleTimeString();
     els.phase.textContent = data.phase || 'unknown';
@@ -120,7 +138,7 @@ function renderCpp(cpp) {
 
 async function refreshApprovals() {
   try {
-    const res = await fetch('/hmi/approvals/pending');
+    const res = await apiFetch('/hmi/approvals/pending');
     const items = await res.json();
     renderApprovals(items);
   } catch (err) {
@@ -147,18 +165,19 @@ function renderApprovals(items) {
 }
 
 window.decideApproval = async function (requestId, action) {
-  const actor = window.prompt('Enter your actor ID:');
-  if (!actor) return;
+  const pin = window.prompt('Enter your PIN to sign:');
+  if (!pin) return;
+  const meaning = window.prompt('Enter meaning of signature (e.g. "reviewed and approved"):');
+  if (!meaning) return;
   const reason = window.prompt('Enter reason:') || action;
   try {
-    const res = await fetch(`/hmi/approvals/${encodeURIComponent(requestId)}/${action}`, {
+    const res = await apiFetch(`/hmi/approvals/${encodeURIComponent(requestId)}/${action}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ actor, reason }),
+      body: JSON.stringify({ pin, meaning_of_signature: meaning, reason }),
     });
     if (!res.ok) {
-      const detail = await res.text();
-      alert(`Failed: ${detail}`);
+      const detail = await res.json().catch(() => ({}));
+      alert(`Failed: ${detail.detail || res.statusText}`);
       return;
     }
     await refreshApprovals();
@@ -170,7 +189,7 @@ window.decideApproval = async function (requestId, action) {
 
 async function refreshEvents() {
   try {
-    const res = await fetch(`/hmi/runs/${encodeURIComponent(state.runId)}/events?limit=50`);
+    const res = await apiFetch(`/hmi/runs/${encodeURIComponent(state.runId)}/events?limit=50`);
     const events = await res.json();
     renderEvents(events);
   } catch (err) {
@@ -203,7 +222,7 @@ function switchTab(tabName) {
 async function refreshEbr() {
   if (!state.runId) return;
   try {
-    const res = await fetch(`/hmi/runs/${encodeURIComponent(state.runId)}/ebr`);
+    const res = await apiFetch(`/hmi/runs/${encodeURIComponent(state.runId)}/ebr`);
     const data = await res.json();
     els.ebrContent.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
   } catch (err) {

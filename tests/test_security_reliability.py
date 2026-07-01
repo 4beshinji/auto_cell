@@ -9,7 +9,10 @@ import pytest
 from auto_cell._utils import validate_run_id
 from auto_cell.audit.audit_log import AuditLog
 from auto_cell.audit.event_store import EventWriter
-from auto_cell.hmi.approval_service import ApprovalService, ApprovalState
+from auto_cell.auth.db import UserDB
+from auto_cell.auth.models import Role, UserCreate
+from auto_cell.hmi.approval_models import ApprovalState
+from auto_cell.hmi.approval_service import ApprovalService
 
 
 def test_validate_run_id_rejects_path_traversal():
@@ -88,7 +91,17 @@ def test_event_writer_loads_multiple_days(tmp_path):
 async def test_approval_service_executed_removes_request(tmp_path):
     ew = EventWriter(tmp_path / "events")
     al = AuditLog(tmp_path / "audit")
-    svc = ApprovalService(ew, al)
+    user_db = UserDB(tmp_path / "auth" / "users.db")
+    approver = user_db.create_user(
+        UserCreate(
+            username="approver1",
+            full_name="Approver One",
+            password="password123",
+            pin="1234",
+            role=Role.OPERATOR,
+        )
+    )
+    svc = ApprovalService(ew, al, user_db=user_db)
 
     req = await svc.request(
         run_id="run_001",
@@ -101,10 +114,10 @@ async def test_approval_service_executed_removes_request(tmp_path):
         reason="test",
     )
 
-    svc.approve(req.request_id, "user:tanaka", "ok")
-    assert req.request_id in svc._requests
-    assert svc._requests[req.request_id].state == ApprovalState.APPROVED
+    svc.approve(req.request_id, approver, "1234", "ok", "reviewed and approved")
+    assert svc.get_request(req.request_id) is not None
+    assert svc.get_request(req.request_id).state == ApprovalState.APPROVED
 
     svc.execute(req.request_id)
-    assert req.request_id not in svc._requests
+    assert svc.get_request(req.request_id) is None
     assert req.state == ApprovalState.EXECUTED

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>auto_cell HMI Login</title>
+  <link rel="stylesheet" href="/hmi/static/css/dashboard.css">
+  <style>
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .login-card { width: 100%; max-width: 360px; }
+    .login-card input { width: 100%; margin-bottom: 0.75rem; }
+    .login-card button { width: 100%; }
+    #error { color: var(--danger); margin-top: 0.5rem; font-size: 0.875rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="card login-card">
+      <h2>auto_cell HMI Login</h2>
+      <form id="login-form">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required autofocus>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit">Sign in</button>
+      </form>
+      <div id="error"></div>
+    </section>
+  </main>
+  <script src="/hmi/static/js/auth.js"></script>
+</body>
+</html>

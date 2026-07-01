@@ -10,9 +10,12 @@ from fastapi.testclient import TestClient
 
 from auto_cell.audit.audit_log import AuditLog
 from auto_cell.audit.event_store import EventWriter
+from auto_cell.auth.db import UserDB
+from auto_cell.auth.models import Role, UserCreate
 from auto_cell.hmi.approval_api import Services, app
 from auto_cell.hmi.approval_matrix import ApprovalMatrix
 from auto_cell.hmi.approval_service import ApprovalService
+from auto_cell.hmi.approval_store import SqliteApprovalStore
 from auto_cell.hmi.dashboard_service import DashboardService
 from auto_cell.schemas.audit_events import TelemetryPayload
 
@@ -22,17 +25,46 @@ def client(tmp_path: Path, monkeypatch):
     ew = EventWriter(tmp_path / "events")
     al = AuditLog(tmp_path / "audit")
     matrix = ApprovalMatrix(Path(__file__).parent.parent / "config" / "approval_matrix.yaml")
-    svc = ApprovalService(ew, al, matrix)
+    user_db = UserDB(tmp_path / "auth" / "users.db")
+    user_db.create_user(
+        UserCreate(
+            username="operator1",
+            full_name="Operator One",
+            password="password123",
+            pin="1234",
+            role=Role.OPERATOR,
+        )
+    )
+    approver = user_db.create_user(
+        UserCreate(
+            username="approver1",
+            full_name="Approver One",
+            password="password123",
+            pin="1234",
+            role=Role.OPERATOR,
+        )
+    )
+    svc = ApprovalService(ew, al, matrix, store=SqliteApprovalStore(tmp_path / "approvals.db"), user_db=user_db)
     services = Services.__new__(Services)
     services.event_writer = ew
     services.audit_log = al
     services.matrix = matrix
+    services.user_db = user_db
+    services.approval_store = svc._store
     services.approval_service = svc
     services.dashboard = DashboardService(ew)
 
     monkeypatch.setattr("auto_cell.hmi.approval_api._services", services)
 
     with TestClient(app) as c:
+        resp = c.post(
+            "/hmi/auth/token",
+            data={"username": "operator1", "password": "password123"},
+        )
+        assert resp.status_code == 200
+        token = resp.json()["access_token"]
+        c.headers["Authorization"] = f"Bearer {token}"
+        c.approver = approver  # type: ignore[attr-defined]
         yield c
 
 
@@ -45,6 +77,14 @@ def test_dashboard_page_renders(client):
     assert '/hmi/static/js/dashboard.js' in text
     assert 'id="run-select"' in text
     assert 'id="approvals-list"' in text
+
+
+def test_dashboard_redirects_to_login_without_auth(client, monkeypatch):
+    # Create a fresh unauthorized client to test the redirect.
+    with TestClient(app) as unauth:
+        resp = unauth.get("/hmi", follow_redirects=False)
+        assert resp.status_code == 307
+        assert resp.headers["location"] == "/hmi/login"
 
 
 def test_static_assets_served(client):

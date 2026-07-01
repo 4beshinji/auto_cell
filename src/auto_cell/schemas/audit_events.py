@@ -78,5 +78,6 @@ class ApprovalPayload(BaseModel):
     requested_by: str
     decided_by: str | None = None
     reason: str | None = None
+    meaning_of_signature: str | None = None
     timeout_sec: float
     safe_default: Literal["cancel", "reject", "hold"] | None = None
